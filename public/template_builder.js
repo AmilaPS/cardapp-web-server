@@ -1,11 +1,20 @@
 // =================================================================
-// 🎯 DYNAMIC IP & HOST RECOGNITION ENGINE
+// 🎯 DYNAMIC IP & HOST RECOGNITION ENGINE (Railway & Local Dynamic Fix)
 // =================================================================
 const CURRENT_HOST = window.location.hostname; 
-const PY_PORT = window.ENV_PYTHON_PORT || 8001;
+const rawPyPort = window.ENV_PYTHON_PORT || 8001;
 
-const API_BASE = `http://${CURRENT_HOST}:${PY_PORT}/api`;
-const BACKEND_STATIC = `http://${CURRENT_HOST}:${PY_PORT}`;
+let API_BASE, BACKEND_STATIC;
+
+// Railway එකෙන් Full Domain URL එකක් ආවොත් (https://...):
+if (typeof rawPyPort === 'string' && rawPyPort.startsWith('http')) {
+    API_BASE = `${rawPyPort}/api`;
+    BACKEND_STATIC = rawPyPort;
+} else {
+    // Local PC එකේදී Port එකක් පමණක් ආවොත් (උදා: 3001):
+    API_BASE = `http://${CURRENT_HOST}:${rawPyPort}/api`;
+    BACKEND_STATIC = `http://${CURRENT_HOST}:${rawPyPort}`;
+}
 
 console.log(`[Dynamic Linking] Node UI loaded from: ${window.location.origin}`);
 console.log(`[Dynamic Linking] Routing Python API requests to: ${API_BASE}`);
