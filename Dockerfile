@@ -1,6 +1,6 @@
 FROM node:18
 
-# FFmpeg, Python3, Pip සහ python-is-python3 (Command Alias Fix) Install කිරීම
+# System packages: FFmpeg, Python3, Pip සහ python-is-python3 (Command Alias Fix) Install කිරීම
 RUN apt-get update && apt-get install -y \
     ffmpeg \
     python3 \
@@ -8,15 +8,15 @@ RUN apt-get update && apt-get install -y \
     python-is-python3 \
     && rm -rf /var/lib/apt/lists/*
 
+# Video Processing සඳහා අවශ්‍ය ප්‍රධාන Python Libraries Install කිරීම
+RUN pip3 install --no-cache-dir --break-system-packages pillow moviepy opencv-python-headless requests numpy
+
 WORKDIR /app
 
 COPY package*.json ./
 RUN npm install
 
 COPY . .
-
-# Python Dependencies අවශ්‍ය නම් Install කිරීම
-RUN if [ -f requirements.txt ]; then pip3 install --no-cache-dir --break-system-packages -r requirements.txt; fi
 
 EXPOSE 8080
 
