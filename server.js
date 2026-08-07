@@ -61,7 +61,7 @@ const ULF_PORT = process.env.ULF_PORT || 5001;
 const AUTH_SERVER = process.env.AUTH_SERVER || `http://${NETWORK_IP}:${ULF_PORT}`;
 const PAGE_LINK = process.env.PAGE_LINK || `http://${NETWORK_IP}:${PORT}/home`;
 const SHARE_LINK = process.env.SHARE_LINK || `http://${NETWORK_IP}:${ULF_PORT}/views/ulf_storage/Cards/`;
-
+const pythonTarget = process.env.PYTHON_SERVER_URL || `http://${NETWORK_IP}:3001`;
 // =================================================================
 // 🎯 LAYOUT COMPILER ENGINE WITH GLOBAL PLACEHOLDER & COOKIE INJECTION
 // =================================================================
@@ -81,7 +81,7 @@ const renderWithLayout = (pageName, req, res) => {
             htmlContent = htmlContent.replaceAll('{{AUTH_SERVER}}', AUTH_SERVER);
             htmlContent = htmlContent.replaceAll('{{PAGE_LINK}}', PAGE_LINK);
             htmlContent = htmlContent.replaceAll('{{SHARE_LINK}}', SHARE_LINK);
-            htmlContent = htmlContent.replaceAll('{{PYTHON_PORT}}', PYTHON_PORT);
+            htmlContent = htmlContent.replaceAll('{{PYTHON_PORT}}', pythonTarget);
 
             // 💡 මොබයිල් එකෙන් එනකොට HTML පිටුවල ඇති JavaScript වලට සැබෑ IP එක inject කිරීම
             //htmlContent = htmlContent.replace('const CURRENT_HOST = window.location.hostname;', `const CURRENT_HOST = "${NETWORK_IP}";`);
