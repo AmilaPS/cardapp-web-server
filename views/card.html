@@ -1,0 +1,1468 @@
+<!DOCTYPE html>
+<html lang="de" class="wf-personello-n4-active wf-asap-n4-active wf-amaticsc-n4-active wf-active">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    
+    <link href="/views/personelloweb/login_files/default.css" type="text/css" rel="stylesheet"> 
+    <link rel="stylesheet" href="/views/personelloweb/login_files/fonts.css" media="all">
+    
+    <title>Karten-Personalisierung - CardMaker</title> 
+
+    <style>
+        @font-face {
+            font-family: 'Asap Custom';
+            src: url('/views/personelloweb/MeinKonto_files/asap-v21-latin-ext_latin-regular.woff2') format('woff2');
+            font-weight: 700; font-style: normal;
+        }
+        @font-face {
+            font-family: 'Asap Custom';
+            src: url('/views/personelloweb/MeinKonto_files/asap-v21-latin-ext_latin-regular.woff2') format('woff2');
+            font-weight: 400; font-style: normal;
+        }
+
+        .cropper-modal-overlay { 
+            position: fixed !important; top: 0 !important; left: 0 !important; width: 100% !important; height: 100% !important; background-color: rgba(0, 0, 0, 0.6) !important; display: flex !important; align-items: center !important; justify-content: center !important; z-index: 10000 !important; opacity: 0 !important; pointer-events: none !important; transition: opacity 0.3s ease !important; 
+        }
+        .cropper-modal-overlay.active { opacity: 1 !important; pointer-events: auto !important; }
+
+        .cropper-popup-window { 
+            background-color: #ffffff !important; width: 90% !important; max-width: 550px !important; border-radius: 12px !important; padding: 25px !important; box-shadow: 0 10px 25px rgba(0,0,0,0.3) !important; display: flex !important; flex-direction: column !important; align-items: center !important; 
+        }
+        
+        .crop-preview-box { 
+            position: relative !important; width: auto !important; max-width: 100% !important; height: auto !important; background-color: #1a1a1a !important; overflow: hidden !important; display: inline-flex !important; align-items: center !important; justify-content: center !important; border-radius: 8px !important; margin: 0 auto !important;
+        }
+        
+        #movable-target-img { 
+            max-width: 100% !important; max-height: 380px !important; width: auto !important; height: auto !important; object-fit: contain !important; display: block !important; user-select: none !important; pointer-events: none !important; margin: 0 auto !important;
+        }
+
+        .resizable-crop-box { 
+            position: absolute !important; border: 2px solid #92ccb6 !important; box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.75) !important; cursor: move !important; z-index: 15 !important;
+        }
+
+        .crop-resize-handle { 
+            position: absolute !important; width: 20px !important; height: 20px !important; background-color: #ffffff !important; border: 2px solid #333 !important; border-radius: 50% !important; bottom: -10px !important; right: -10px !important; cursor: se-resize !important; z-index: 20 !important;
+        }
+        
+        #crop-mask-overlay { width: 100% !important; height: 100% !important; object-fit: fill !important; pointer-events: none !important; opacity: 0.85 !important; }
+        
+        .popup-buttons-row { display: flex !important; width: 100% !important; max-width: 350px !important; gap: 12px !important; margin-top: 20px !important; margin-left: auto !important; margin-right: auto !important; justify-content: space-between !important; }
+        .popup-btn { display: inline-flex !important; align-items: center !important; justify-content: center !important; background: transparent !important; background-color: transparent !important; border: none !important; outline: none !important; padding: 0 !important; margin: 0 !important; box-shadow: none !important; cursor: pointer !important; transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important; }
+        .popup-btn:hover { transform: translateY(-4px) scale(1.06) !important; background: transparent !important; }
+        .popup-btn:active { transform: translateY(-1px) scale(0.98) !important; }
+        .popup-btn img { height: 65px !important; width: auto !important; object-fit: contain !important; border-radius: 0 !important; background: transparent !important; border: none !important; }
+
+        .cardmaker-isolated-zone { background-color: #ffffff; color: #333; font-family: 'Asap Custom', 'Segoe UI', sans-serif; width: 100%; display: block; }
+        .cardmaker-isolated-zone * { box-sizing: border-box !important; }
+        .cardmaker-isolated-zone .page-container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+
+        #breadcrumb { background-color: #ededed !important; padding: 10px 0 !important; border-bottom: 1px solid #e2e8f0 !important; box-sizing: border-box !important; }
+        #breadcrumb .limiter { display: flex !important; justify-content: space-between !important; align-items: center !important; width: calc(100% - 24px) !important; max-width: 1180px !important; margin: 0 auto !important; padding: 0 20px !important; background: transparent !important; border: none !important; }
+        #breadcrumb .limiter p { margin: 0 !important; padding: 0 !important; color: #666666 !important; font-size: 13px !important; display: inline-block !important; }
+        #breadcrumb a { background: none !important; background-color: transparent !important; border: none !important; padding: 0 !important; margin: 0 !important; display: inline !important; float: none !important; color: #4a5568; text-decoration: none; }
+        #breadcrumb a:hover { text-decoration: underline !important; }
+        .pso-breadcrumb-logout-btn { display: flex; align-items: center; gap: 0px; color: #4a5568 !important; text-decoration: none; transition: transform 0.2s ease; }
+        .pso-breadcrumb-logout-btn:hover { transform: scale(1.05) !important; }
+        .pso-breadcrumb-logout-btn img { height: 40px; width: auto; max-width: 40px !important; object-fit: contain; vertical-align: middle; filter: none !important; border-radius: 0 !important; }
+
+        .cardmaker-isolated-zone .main-content { padding: 40px 0; flex-grow: 1; }
+        .cardmaker-isolated-zone .workspace-title { font-family: 'Asap Custom', sans-serif; font-size: 24px; font-weight: bold; color: #2c3e50; margin-bottom: 20px; text-align: center; }
+        
+        .cardmaker-isolated-zone .customiser-grid { display: grid !important; grid-template-columns: 2fr 0.8fr !important; gap: 25px !important; align-items: start !important; }
+        .cardmaker-isolated-zone .main-workspace { background-color: #f5f6f8; border: 2px solid #e2e8f0; border-radius: 16px; padding: 24px; display: grid !important; grid-template-columns: 1.1fr 1fr !important; gap: 24px !important; align-items: start !important; }
+        .cardmaker-isolated-zone .canvas-container { background-color: #ffffff; border-radius: 12px; padding: 16px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); border: 2px solid #92ccb6; overflow: hidden; position: relative; min-height: 400px; display: flex; align-items: center; justify-content: center; }
+        .cardmaker-isolated-zone .canvas-preview-img { width: 100%; height: auto; display: block; border-radius: 8px; transition: transform 0.2s ease-out; transform-origin: center center; }
+        .cardmaker-isolated-zone .canvas-container:hover .canvas-preview-img { transform: scale(2.5); }
+        .cardmaker-isolated-zone .center-column { display: flex; flex-direction: column; gap: 20px; }
+        .cardmaker-isolated-zone .panel-box { background-color: #ffffff; border-radius: 12px; padding: 20px; position: relative; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid #edf2f7; }
+
+        .cardmaker-isolated-zone .photo-uploader-container { display: flex !important; gap: 15px !important; margin-top: 10px !important; margin-bottom: 15px !important; align-items: flex-start !important; }
+        .cardmaker-isolated-zone .image01-btn { display: inline-flex !important; align-items: center !important; justify-content: center !important; width: 70px !important; height: 70px !important; background: transparent !important; background-color: transparent !important; border: none !important; padding: 0 !important; cursor: pointer !important; flex-shrink: 0 !important; transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important; }
+        .cardmaker-isolated-zone .image01-btn:hover { transform: translateY(-4px) scale(1.03) !important; }
+        .cardmaker-isolated-zone .image01-btn img { height: 65px !important; max-width: 65px !important; width: auto !important; object-fit: contain !important; }
+        .cardmaker-isolated-zone .preview-tray-panel { flex-grow: 1; min-height: 70px; background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 8px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+        .cardmaker-isolated-zone .tray-empty-text { color: #aaa; font-size: 13px; }
+        .cardmaker-isolated-zone .preview-thumb-container { position: relative; width: 54px; height: 54px; cursor: pointer; }
+        .cardmaker-isolated-zone .preview-thumb-container img { width: 100%; height: 100%; object-fit: cover; border-radius: 6px; border: 2px solid transparent; }
+        .cardmaker-isolated-zone .preview-thumb-container.selected img { border-radius: 50%; border-color: #92ccb6; box-shadow: 0 0 8px rgba(146, 204, 182, 0.6); }
+        #image01-input { display: none; }
+
+        .cardmaker-isolated-zone .dynamic-slots-wrapper { display: flex !important; flex-wrap: wrap !important; justify-content: center !important; gap: 25px 30px !important; margin-top: 20px !important; width: 100% !important; }
+        .cardmaker-isolated-zone .valentine-slot { flex: 0 0 105px !important; width: 105px !important; max-width: 105px !important; display: flex !important; flex-direction: column !important; align-items: center !important; box-sizing: border-box !important; cursor: pointer !important; }
+        .cardmaker-isolated-zone .valentine-slot img { width: 100% !important; height: 95px !important; object-fit: contain !important; background-color: #fff !important; border: none !important; border-radius: 10px !important; padding: 6px !important; }
+        .cardmaker-isolated-zone .valentine-slot span { font-size: 11px; color: #666; font-weight: bold; margin-top: 5px; text-align: center; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        
+        .cardmaker-isolated-zone .pso-draw-3d-btn { display: inline-flex !important; align-items: center !important; justify-content: center !important; width: 100% !important; margin-top: 10px !important; background: transparent !important; border: none !important; padding: 0 !important; cursor: pointer !important; transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important; }
+        .cardmaker-isolated-zone .pso-draw-3d-btn:hover { transform: translateY(-4px) scale(1.03) !important; border-color: #92ccb6 !important; }
+        .cardmaker-isolated-zone .pso-draw-3d-btn img { height: 65px !important; max-width: 200px !important; width: auto !important; object-fit: contain !important; border-radius: 0 !important; background: transparent !important; border: none !important; }
+        .cardmaker-isolated-zone .pso-draw-3d-btn.generating img { opacity: 0.5 !important; animation: psoPulse 1.5s infinite ease-in-out; }
+        @keyframes psoPulse { 0% { transform: scale(1); } 50% { transform: scale(0.95); } 100% { transform: scale(1); } }
+
+        .cardmaker-isolated-zone .dynamic-text-wrapper { display: flex; flex-direction: column; gap: 12px; margin-top: 10px; }
+        .cardmaker-isolated-zone .input-group { display: flex; align-items: center; gap: 10px; }
+        .cardmaker-isolated-zone .text-field { flex: 1; padding: 10px 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 15px; outline: none; }
+        .cardmaker-isolated-zone .slot-label-span { font-size: 14px; font-weight: bold; color: #555; min-width: 80px; text-transform: capitalize; }
+
+        .cardmaker-isolated-zone .right-column { display: flex !important; flex-direction: column !important; gap: 20px !important; }
+        
+        .cardmaker-isolated-zone .sidebar-panel {
+            background-color: #f7f7f7 !important;
+            border: 2px solid #e2e8f0 !important;
+            border-radius: 8px !important;
+            padding: 30px 20px !important;
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05) !important;
+            border: 1px solid #edf2f7 !important;
+        }
+        .cardmaker-isolated-zone .sidebar-links { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 15px; margin-bottom: 20px; }
+        .cardmaker-isolated-zone .sidebar-item { display: flex; flex-direction: column; align-items: center; width: 100%; }
+        .cardmaker-isolated-zone .sidebar-text { font-family: 'Asap Custom', sans-serif !important; font-size: 16px; color: #444; text-transform: uppercase; text-align: center; font-weight: 700; }
+        .cardmaker-isolated-zone .heart-separator { color: #666; font-size: 10px; margin-top: 8px; }
+        
+        .cardmaker-isolated-zone .pso-back-3d-btn { display: inline-flex !important; align-items: center !important; justify-content: center !important; width: 100% !important; margin-bottom: 10px !important; background: transparent !important; background-color: transparent !important; border: none !important; outline: none !important; padding: 0 !important; box-shadow: none !important; cursor: pointer !important; transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important; }
+        .cardmaker-isolated-zone .pso-back-3d-btn:hover { transform: translateY(-4px) scale(1.03) !important; }
+        .cardmaker-isolated-zone .pso-back-3d-btn img { height: 65px !important; max-width: 150px !important; width: auto !important; object-fit: contain !important; }
+
+        .pso-dual-gen-row { 
+            display: flex !important; 
+            flex-direction: row !important; 
+            gap: 15px !important; 
+            width: 100% !important; 
+            justify-content: center !important;
+            align-items: center !important;
+        }
+        .pso-gen-split-btn { 
+            flex: 1 !important; 
+            display: inline-flex !important; 
+            align-items: center !important; 
+            justify-content: center !important; 
+            width: 100% !important; 
+            height: auto !important; 
+            background: transparent !important;
+            background-color: transparent !important;
+            border: none !important;
+            padding: 0 !important; 
+            cursor: pointer !important; 
+            box-shadow: none !important;
+            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important; 
+        }
+        .pso-gen-split-btn:hover { 
+            transform: translateY(-4px) scale(1.08) !important;
+            background: transparent !important; 
+            box-shadow: none !important; 
+        }
+        .pso-gen-split-btn img { 
+            height: 80px !important;
+            max-width: 150px !important;
+            width: auto !important; 
+            object-fit: contain !important; 
+            margin-top: 0 !important; 
+        }
+
+        .mobile-buttons-container { display: none !important; }
+
+        .cardmaker-isolated-zone .results-headline { font-size: 26px; font-weight: bold; color: #2c3e50; text-align: center; margin-top: 50px; margin-bottom: 30px; display: none; }
+        .cardmaker-isolated-zone .output-list-wrapper { display: flex; flex-direction: column; gap: 35px; margin-bottom: 50px; }
+        .cardmaker-isolated-zone .card-result-container { background-color: #f5f6f8; border: 2px solid #92ccb6; border-radius: 16px; padding: 30px; display: flex; flex-direction: column; align-items: center; box-shadow: 0 8px 25px rgba(0,0,0,0.04); margin-top: 30px; }
+        .cardmaker-isolated-zone .result-card-title { font-size: 24px; font-weight: bold; color: #2c3e50; margin-bottom: 25px; text-align: center; }
+        .cardmaker-isolated-zone .result-content-row { display: flex; justify-content: center; align-items: center; gap: 60px; flex-wrap: wrap; width: 100%; }
+        .cardmaker-isolated-zone .video-box-holder { width: 350px; height: 350px; background-color: #000; border-radius: 12px; overflow: hidden; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); position: relative; }
+        .cardmaker-isolated-zone .video-box-holder video { object-fit: cover; width: 100%; height: 100%; }
+        .cardmaker-isolated-zone .buttons-holder { display: flex; flex-direction: column; gap: 18px; min-width: 320px; }
+
+        .pso-share-icons-tray { display: flex !important; align-items: flex-start !important; justify-content: center !important; gap: 25px !important; margin-top: 15px !important; }
+        .pso-share-3d-icon { display: flex !important; flex-direction: column !important; align-items: center !important; justify-content: center !important; position: relative !important; background: transparent !important; border: none !important; cursor: pointer !important; padding: 0 !important; transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important; }
+        .pso-share-3d-icon:hover { transform: translateY(-3px) scale(1.08) !important; }
+        .pso-share-3d-icon img { width: 48px !important; max-width: 48px !important; height: 48px !important; object-fit: contain !important; }
+
+        .share-count-pill { background-color: #7ab59f !important; color: #ffffff !important; font-size: 11px !important; font-weight: 700 !important; padding: 2px 8px !important; border-radius: 12px !important; margin-top: 6px !important; text-align: center !important; min-width: 24px !important; box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important; line-height: 1.2 !important; letter-spacing: 0.3px !important; font-family: 'Asap Custom', sans-serif !important; }
+
+        header, footer, #breadcrumb { box-sizing: content-box !important; }
+        .pso-unified-footer-back-wrapper { display: none !important; }
+
+        .instruction-text { font-size: 12.5px !important; color: #e67e22 !important; margin-bottom: 15px !important; text-align: center !important; }
+        .cardmaker-isolated-zone .section-title { font-size: 30px !important; margin-bottom: 30px !important; }
+
+		.pso-3d-dl-btn { display: inline-flex !important; align-items: center !important; justify-content: center !important; background: transparent !important; border: none !important; padding: 0 !important; cursor: pointer !important; transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important; text-decoration: none !important; }
+		.pso-3d-dl-btn:hover { transform: translateY(-4px) scale(1.05) !important; }
+		.pso-3d-dl-btn:active { transform: translateY(-1px) scale(0.98) !important; }
+		.pso-3d-dl-btn img { 
+            height: 75px !important; 
+            max-width: 150px !important; 
+            width: auto !important; 
+            object-fit: contain !important; 
+            display: block !important; 
+        }
+		.pso-3d-buttons-row { display: flex !important; gap: 15px !important; align-items: center !important; justify-content: center !important; }
+
+        #resultsTitle, .results-headline { display: none !important; }
+        .card-result-container .result-card-title { display: none !important; }
+
+        @media screen and (max-width: 768px) {
+            html, body, .cardmaker-isolated-zone { background-color: #ffffff !important; background: #ffffff !important; overflow-x: hidden !important; max-width: 100% !important; width: 100% !important; }
+            .cardmaker-isolated-zone .page-container { padding: 0 3px !important; width: 100% !important; max-width: 100% !important; box-sizing: border-box !important; }
+            .cardmaker-isolated-zone .card-result-container { width: 100% !important; max-width: 100% !important; box-sizing: border-box !important; padding: 10px 3px !important; margin-top: 20px !important; margin-bottom: 20px !important; }
+            #breadcrumb { background-color: #ffffff !important; padding: 5px 0 !important; }
+            #breadcrumb .limiter p, #breadcrumb .limiter a:not(.pso-breadcrumb-logout-btn) { display: none !important; }
+            #breadcrumb .limiter { display: flex !important; justify-content: space-between !important; align-items: center !important; padding: 10px 0px !important; background: #ffffff !important; width: calc(100% - 24px) !important; margin: 0 auto !important; max-width: 100% !important; }
+            #breadcrumb .limiter::before { content: "< Konto"; display: inline-block !important; font-size: 1.7rem; color: #666666; cursor: pointer; font-weight: bold; }
+            .pso-breadcrumb-logout-btn { display: inline-flex !important; font-size: 13px !important; }
+            .cardmaker-isolated-zone .main-content { padding: 15px 0 25px 0 !important; }
+			.cardmaker-isolated-zone .customiser-grid { width: 100% !important; display: flex !important; flex-direction: column !important; align-items: center !important; justify-content: center !important; }
+			.cardmaker-isolated-zone .main-workspace { width: 100% !important; max-width: 100% !important; margin: 0 auto !important; padding: 12px 10px !important; box-sizing: border-box !important; display: flex !important; flex-direction: column !important; align-items: center !important; }
+			.cardmaker-isolated-zone .canvas-container:hover .canvas-preview-img { transform: none !important; }
+			.cardmaker-isolated-zone .canvas-container { overflow: hidden !important; touch-action: auto !important; width: 100% !important; max-width: 100% !important; margin-left: auto !important; margin-right: auto !important; box-sizing: border-box !important; }
+            .cardmaker-isolated-zone .center-column { order: 2 !important; width: 100% !important; max-width: 100% !important; margin-left: auto !important; margin-right: auto !important; box-sizing: border-box !important; }
+            .cardmaker-isolated-zone .panel-box { width: 100% !important; max-width: 100% !important; margin-left: auto !important; margin-right: auto !important; box-sizing: border-box !important; }
+			.cardmaker-isolated-zone .dynamic-slots-wrapper { display: flex !important; flex-wrap: wrap !important; justify-content: center !important; gap: 15px 20px !important; width: 100% !important; padding: 5px 0 !important; }
+			.cardmaker-isolated-zone .valentine-slot { flex: 0 0 calc(45% - 10px) !important; max-width: calc(45% - 10px) !important; display: flex !important; flex-direction: column !important; align-items: center !important; }
+			.cardmaker-isolated-zone .valentine-slot img { width: 100% !important; height: 100px !important; object-fit: contain !important; padding: 6px !important; background-color: #fff !important; border-radius: 10px !important; }
+            .cardmaker-isolated-zone .valentine-slot span { font-size: 10px !important; line-height: 1.1 !important; margin-top: 3px !important; white-space: nowrap !important; text-align: center !important; }
+            .cardmaker-isolated-zone .photo-uploader-container { flex-direction: column !important; align-items: center !important; gap: 12px !important; }
+            .cardmaker-isolated-zone .image01-btn { width: 100% !important; height: 55px !important; }
+            .cardmaker-isolated-zone .preview-tray-panel { width: 100% !important; justify-content: center !important; }
+            .cropper-popup-window { width: 95% !important; padding: 12px !important; }
+            #movable-target-img { max-height: 260px !important; }
+            .crop-resize-handle { width: 22px !important; height: 22px !important; bottom: -11px !important; right: -11px !important; }
+            .cardmaker-isolated-zone .result-content-row { flex-direction: column !important; gap: 20px !important; }
+            .cardmaker-isolated-zone .video-box-holder { width: 100% !important; max-width: 300px !important; height: 300px !important; }
+            .cardmaker-isolated-zone .sidebar-panel { display: none !important; }
+            .right-column .pso-dual-gen-row { display: none !important; }
+            .mobile-buttons-container { display: block !important; width: 100% !important; }
+            .mobile-buttons-container .pso-dual-gen-row { display: flex !important; position: relative !important; width: 100% !important; flex-direction: row !important; gap: 15px !important; margin-top: 20px !important; margin-bottom: 20px !important; justify-content: center !important; align-items: center !important; }
+            .mobile-buttons-container .pso-gen-split-btn { flex: 1 !important; height: auto !important; background: transparent !important; background-color: transparent !important; border: none !important; box-shadow: none !important; }
+            .mobile-buttons-container .pso-gen-split-btn img { height: 75px !important; max-height: 75px !important; max-width: 150px !important; margin-top: 0 !important; }
+            .pso-unified-footer-back-wrapper { display: flex !important; justify-content: center !important; align-items: center !important; width: 100% !important; margin-top: 5px !important; margin-bottom: 5px !important; text-align: center !important; }
+            .pso-unified-footer-back-wrapper .pso-back-3d-btn img { height: 60px !important; width: auto !important; max-width: 100px !important; object-fit: contain !important; }
+            .instruction-text { font-size: 12.5px !important; color: #e67e22 !important; margin-bottom: 15px !important; text-align: center !important; }
+            .cardmaker-isolated-zone .section-title { font-size: 24px !important; text-align: center !important; margin-top: 0px !important; margin-bottom: 20px !important; }
+            .cardmaker-isolated-zone .workspace-title { text-align: center !important; width: 100% !important; }
+            .pso-share-icons-tray { gap: 20px !important; }
+            .pso-share-3d-icon img { width: 44px !important; height: 44px !important; }
+            #resultsTitle, .results-headline { display: none !important; }
+            .card-result-container .result-card-title { display: none !important; }
+        }
+    </style>
+</head>
+<body class="theme default" id="pageStart">
+
+    {{HEADER}}
+
+    <div id="breadcrumb" role="navigation" aria-label="Breadcrumbs"> 
+        <div class="limiter"> 
+            <p>Du befindest dich hier: <a href="https://de.personello.com/">Home</a> <span class="icon-chevron-right"></span> <a href="{{AUTH_SERVER}}/mypersonello">Konto</a> <span class="icon-chevron-right"></span> Generieren </p> 
+            
+            <a href="{{AUTH_SERVER}}/api/auth/logout" class="pso-breadcrumb-logout-btn" title="Abmelden">
+                <img src="/views/personelloweb/MeinKonto_files/logout.svg" alt="Logout">
+            </a>
+        </div> 
+    </div>
+
+    <div class="cardmaker-isolated-zone">
+
+        <div class="page-container">
+            <main class="main-content">
+                <h1 class="section-title">Personalisierte Karten erstellen</h1>
+                <h2 class="workspace-title" id="workspace-card-name">Lade Vorlage...</h2>
+
+                <div class="customiser-grid">
+                    <div class="main-workspace">
+                        <div class="canvas-container">
+                            <img id="main-card-preview" src="/web_images/cards/default_preview.png" alt="Card Live Preview" class="canvas-preview-img">
+                        </div>
+
+                        <div class="center-column">
+                            <div class="panel-box">
+                                <div class="photo-uploader-container">
+                                    <input type="file" id="image01-input" multiple accept="image/*" onchange="handleImageUpload(event)">
+                                    <div class="image01-btn" onclick="document.getElementById('image01-input').click()">
+                                        <img src="/web_images/upload.svg" alt="Upload Icon">
+                                    </div>
+                                    <div class="preview-tray-panel" id="blue-preview-tray">
+                                        <span class="tray-empty-text" id="empty-hint-text">Noch keine Bilder geladen</span>
+                                    </div>
+                                </div>
+                                <div class="dynamic-slots-wrapper" id="imageSlotsContainer"></div>
+                                <button class="pso-draw-3d-btn" onclick="triggerImageMakerEngine()" title="Bild in der Vorschau zeichnen">
+                                    <img src="/web_images/draw_image.svg" alt="Draw Preview">
+                                </button>
+                            </div>
+
+                            <div class="panel-box">
+                                <div class="dynamic-text-wrapper" id="textSlotsContainer"></div>
+                                <button class="pso-draw-3d-btn" onclick="triggerImageMakerEngine()" title="Text auf der Vorschau zeichnen">
+                                    <img src="/web_images/draw_text.svg" alt="Draw Preview">
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="right-column">
+                        <div class="sidebar-panel">
+                            <div class="sidebar-links">
+                                <div class="sidebar-item"><div class="sidebar-text">Verbreite Freude</div><div class="heart-separator">❤</div></div>
+                                <div class="sidebar-item"><div class="sidebar-text">Lächeln und teilen</div><div class="heart-separator">❤</div></div>
+                                <div class="sidebar-item"><div class="sidebar-text">Wunderschöne Karten</div><div class="heart-separator">❤</div></div>
+                                <div class="sidebar-item"><div class="sidebar-text">Mühelose Erstellung</div><div class="heart-separator">❤</div></div>
+                            </div>
+                            
+                            <a href="{{AUTH_SERVER}}/mypersonello" class="pso-back-3d-btn" title="Zurück zu Konto">
+                                <img src="/web_images/back.svg" alt="Back to Konto">
+                            </a>
+                        </div>
+
+                        <div class="pso-dual-gen-row">
+                            <button class="pso-gen-split-btn btn-pdf-only" onclick="generateFinalCard('pdf_only')" title="Nur PDF & Preview generieren">
+                                <img src="/web_images/generate_pdf.svg" alt="Generate PDF Only">
+                            </button>
+                            <button class="pso-gen-split-btn btn-all-assets" onclick="generateFinalCard('all')" title="Video, PDF & Preview generieren">
+                                <img src="/web_images/generate_card.svg" alt="Generate Video & PDF">
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mobile-buttons-container">
+                    <div class="pso-dual-gen-row">
+                        <button class="pso-gen-split-btn btn-pdf-only" onclick="generateFinalCard('pdf_only')" title="Nur PDF & Preview generieren">
+                            <img src="/web_images/generate_pdf.svg" alt="Generate PDF Only">
+                        </button>
+                        <button class="pso-gen-split-btn btn-all-assets" onclick="generateFinalCard('all')" title="Video, PDF & Preview generieren">
+                            <img src="/web_images/generate_card.svg" alt="Generate Video & PDF">
+                        </button>
+                    </div>
+                </div>
+
+                <h2 class="results-headline" id="resultsTitle">Stapel Ihrer generierten Grußkarten 🎉</h2>
+                <div class="output-list-wrapper" id="dynamicResultsStack"></div>
+                
+                <div class="pso-unified-footer-back-wrapper">
+                    <a href="{{AUTH_SERVER}}/mypersonello" class="pso-back-3d-btn" title="Zurück zu Konto">
+                        <img src="/web_images/back.svg" alt="Back to Konto">
+                    </a>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <div class="cropper-modal-overlay" id="cropper-modal">
+        <div class="cropper-popup-window">
+            <div class="crop-preview-box" id="crop-box-viewport">
+                <img id="movable-target-img" src="" alt="Target">
+                <div class="resizable-crop-box" id="live-crop-box">
+                    <img id="crop-mask-overlay" src="" alt="Mask">
+                    <div class="crop-resize-handle" id="live-resize-handle"></div>
+                </div>
+            </div>
+            <div class="popup-buttons-row">
+                <button type="button" class="popup-btn cancel" onclick="closeCropModal()"><img src="/web_images/cancel.png" alt="Cancel"></button>
+                <button type="button" class="popup-btn save" onclick="applyAndCropImage()"><img src="/web_images/crop.png" alt="Crop"></button>
+            </div>
+        </div>
+    </div>
+
+    {{FOOTER}}
+
+    <script>
+        window.ENV_PYTHON_PORT = "{{PYTHON_PORT}}";
+        
+        const CURRENT_HOST = window.location.hostname;
+        const PY_PORT = window.ENV_PYTHON_PORT && !window.ENV_PYTHON_PORT.includes("{{") 
+                        ? window.ENV_PYTHON_PORT 
+                        : 8001;
+
+        const BACKEND_STATIC = `http://${CURRENT_HOST}:${PY_PORT}`;
+        const API_URL = `${BACKEND_STATIC}/api`;
+        
+        const VIDEO_SERVER_BASE = window.location.origin; // Express App Origin (Port 3000)
+        const AUTH_SERVER_URL = "{{AUTH_SERVER}}";
+        const SHARE_BASE_LINK = "{{SHARE_LINK}}";
+        const HOME_PAGE_LINK = "{{PAGE_LINK}}";
+
+        let currentCardId = null;
+        let cardMetadata = null;
+        let globalFetchedHints = [];
+        let uploadedImagesRegistry = [];
+        let activeTrayImageBase64 = null;
+        let activeThumbnailContainer = null;
+        let selectedTrayImageBase64 = null;
+        let finalProcessedBlobsMap = {};
+        let generatedPdfFileName = null;
+        let generatedVideoFileName = null;
+
+        const modal = document.getElementById('cropper-modal');
+        const targetImg = document.getElementById('movable-target-img');
+        const viewportBox = document.getElementById('crop-box-viewport');
+        const cropBox = document.getElementById('live-crop-box');
+        const resizeHandle = document.getElementById('live-resize-handle');
+
+        let boxX = 0, boxY = 0, boxWidth = 150, boxHeight = 150;
+        let isDraggingBox = false, isResizingBox = false;
+        let startMouseX = 0, startMouseY = 0, startBoxX = 0, startBoxY = 0;
+        let startBoxWidth = 0, startBoxHeight = 0;
+        let currentMaskAspect = 1;
+        let activeTargetSlotId = null;
+
+        function formatNumberWithCommas(x) { return x ? x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : "0"; }
+
+        async function loadGlobalShareClickStats() {
+            try {
+                const res = await fetch('/api/analytics/share-stats');
+                const data = await res.json();
+                if (data.success && data.stats) {
+                    ['whatsapp', 'facebook', 'instagram', 'tiktok'].forEach(platform => {
+                        const globalKey = `global_${platform}`;
+                        const countElem = document.getElementById(`count_${platform}`);
+                        if (countElem && data.stats[globalKey] !== undefined) {
+                            countElem.innerText = formatNumberWithCommas(data.stats[globalKey]);
+                        }
+                    });
+                }
+            } catch (e) { console.warn("Could not load global share stats"); }
+        }
+
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+            return null;
+        }
+
+        function getCardWebIdFromUrl() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('card_id');
+        }
+
+        async function fetchHintsFromAPI() {
+            try {
+                const response = await fetch(`${API_URL}/hints`);
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.hintsString) {
+                        globalFetchedHints = data.hintsString.split(',').map(h => h.trim());
+                    }
+                }
+            } catch (error) { console.error("Failed to fetch hints from FastAPI engine:", error); }
+        }
+
+        async function loadCardWorkspace() {
+            const webIdFromUrl = getCardWebIdFromUrl();
+            if (!webIdFromUrl) {
+                alert("❌ Card ID missing in URL.");
+                window.location.href = "/cards";
+                return;
+            }
+
+            await fetchHintsFromAPI();
+
+            try {
+                const res = await fetch(`${API_URL}/cards`);
+                if (!res.ok) throw new Error("Failed to fetch cards registry");
+                const allCards = await res.json();
+
+                let matchedCard = allCards.find(c => c.card_web_id === webIdFromUrl) || allCards.find(c => c.card_id === webIdFromUrl);
+
+                if (!matchedCard) {
+                    alert("❌ Card structure not found in database.");
+                    return;
+                }
+
+                currentCardId = matchedCard.card_id; // e.g. CC0001
+                const detailRes = await fetch(`${API_URL}/cards/${currentCardId}`);
+                const detailData = await detailRes.json();
+                const card = detailData.card;
+
+                cardMetadata = {
+                    id: card.card_id,
+                    cardmaker_id: card.card_id,
+                    card_web_id: card.card_web_id,
+                    name: card.card_name,
+                    folder_name: card.folder_name,
+                    image_slots: card.image_slots || "image_01",
+                    text_slots: card.text_slots || "text_01",
+                    preview_canvas_id: card.preview_canvas_id,
+                    design_canvas_id: card.design_canvas_id,
+                    cut_crease_canvas_id: card.cut_crease_canvas_id,
+                    api_link: card.api_link,
+                    keywords: card.keywords || "all"
+                };
+
+                document.getElementById('workspace-card-name').innerText = cardMetadata.name || "Personalisierte Karte";
+                
+                let realFolder = cardMetadata.folder_name;
+                const previewImgEl = document.getElementById('main-card-preview');
+                
+                if (card.saved_preview_file && card.saved_preview_file !== 'none') {
+                    previewImgEl.src = `${BACKEND_STATIC}/image_templates/${realFolder}/preview/${card.saved_preview_file}`;
+                } else if (card.card_image) {
+                    previewImgEl.src = card.card_image;
+                } else {
+                    previewImgEl.src = `${BACKEND_STATIC}/image_templates/${realFolder}/${realFolder}_preview.png`;
+                }
+
+                renderDynamicSlots(cardMetadata);
+                loadSavedTrayImages();
+            } catch (error) {
+                console.error("Critical failure during workspace init:", error);
+            }
+        }
+
+        // 🎯 STRICT SLOTS DATA PARSER FIX
+        function parseSlotsData(slotsField) {
+            if (!slotsField || slotsField.trim() === "") return [];
+            if (Array.isArray(slotsField)) {
+                return slotsField.map(s => s ? s.trim() : "").filter(s => s !== "" && s !== "-" && s !== "_");
+            }
+            try {
+                if (slotsField.trim().startsWith('[')) {
+                    const parsed = JSON.parse(slotsField);
+                    if (Array.isArray(parsed)) {
+                        return parsed.map(s => s ? String(s).trim() : "").filter(s => s !== "" && s !== "-" && s !== "_");
+                    }
+                    return [];
+                }
+            } catch(e) {}
+            
+            // Filter out empty spaces, dashes, and invalid characters
+            return slotsField.split(',')
+                .map(s => s.trim())
+                .filter(s => s !== "" && s !== "-" && s !== "_" && s !== "null" && s !== "undefined");
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const container = document.querySelector('.canvas-container');
+            const previewImg = document.getElementById('main-card-preview');
+
+            if (container && previewImg) {
+                container.addEventListener('mousemove', (e) => {
+                    if (window.innerWidth <= 768) return; 
+                    const rect = container.getBoundingClientRect();
+                    const x = e.clientX - rect.left; const y = e.clientY - rect.top;
+                    previewImg.style.transformOrigin = `${(x / rect.width) * 100}% ${(y / rect.height) * 100}%`;
+                });
+                container.addEventListener('mouseleave', () => { previewImg.style.transformOrigin = 'center center'; });
+            }
+
+            const breadcrumbMobile = document.querySelector('#breadcrumb .limiter');
+            if (breadcrumbMobile) {
+                breadcrumbMobile.addEventListener('click', function(e) {
+                    if (window.innerWidth <= 768 && e.offsetX < 100) { 
+                        window.location.href = "{{AUTH_SERVER}}/mypersonello";
+                    }
+                });
+            }
+        });
+
+        // 🎯 EXACT DYNAMIC SLOTS RENDER ENGINE
+        function renderDynamicSlots(card) {
+            const imageContainer = document.getElementById('imageSlotsContainer');
+            const textContainer = document.getElementById('textSlotsContainer');
+            
+            const textPanelBox = textContainer ? textContainer.closest('.panel-box') : null;
+            const imagePanelBox = imageContainer ? imageContainer.closest('.panel-box') : null;
+
+            imageContainer.innerHTML = '';
+            textContainer.innerHTML = '';
+
+            const parsedImages = parseSlotsData(card.image_slots);
+            const parsedTexts = parseSlotsData(card.text_slots);
+
+            let instructionElem = document.getElementById('slot-instruction-text');
+            if (!instructionElem) {
+                instructionElem = document.createElement('p');
+                instructionElem.id = 'slot-instruction-text';
+                instructionElem.style.cssText = "display: none; font-size: 13px; color: #555; text-align: center; margin: 8px 0; width: 100%; font-weight: bold;";
+                imageContainer.parentNode.insertBefore(instructionElem, imageContainer);
+            }
+
+            if (parsedImages.length > 1) {
+                instructionElem.style.display = 'block';
+                instructionElem.classList.add('instruction-text');
+                instructionElem.innerText = "*Wählen Sie oben ein Bild aus und klicken Sie dann auf das Feld darunter, um es zuzuschneiden!";
+            } else {
+                instructionElem.style.display = 'none';
+            }
+
+            parsedImages.forEach(slot => {
+                const slotNum = slot.replace(/[^0-9]/g, '') || '01';
+                const savedSrc = finalProcessedBlobsMap[slot] || `/web_images/thumb_${slotNum}.svg`;
+                imageContainer.innerHTML += `
+                    <div class="valentine-slot" id="slot_container_${slot}" onclick="onSlotClick('${slot}')">
+                        <img id="thumb_${slot}" src="${savedSrc}" alt="${slot}">
+                    </div>
+                `;
+            });
+
+            parsedTexts.forEach((slot, index) => {
+                const slotNum = slot.replace(/[^0-9]/g, '') || String(index + 1);
+                let placeholderValue = globalFetchedHints[index] || `Text slot ${slotNum}`;
+                const savedTxtValue = sessionStorage.getItem(`saved_unieditor_${currentCardId}_${slot}`) || '';
+
+                textContainer.innerHTML += `
+                    <div class="input-group" id="group_${slot}">
+                        <span class="slot-label-span">Text ${slotNum}:</span>
+                        <input type="text" id="input-${slot}" class="text-field" placeholder="${placeholderValue}" value="${savedTxtValue}" oninput="sessionStorage.setItem('saved_unieditor_${currentCardId}_${slot}', this.value)">
+                    </div>
+                `;
+            });
+
+            // 🎯 IMAGE PANEL HIDE / SHOW CHECK
+            if (parsedImages.length === 0 && imagePanelBox) {
+                imagePanelBox.style.display = 'none';
+            } else if (imagePanelBox) {
+                imagePanelBox.style.display = 'block';
+            }
+
+            // 🎯 TEXT PANEL HIDE / SHOW CHECK (EXACT 0 LENGTH CHECK)
+            if (parsedTexts.length === 0 && textPanelBox) {
+                textPanelBox.style.display = 'none';
+            } else if (textPanelBox) {
+                textPanelBox.style.display = 'block';
+            }
+        }
+
+        function handleImageUpload(event) {
+            const files = event.target.files;
+            const tray = document.getElementById('blue-preview-tray');
+            const hintText = document.getElementById('empty-hint-text');
+
+            if (files.length > 0 && hintText) hintText.remove();
+
+            for (let i = 0; i < files.length; i++) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = new Image();
+                    img.onload = function() {
+                        const canvas = document.createElement('canvas');
+                        const MAX_SIZE = 800;
+                        let width = img.width, height = img.height;
+
+                        if (width > height) {
+                            if (width > MAX_SIZE) { height *= MAX_SIZE / width; width = MAX_SIZE; }
+                        } else {
+                            if (height > MAX_SIZE) { width *= MAX_SIZE / height; height = MAX_SIZE; }
+                        }
+                        canvas.width = width; canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+
+                        const compressedBase64 = canvas.toDataURL('image/jpeg', 0.8);
+                        uploadedImagesRegistry.push(compressedBase64);
+                        sessionStorage.setItem('saved_tray_images_unieditor', JSON.stringify(uploadedImagesRegistry));
+
+                        appendThumbToTray(compressedBase64);
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(files[i]);
+            }
+        }
+
+        function appendThumbToTray(base64Src) {
+            const tray = document.getElementById('blue-preview-tray');
+            const thumbWrapper = document.createElement('div');
+            thumbWrapper.className = 'preview-thumb-container';
+            const imgEl = document.createElement('img');
+            imgEl.src = base64Src;
+            thumbWrapper.appendChild(imgEl);
+
+            thumbWrapper.onclick = function() {
+                document.querySelectorAll('.preview-thumb-container').forEach(el => el.classList.remove('selected'));
+                thumbWrapper.classList.add('selected');
+                activeThumbnailContainer = thumbWrapper;
+                onTrayImageClick(base64Src);
+            };
+
+            tray.appendChild(thumbWrapper);
+        }
+
+        function loadSavedTrayImages() {
+            const savedTray = sessionStorage.getItem('saved_tray_images_unieditor');
+            const tray = document.getElementById('blue-preview-tray');
+            const hintText = document.getElementById('empty-hint-text');
+
+            if (savedTray && tray) {
+                uploadedImagesRegistry = JSON.parse(savedTray);
+                if (uploadedImagesRegistry.length > 0 && hintText) hintText.remove();
+                uploadedImagesRegistry.forEach(rawBase64 => appendThumbToTray(rawBase64));
+            }
+
+            const parsedImages = parseSlotsData(cardMetadata.image_slots);
+            parsedImages.forEach(slot => {
+                const localSaved = sessionStorage.getItem(`saved_unieditor_${currentCardId}_${slot}`);
+                if (localSaved) {
+                    finalProcessedBlobsMap[slot] = localSaved;
+                    const thumb = document.getElementById(`thumb_${slot}`);
+                    if (thumb) thumb.src = localSaved;
+                }
+            });
+        }
+
+        function onTrayImageClick(base64Src) {
+            const parsedImages = cardMetadata ? parseSlotsData(cardMetadata.image_slots) : [];
+            if (parsedImages.length > 1) {
+                selectedTrayImageBase64 = base64Src;
+                activeTrayImageBase64 = base64Src;
+            } else if (parsedImages.length === 1) {
+                selectedTrayImageBase64 = base64Src;
+                activeTrayImageBase64 = base64Src;
+                openSlotCropper(parsedImages[0]);
+            }
+        }
+
+        function onSlotClick(slotId) {
+            const parsedImages = cardMetadata ? parseSlotsData(cardMetadata.image_slots) : [];
+            if (parsedImages.length > 1) {
+                if (!selectedTrayImageBase64) return alert("Bitte wählen Sie zuerst oben ein Bild aus!");
+                openSlotCropper(slotId);
+            } else {
+                if (activeTrayImageBase64) openSlotCropper(slotId);
+                else alert("Bitte wählen Sie zuerst oben ein Bild aus!");
+            }
+        }
+
+        function openSlotCropper(slotId) {
+            if (!activeTrayImageBase64) return alert("❌ Bitte wählen Sie zuerst ein Bild aus der Leiste oben aus.");
+            activeTargetSlotId = slotId;
+            const slotNum = slotId.replace(/[^0-9]/g, '') || '01';
+            const maskFileName = `cropb${slotNum}.png`;
+
+            const overlayImg = document.getElementById('crop-mask-overlay');
+            overlayImg.src = '/web_images/' + maskFileName + '?t=' + Date.now();
+
+            const tempMaskImg = new Image();
+            tempMaskImg.onload = function() {
+                currentMaskAspect = tempMaskImg.naturalWidth / tempMaskImg.naturalHeight;
+
+                targetImg.onload = function() {
+                    setTimeout(() => {
+                        const imgW = targetImg.offsetWidth;
+                        const imgH = targetImg.offsetHeight;
+                        let initialW = imgW * 0.7;
+                        let initialH = initialW / currentMaskAspect;
+
+                        if (initialH > imgH * 0.7) {
+                            initialH = imgH * 0.7;
+                            initialW = initialH * currentMaskAspect;
+                        }
+
+                        boxWidth = initialW; boxHeight = initialH;
+                        boxX = (imgW - boxWidth) / 2; boxY = (imgH - boxHeight) / 2;
+                        viewportBox.style.width = imgW + 'px'; viewportBox.style.height = imgH + 'px';
+                        updateCropBoxDOM();
+                        modal.classList.add('active');
+                    }, 50);
+                }
+                targetImg.src = activeTrayImageBase64;
+            };
+            tempMaskImg.src = '/web_images/' + maskFileName + '?t=' + Date.now();
+        }
+
+        function closeCropModal() { modal.classList.remove('active'); }
+
+        function updateCropBoxDOM() {
+            cropBox.style.left = boxX + 'px';
+            cropBox.style.top = boxY + 'px';
+            cropBox.style.width = boxWidth + 'px';
+            cropBox.style.height = boxHeight + 'px';
+        }
+
+        function getEventClientCoords(e) {
+            if (e.touches && e.touches.length > 0) return { x: e.touches[0].clientX, y: e.touches[0].clientY };
+            return { x: e.clientX, y: e.clientY };
+        }
+
+        function dragStartHandler(e) {
+            if (e.target === resizeHandle) return;
+            isDraggingBox = true;
+            const coords = getEventClientCoords(e);
+            startMouseX = coords.x; startMouseY = coords.y; startBoxX = boxX; startBoxY = boxY;
+        }
+
+        function resizeStartHandler(e) {
+            e.stopPropagation(); e.preventDefault();
+            isResizingBox = true;
+            const coords = getEventClientCoords(e);
+            startMouseX = coords.x; startMouseY = coords.y; startBoxWidth = boxWidth; startBoxHeight = boxHeight; startBoxX = boxX; startBoxY = boxY;
+        }
+
+        cropBox.addEventListener('mousedown', dragStartHandler);
+        cropBox.addEventListener('touchstart', dragStartHandler, { passive: true });
+        resizeHandle.addEventListener('mousedown', resizeStartHandler);
+        resizeHandle.addEventListener('touchstart', resizeStartHandler, { passive: false });
+
+        function moveTrackHandler(e) {
+            if (!isDraggingBox && !isResizingBox) return;
+            const imgW = targetImg.offsetWidth, imgH = targetImg.offsetHeight;
+            const coords = getEventClientCoords(e);
+
+            if (isDraggingBox) {
+                let dx = coords.x - startMouseX; let dy = coords.y - startMouseY;
+                boxX = Math.max(0, Math.min(imgW - boxWidth, startBoxX + dx));
+                boxY = Math.max(0, Math.min(imgH - boxHeight, startBoxY + dy));
+                updateCropBoxDOM();
+            }
+
+            if (isResizingBox) {
+                let dx = coords.x - startMouseX;
+                let newWidth = Math.max(50, startBoxWidth + dx);
+                let newHeight = newWidth / currentMaskAspect;
+
+                if ((startBoxX + newWidth) <= imgW && (startBoxY + newHeight) <= imgH) {
+                    boxWidth = newWidth; boxHeight = newHeight;
+                    updateCropBoxDOM();
+                }
+            }
+        }
+
+        window.addEventListener('mousemove', moveTrackHandler);
+        window.addEventListener('touchmove', moveTrackHandler, { passive: false });
+
+        function applyAndCropImage() {
+            const slotNum = activeTargetSlotId.replace(/[^0-9]/g, '') || '01';
+            const maskImg = new Image();
+            maskImg.src = '/web_images/crop' + slotNum + '.png?t=' + Date.now();
+
+            maskImg.onload = function() {
+                const canvas = document.createElement('canvas');
+                canvas.width = maskImg.naturalWidth; canvas.height = maskImg.naturalHeight;
+                const ctx = canvas.getContext('2d');
+                const scale = targetImg.naturalWidth / targetImg.offsetWidth;
+
+                ctx.drawImage(maskImg, 0, 0, canvas.width, canvas.height);
+                ctx.globalCompositeOperation = 'source-in';
+                ctx.drawImage(targetImg, boxX * scale, boxY * scale, boxWidth * scale, boxHeight * scale, 0, 0, canvas.width, canvas.height);
+
+                ctx.globalCompositeOperation = 'destination-over';
+                ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.globalCompositeOperation = 'source-over';
+
+                const maskedResultBase64 = canvas.toDataURL('image/jpeg', 0.7);
+                finalProcessedBlobsMap[activeTargetSlotId] = maskedResultBase64;
+                sessionStorage.setItem(`saved_unieditor_${currentCardId}_${activeTargetSlotId}`, maskedResultBase64);
+
+                const thumbEl = document.getElementById('thumb_' + activeTargetSlotId);
+                if (thumbEl) thumbEl.src = maskedResultBase64;
+
+                closeCropModal();
+            };
+        }
+
+		async function triggerImageMakerEngine() {
+			const previewImageElement = document.getElementById('main-card-preview');
+			const drawBtns = document.querySelectorAll('.pso-draw-3d-btn');
+			
+			const canvasIdToUse = cardMetadata ? cardMetadata.preview_canvas_id : null;
+			if (!canvasIdToUse) {
+				alert("❌ Error: Preview Canvas ID is not linked to this card node.");
+				return;
+			}
+
+			drawBtns.forEach(btn => btn.classList.add('generating'));
+
+			let formData = new FormData();
+			formData.append("canvas_id", canvasIdToUse);
+
+			const parsedImages = parseSlotsData(cardMetadata.image_slots);
+			for (let slot of parsedImages) {
+				const base64Data = finalProcessedBlobsMap[slot];
+				if (base64Data && base64Data.trim() !== "") {
+					const responseBlob = await fetch(base64Data);
+					const blobObj = await responseBlob.blob();
+                    formData.append(slot, blobObj, `${slot}.jpg`);
+                    formData.append("user_image", blobObj, "user_image.jpg");
+				}
+			}
+
+			const parsedTexts = parseSlotsData(cardMetadata.text_slots);
+			parsedTexts.forEach(slot => {
+				const inputEl = document.getElementById(`input-${slot}`);
+                const val = inputEl ? inputEl.value : '';
+				formData.append(slot, val);
+                if (slot === "text_01" || slot === "text_1") formData.append("user_text_val", val);
+			});
+
+			if (window.innerWidth <= 768 && previewImageElement) {
+				previewImageElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+			}
+
+			try {
+				const response = await fetch(`${API_URL}/v1/render-user-card`, { method: 'POST', body: formData });
+				const data = await response.json();
+				if (data.status === "success" && previewImageElement) {
+					previewImageElement.src = `${BACKEND_STATIC}${data.download_url}?t=${new Date().getTime()}`;
+					if (window.innerWidth <= 768) {
+						previewImageElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+					}
+				} else {
+                    alert("❌ Preview Render Failed: " + (data.detail || "Unknown error"));
+                }
+			} catch (error) {
+				console.error("Preview render network error:", error);
+			} finally {
+				drawBtns.forEach(btn => btn.classList.remove('generating'));
+			}
+		}
+
+        async function triggerSocialShare(platform, cardName, cardmakerId, generationMode) {
+            fetch('/api/analytics/track-share', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ platform: platform, card_id: cardmakerId })
+            }).then(res => res.json()).then(data => {
+                if(data.success) {
+                    const countElem = document.getElementById(`count_${platform}`);
+                    if(countElem) countElem.innerText = formatNumberWithCommas(data.count);
+                }
+            }).catch(e => console.error("Tracking Error:", e));
+
+            const pageLink = HOME_PAGE_LINK;
+            
+            const currentUserId = (function getCookie(name) {
+                const value = `; ${document.cookie}`;
+                const parts = value.split(`; ${name}=`);
+                if (parts.length === 2) return parts.pop().split(';').shift();
+            })('main_user_id') || 1;
+
+            let pdfFileName = generatedPdfFileName || `user_${currentUserId}_card_${cardName}.pdf`;
+            let videoFileName = (generationMode === 'all') ? (generatedVideoFileName || `user_${currentUserId}_card_${cardName}.mp4`) : '';
+
+            let pdfShareLink = SHARE_BASE_LINK + encodeURIComponent(pdfFileName);
+            let videoShareLink = videoFileName ? (SHARE_BASE_LINK + encodeURIComponent(videoFileName)) : 'N/A';
+
+            const germanShareText = 
+`(${cardName})
+✨: ${pageLink}
+
+📝: ${pdfShareLink}
+🎬: ${videoShareLink}`;
+
+            if (platform === 'whatsapp') {
+                window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(germanShareText)}`, '_blank');
+            } else if (platform === 'facebook') {
+                try {
+                    const tempTextArea = document.createElement("textarea");
+                    tempTextArea.value = germanShareText;
+                    tempTextArea.style.position = "fixed";
+                    tempTextArea.style.left = "-9999px";
+                    document.body.appendChild(tempTextArea);
+                    tempTextArea.focus();
+                    tempTextArea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(tempTextArea);
+                } catch (e) {
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        navigator.clipboard.writeText(germanShareText);
+                    }
+                }
+
+                alert("📋 Einladungstext mit Links wurde kopiert! Füge ihn einfach in deinen Facebook-Post ein (Gedrückt halten -> Einfügen).");
+                const fbUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(pageLink)}`;
+                window.open(fbUrl, '_blank');
+
+            } else if (platform === 'instagram') {
+                let desktopTab = null;
+                if (!/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+                    desktopTab = window.open('about:blank', '_blank');
+                }
+
+                try {
+                    const tempTextArea = document.createElement("textarea");
+                    tempTextArea.value = germanShareText;
+                    tempTextArea.style.position = "fixed";
+                    tempTextArea.style.left = "-9999px";
+                    document.body.appendChild(tempTextArea);
+                    tempTextArea.focus();
+                    tempTextArea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(tempTextArea);
+                } catch (e) {
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        navigator.clipboard.writeText(germanShareText);
+                    }
+                }
+
+                const downloadFileXHR = (fileUrl, fileName) => {
+                    return new Promise((resolve) => {
+                        let secureUrl = fileUrl;
+                        if (window.location.protocol === 'https:' && fileUrl.startsWith('http:')) {
+                            secureUrl = fileUrl.replace('http:', 'https:');
+                        }
+
+                        const xhr = new XMLHttpRequest();
+                        xhr.open('GET', secureUrl, true);
+                        xhr.responseType = 'blob';
+                        xhr.onload = function() {
+                            if (xhr.status === 200) {
+                                const blob = xhr.response;
+                                const blobUrl = window.URL.createObjectURL(blob);
+                                const a = document.createElement('a');
+                                a.style.display = 'none';
+                                a.href = blobUrl;
+                                a.download = fileName;
+                                document.body.appendChild(a);
+                                a.click();
+                                setTimeout(() => {
+                                    document.body.removeChild(a);
+                                    window.URL.revokeObjectURL(blobUrl);
+                                    resolve();
+                                }, 1000);
+                            } else {
+                                const a = document.createElement('a');
+                                a.href = secureUrl;
+                                a.download = fileName;
+                                a.target = "_blank";
+                                document.body.appendChild(a);
+                                a.click();
+                                setTimeout(() => { document.body.removeChild(a); resolve(); }, 1000);
+                            }
+                        };
+                        xhr.onerror = function() {
+                            const a = document.createElement('a');
+                            a.href = secureUrl;
+                            a.download = fileName;
+                            a.target = "_blank";
+                            document.body.appendChild(a);
+                            a.click();
+                            setTimeout(() => { document.body.removeChild(a); resolve(); }, 1000);
+                        };
+                        xhr.send();
+                    });
+                };
+
+                let hasVideo = (generationMode === 'all' && videoShareLink && videoShareLink !== 'N/A' && videoShareLink !== '#');
+                let hasPdf = (pdfShareLink && pdfShareLink !== 'N/A' && pdfShareLink !== '#');
+
+                if (hasVideo) {
+                    await downloadFileXHR(videoShareLink, videoFileName);
+                    alert("🎬 Das Video wurde heruntergeladen!\n\nKlicke auf OK, um das PDF herunterzuladen.");
+                }
+
+                if (hasPdf) {
+                    await downloadFileXHR(pdfShareLink, pdfFileName);
+                    await new Promise(r => setTimeout(r, 1500));
+                    alert("📄 Das PDF wurde heruntergeladen & Einladungstext kopiert!\n\nFalls 'Unsicherer Download' erscheint, klicke bitte auf 'Behalten'.\n\nKlicke danach auf OK, um Instagram zu öffnen.");
+                } else if (!hasVideo) {
+                    alert("📋 Einladungstext kopiert! Klicke auf OK, um Instagram zu öffnen.");
+                }
+
+                if (/Android/i.test(navigator.userAgent)) {
+                    window.location.href = "intent://instagram.com/#Intent;package=com.instagram.android;scheme=https;end";
+                } else if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+                    window.location.href = "instagram://app";
+                } else {
+                    if (desktopTab) {
+                        desktopTab.location.href = "https://www.instagram.com";
+                    } else {
+                        window.open("https://www.instagram.com", '_blank');
+                    }
+                }
+
+            } else if (platform === 'tiktok') {
+                let desktopTab = null;
+                if (!/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+                    desktopTab = window.open('about:blank', '_blank');
+                }
+
+                try {
+                    const tempTextArea = document.createElement("textarea");
+                    tempTextArea.value = germanShareText;
+                    tempTextArea.style.position = "fixed";
+                    tempTextArea.style.left = "-9999px";
+                    document.body.appendChild(tempTextArea);
+                    tempTextArea.focus();
+                    tempTextArea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(tempTextArea);
+                } catch (e) {
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        navigator.clipboard.writeText(germanShareText);
+                    }
+                }
+
+                const downloadFileXHR = (fileUrl, fileName) => {
+                    return new Promise((resolve) => {
+                        let secureUrl = fileUrl;
+                        if (window.location.protocol === 'https:' && fileUrl.startsWith('http:')) {
+                            secureUrl = fileUrl.replace('http:', 'https:');
+                        }
+
+                        const xhr = new XMLHttpRequest();
+                        xhr.open('GET', secureUrl, true);
+                        xhr.responseType = 'blob';
+                        xhr.onload = function() {
+                            if (xhr.status === 200) {
+                                const blob = xhr.response;
+                                const blobUrl = window.URL.createObjectURL(blob);
+                                const a = document.createElement('a');
+                                a.style.display = 'none';
+                                a.href = blobUrl;
+                                a.download = fileName;
+                                document.body.appendChild(a);
+                                a.click();
+                                setTimeout(() => {
+                                    document.body.removeChild(a);
+                                    window.URL.revokeObjectURL(blobUrl);
+                                    resolve();
+                                }, 1000);
+                            } else {
+                                const a = document.createElement('a');
+                                a.href = secureUrl;
+                                a.download = fileName;
+                                a.target = "_blank";
+                                document.body.appendChild(a);
+                                a.click();
+                                setTimeout(() => { document.body.removeChild(a); resolve(); }, 1000);
+                            }
+                        };
+                        xhr.onerror = function() {
+                            const a = document.createElement('a');
+                            a.href = secureUrl;
+                            a.download = fileName;
+                            a.target = "_blank";
+                            document.body.appendChild(a);
+                            a.click();
+                            setTimeout(() => { document.body.removeChild(a); resolve(); }, 1000);
+                        };
+                        xhr.send();
+                    });
+                };
+
+                let hasVideo = (generationMode === 'all' && videoShareLink && videoShareLink !== 'N/A' && videoShareLink !== '#');
+                let hasPdf = (pdfShareLink && pdfShareLink !== 'N/A' && pdfShareLink !== '#');
+
+                if (hasVideo) {
+                    await downloadFileXHR(videoShareLink, videoFileName);
+                    alert("🎬 Das Video wurde heruntergeladen!\n\nKlicke auf OK, um das PDF herunterzuladen.");
+                }
+
+                if (hasPdf) {
+                    await downloadFileXHR(pdfShareLink, pdfFileName);
+                    await new Promise(r => setTimeout(r, 1500));
+                    alert("📄 Das PDF wurde heruntergeladen & Einladungstext kopiert!\n\nFalls 'Unsicherer Download' erscheint, klicke bitte auf 'Behalten'.\n\nKlicke danach auf OK, um TikTok zu öffnen.");
+                } else if (!hasVideo) {
+                    alert("📋 Einladungstext kopiert! Klicke auf OK, um TikTok zu öffnen.");
+                }
+
+                if (/Android/i.test(navigator.userAgent)) {
+                    window.location.href = "intent://www.tiktok.com/#Intent;package=com.zhiliaoapp.musically;scheme=https;end";
+                } else if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+                    window.location.href = "snssdk1128://";
+                    setTimeout(() => {
+                        window.location.href = "https://www.tiktok.com";
+                    }, 1000);
+                } else {
+                    if (desktopTab) {
+                        desktopTab.location.href = "https://www.tiktok.com";
+                    } else {
+                        window.open("https://www.tiktok.com", '_blank');
+                    }
+                }
+
+            } else if (platform === 'copy') {
+                navigator.clipboard.writeText(germanShareText);
+                alert("📋 Einladungstext mit Links wurde in die Zwischenablage kopiert!");
+            } else if (platform === 'native') {
+                if (navigator.share) {
+                    navigator.share({
+                        title: cardName,
+                        text: germanShareText,
+                        url: pageLink
+                    }).catch(console.error);
+                } else {
+                    navigator.clipboard.writeText(germanShareText);
+                    alert("📋 Einladungstext kopiert!");
+                }
+            }
+        }
+
+        // 🎯 3. MAIN GENERATOR ENGINE (VIDEO, PDF & PREVIEW ALL WORKING PERFECTLY FOR ULF)
+        async function generateFinalCard(mode = 'all') {
+            const buttons = document.querySelectorAll('.pso-gen-split-btn');
+            buttons.forEach(btn => { btn.style.pointerEvents = 'none'; btn.style.opacity = '0.6'; });
+
+            const resultsTitle = document.getElementById('resultsTitle');
+            const resultsStack = document.getElementById('dynamicResultsStack');
+            resultsStack.innerHTML = '';
+            resultsTitle.style.display = 'none';
+
+            const parsedImages = parseSlotsData(cardMetadata.image_slots);
+            const parsedTexts = parseSlotsData(cardMetadata.text_slots);
+            const currentUserId = getCookie('main_user_id') || 1;
+            const cardNameSlug = cardMetadata ? (cardMetadata.card_web_id || cardMetadata.id) : 'card';
+
+            try {
+                const currentGenerationTimestamp = Date.now();
+                let actualPreviewBlob = null;
+                let videoResult = { success: false, downloadUrl: null };
+                let pdfBlobObj = null;
+                let videoBlobObj = null;
+
+                // ==========================================
+                // PIPELINE 1: VIDEO GENERATION (EXACT MATCH TO TEST PIPELINE)
+                // ==========================================
+                if (mode === 'all') {
+                    let videoFormData = new FormData();
+                    
+                    try {
+                        const response = await fetch(`${API_URL}/cards/${currentCardId}`);
+                        if (response.ok) {
+                            const dbResData = await response.json();
+                            const card = dbResData.card;
+                            const assets = dbResData.assets || [];
+
+                            for (let asset of assets) {
+                                let fieldName = asset.asset_name;
+
+                                if (asset.use_image_maker === 1) {
+                                    let imFormData = new FormData();
+                                    imFormData.append("canvas_id", asset.canvas_id);
+
+                                    for (let slot of parsedImages) {
+                                        const base64Data = finalProcessedBlobsMap[slot];
+                                        if (base64Data && base64Data.trim() !== "") {
+                                            const rBlob = await fetch(base64Data);
+                                            imFormData.append(slot, await rBlob.blob(), `${slot}.jpg`);
+                                        }
+                                    }
+                                    parsedTexts.forEach(slot => {
+                                        const inputEl = document.getElementById(`input-${slot}`);
+                                        imFormData.append(slot, inputEl ? inputEl.value : '');
+                                    });
+
+                                    let imRes = await fetch(`${API_URL}/v1/render-user-card`, { method: "POST", body: imFormData });
+                                    let imResult = await imRes.json();
+                                    
+                                    if (imResult.download_url) {
+                                        let cleanPath = imResult.download_url.replace("/image_templates/", "");
+                                        let imgBlobRes = await fetch(`${BACKEND_STATIC}/image_templates/${cleanPath}?t=${Date.now()}`);
+                                        let downloadedAssetBlob = await imgBlobRes.blob();
+
+                                        if (asset.canvas_id === card.design_canvas_id || asset.canvas_id === card.preview_canvas_id) {
+                                            actualPreviewBlob = downloadedAssetBlob;
+                                        }
+                                        videoFormData.append(fieldName, downloadedAssetBlob, `${fieldName}.png`);
+                                    }
+                                } else {
+                                    let staticImgUrl = `${BACKEND_STATIC}/image_templates/${card.folder_name}/${asset.file_name}`;
+                                    let imgBlobRes = await fetch(staticImgUrl);
+                                    if (imgBlobRes.ok) {
+                                        videoFormData.append(fieldName, await imgBlobRes.blob(), asset.file_name);
+                                    }
+                                }
+                            }
+
+                            // 🚀 TARGET ROUTE FIX: Exact Match to Express Dynamic Route (e.g. /api/christmas)
+                            let targetVideoEndpoint = `${window.location.origin}${card.api_link}`;
+                            console.log("🎬 Requesting Video Generation to:", targetVideoEndpoint);
+
+                            let videoRes = await fetch(targetVideoEndpoint, { method: "POST", body: videoFormData });
+                            if (videoRes.ok) {
+                                videoResult = await videoRes.json();
+                                let videoUrl = videoResult.videoUrl || videoResult.downloadUrl || videoResult.download_url;
+                                if (videoUrl) {
+                                    if (!videoUrl.startsWith('http')) {
+                                        videoUrl = `${window.location.origin}${videoUrl.startsWith('/') ? '' : '/'}${videoUrl}`;
+                                    }
+                                    let vRes = await fetch(videoUrl);
+                                    if (vRes.ok) {
+                                        videoBlobObj = await vRes.blob();
+                                        videoResult.success = true;
+                                        videoResult.downloadUrl = videoUrl;
+                                    }
+                                }
+                            } else {
+                                console.error("❌ Video Generation Failed:", await videoRes.text());
+                            }
+                        }
+                    } catch(e) { console.error("❌ Error in Video Pipeline:", e); }
+                }
+
+                // ==========================================
+                // 🚀 PREVIEW IMAGE GENERATION FALLBACK (FOR PDF_ONLY OR MISSING PREVIEW BLOB)
+                // ==========================================
+                if (!actualPreviewBlob && cardMetadata && cardMetadata.preview_canvas_id) {
+                    try {
+                        let pFormData = new FormData();
+                        pFormData.append("canvas_id", cardMetadata.preview_canvas_id);
+
+                        for (let slot of parsedImages) {
+                            const base64Data = finalProcessedBlobsMap[slot];
+                            if (base64Data && base64Data.trim() !== "") {
+                                const rBlob = await fetch(base64Data);
+                                const blobObj = await rBlob.blob();
+                                pFormData.append(slot, blobObj, `${slot}.jpg`);
+                                pFormData.append("user_image", blobObj, "user_image.jpg");
+                            }
+                        }
+                        parsedTexts.forEach(slot => {
+                            const inputEl = document.getElementById(`input-${slot}`);
+                            const val = inputEl ? inputEl.value : '';
+                            pFormData.append(slot, val);
+                            if (slot === "text_01" || slot === "text_1") pFormData.append("user_text_val", val);
+                        });
+
+                        let pRes = await fetch(`${API_URL}/v1/render-user-card`, { method: "POST", body: pFormData });
+                        let pData = await pRes.json();
+                        if (pData && pData.status === "success" && pData.download_url) {
+                            let cleanPPath = pData.download_url.replace("/image_templates/", "");
+                            let pBlobRes = await fetch(`${BACKEND_STATIC}/image_templates/${cleanPPath}?t=${Date.now()}`);
+                            if (pBlobRes.ok) {
+                                actualPreviewBlob = await pBlobRes.blob();
+                            }
+                        }
+                    } catch (pErr) {
+                        console.warn("⚠️ Preview Image Render Error for ULF:", pErr);
+                    }
+                }
+
+                // ==========================================
+                // PIPELINE 2: PDF GENERATION
+                // ==========================================
+                let finalPdfUrl = '#';
+                try {
+                    let pdfFormData = new FormData();
+                    pdfFormData.append("card_id", currentCardId);
+                    
+                    for (let slot of parsedImages) {
+                        const base64Data = finalProcessedBlobsMap[slot];
+                        if (base64Data && base64Data.trim() !== "") {
+                            const rBlob = await fetch(base64Data);
+                            const imageBlobObj = await rBlob.blob();
+                            pdfFormData.append(slot, imageBlobObj, `${slot}.jpg`);
+                            pdfFormData.append("user_image", imageBlobObj, "user_image.jpg");
+                        }
+                    }
+                    parsedTexts.forEach(slot => {
+                        const inputEl = document.getElementById(`input-${slot}`);
+                        const textVal = inputEl ? inputEl.value : '';
+                        pdfFormData.append(slot, textVal);
+                        if (slot === "text_01" || slot === "text_1") pdfFormData.append("user_text_val", textVal);
+                    });
+
+                    let pdfRes = await fetch(`${API_URL}/v1/generate-card-pdf`, { method: "POST", body: pdfFormData });
+                    let pdfResult = await pdfRes.json();
+                    if (pdfResult.status === "success" && pdfResult.download_url) {
+                        finalPdfUrl = `${BACKEND_STATIC}${pdfResult.download_url}`;
+                        let pRes = await fetch(finalPdfUrl);
+                        if (pRes.ok) { pdfBlobObj = await pRes.blob(); }
+                    }
+                } catch(e) { console.warn("⚠️ PDF Generation Error:", e); }
+
+                // ==========================================
+                // PIPELINE 3: ULF SECURE CLOUD UPLOAD
+                // ==========================================
+                const uploadToUlfServer = async (blob, fileType, fileName) => {
+                    if (!blob) return;
+                    try {
+                        let uploadForm = new FormData();
+                        uploadForm.append('file', blob, fileName);
+                        uploadForm.append('file_type', fileType);
+                        uploadForm.append('user_id', currentUserId);
+                        uploadForm.append('card_id', cardNameSlug);
+                        uploadForm.append('generation_id', currentGenerationTimestamp);
+
+                        await fetch(`${AUTH_SERVER_URL}/api/ulf/upload`, { method: 'POST', body: uploadForm });
+                        console.log(`✅ [ULF Server] ${fileType} uploaded successfully.`);
+                    } catch (err) { console.error(`❌ [ULF Server] Failed to upload ${fileType}:`, err); }
+                };
+
+                if (actualPreviewBlob) await uploadToUlfServer(actualPreviewBlob, 'preview', `user_${currentUserId}_preview_${cardNameSlug}.png`);
+                
+                if (pdfBlobObj) {
+                    generatedPdfFileName = `user_${currentUserId}_card_${cardNameSlug}_${currentGenerationTimestamp}.pdf`;
+                    await uploadToUlfServer(pdfBlobObj, 'pdf', generatedPdfFileName);
+                }
+
+                if (videoBlobObj && mode === 'all') {
+                    generatedVideoFileName = `user_${currentUserId}_card_${cardNameSlug}_${currentGenerationTimestamp}.mp4`;
+                    await uploadToUlfServer(videoBlobObj, 'video', generatedVideoFileName);
+                }
+
+                // ==========================================
+                // UI RENDER RESULTS
+                // ==========================================
+                let finalVideoUrl = (videoResult && videoResult.success) ? videoResult.downloadUrl : '#';
+
+                resultsTitle.style.display = 'block';
+                let videoBlockHTML = (mode === 'all' && videoResult.success && finalVideoUrl !== '#') ? `
+                    <div class="video-box-holder">
+                        <video src="${finalVideoUrl}" controls autoplay loop muted></video>
+                    </div>
+                ` : '';
+
+                let pdfBtnHTML = finalPdfUrl !== '#' ? `
+                    <a href="${finalPdfUrl}" target="_blank" class="pso-3d-dl-btn" title="PDF herunterladen">
+                        <img src="/web_images/pdf.svg" alt="PDF herunterladen">
+                    </a>
+                ` : `
+                    <a href="#" class="pso-3d-dl-btn" style="opacity: 0.5; cursor: not-allowed;" onclick="event.preventDefault(); alert('⚠️ Fehler beim Erstellen der PDF-Datei.')" title="Keine PDF">
+                        <img src="/web_images/pdf.svg" alt="PDF Disabled">
+                    </a>
+                `;
+
+                let videoDownloadBtnHTML = (mode === 'all' && videoResult.success && finalVideoUrl !== '#') ? `
+                    <a href="${finalVideoUrl}" download target="_blank" class="pso-3d-dl-btn" title="Video herunterladen">
+                        <img src="/web_images/video.svg" alt="Video herunterladen">
+                    </a>
+                ` : '';
+
+                let shareTrayHTML = `
+                    <div class="pso-share-icons-tray">
+                        <button class="pso-share-3d-icon" onclick="triggerSocialShare('whatsapp', '${cardMetadata.name}', '${currentCardId}', '${mode}')" title="WhatsApp">
+                            <img src="/web_images/whatsapp.png" alt="WhatsApp">
+                            <span class="share-count-pill" id="count_whatsapp">0</span>
+                        </button>
+                        <button class="pso-share-3d-icon" onclick="triggerSocialShare('facebook', '${cardMetadata.name}', '${currentCardId}', '${mode}')" title="Auf Facebook teilen">
+                            <img src="/web_images/fb.png" alt="Facebook">
+                            <span class="share-count-pill" id="count_facebook">0</span>
+                        </button>
+                        <button class="pso-share-3d-icon" onclick="triggerSocialShare('instagram', '${cardMetadata.name}', '${currentCardId}', '${mode}')" title="Auf Instagram teilen">
+                            <img src="/web_images/insta.png" alt="Instagram">
+                            <span class="share-count-pill" id="count_instagram">0</span>
+                        </button>
+                        <button class="pso-share-3d-icon" onclick="triggerSocialShare('tiktok', '${cardMetadata.name}', '${currentCardId}', '${mode}')" title="Auf TikTok teilen">
+                            <img src="/web_images/tiktok.png" alt="TikTok">
+                            <span class="share-count-pill" id="count_tiktok">0</span>
+                        </button>
+                    </div>
+                `;
+
+                resultsStack.innerHTML += `
+                    <div class="card-result-container">
+                        <h3 class="result-card-title">${cardMetadata.name}</h3>
+                        <div class="result-content-row">
+                            ${videoBlockHTML}
+                            <div class="buttons-holder" style="display: flex; flex-direction: column; align-items: center; gap: 15px;">
+                                <div class="pso-3d-buttons-row">
+                                    ${pdfBtnHTML}
+                                    ${videoDownloadBtnHTML}
+                                </div>
+                                ${shareTrayHTML}
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                setTimeout(loadGlobalShareClickStats, 300);
+
+            } catch (err) {
+                console.error("Card Generation Error:", err);
+            } finally {
+                buttons.forEach(btn => { btn.style.pointerEvents = 'auto'; btn.style.opacity = '1'; });
+                resultsTitle.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        function endDragResizeHandler() { isDraggingBox = false; isResizingBox = false; }
+        window.addEventListener('mouseup', endDragResizeHandler);
+        window.addEventListener('touchend', endDragResizeHandler);
+
+        window.onload = loadCardWorkspace;
+    </script>
+</body>
+</html>

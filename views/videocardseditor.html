@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CardApp Engine Matrix Management Console</title>
+    <style>
+        /* 🎯 FORCE HIDING SKIP LINKS TO PREVENT NAVIGATION COLLISION */
+        .skipLinks { display: none !important; }
+
+        /* 🎯 RESET ONLY FOR THIS CONTEXT - NO PADDING APPLIED TO BODY */
+        html, body { 
+            background: #ffffff !important; 
+            margin: 0 !important;
+            padding: 0 !important;
+            font-family: system-ui, sans-serif; 
+            color: #333333; 
+        }
+
+        /* 🎯 UNIQUE GRID COMPONENT WRAPPER EXCLUSIVELY MATCHING THE LAYOUT BRIDGE */
+        .cm-hub-layout-wrapper {
+            max-width: 1188px;
+            margin: 40px auto;
+            padding: 0 20px;
+            box-sizing: border-box;
+        }
+
+        /* 🎯 INSULATED RESPONSIVE GRID CONTROL */
+        .cm-hub-grid { 
+            display: grid !important; 
+            grid-template-columns: 1fr 1.3fr !important; 
+            gap: 30px !important; 
+            max-width: 100% !important; 
+            margin: 0 auto !important; 
+        }
+        
+        /* 🎯 UNIQUE BOUNDING BOX WITH INSULATED LIGHT BACKGROUND */
+        .cm-hub-main-card { 
+            background: #ffffff !important; 
+            padding: 25px !important; 
+            border-radius: 8px !important; 
+            border: 1px solid #cccccc !important; 
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
+            box-sizing: border-box !important;
+            height: fit-content !important;
+            position: relative;
+        }
+
+        .cm-hub-main-card h2 { 
+            font-size: 20px !important; 
+            margin-top: 0 !important; 
+            margin-bottom: 20px !important; 
+            border-bottom: 2px solid #98ceb5 !important; 
+            padding-bottom: 8px !important; 
+            color: #333333 !important; 
+            padding-right: 30px; 
+        }
+
+        .cm-hub-main-card h3 { 
+            font-size: 15px !important; 
+            margin-top: 20px !important; 
+            margin-bottom: 12px !important; 
+            color: #333333 !important; 
+        }
+        
+        /* 🎯 INSULATED VERTICAL ALIGNMENT ROW ENGINE */
+        .cm-hub-dynamic-row { 
+            display: flex !important; 
+            gap: 10px !important; 
+            margin-bottom: 10px !important; 
+            background: #f8f9fa !important; 
+            padding: 10px !important; 
+            border-radius: 6px !important; 
+            border: 1px solid #eaeaea !important;
+            align-items: flex-start !important; 
+            box-sizing: border-box !important;
+        }
+
+        /* 🎯 FIXED CARD ROW FOR LONG NAMES */
+        .cm-hub-card-item-row {
+            display: flex !important;
+            gap: 15px !important;
+            margin-bottom: 10px !important;
+            background: #f8f9fa !important;
+            padding: 10px 15px !important;
+            border-radius: 6px !important;
+            border: 1px solid #eaeaea !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            box-sizing: border-box !important;
+        }
+        .cm-hub-card-name-wrapper {
+            flex: 1 !important;
+            min-width: 0 !important; /* දිග නමක් ආවොත් text එක කපන්නේ නැතුව ලස්සනට තියාගන්න */
+            white-space: nowrap !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+        }
+        .cm-hub-card-btn-wrapper {
+            display: flex !important;
+            gap: 6px !important;
+            flex-shrink: 0 !important; /* බටන් කිසිම වෙලාවක පොඩි වෙන්න නොදේ */
+        }
+        
+        .cm-hub-main-card .cm-field-txt { 
+            background: #ffffff !important; 
+            color: #333333 !important; 
+            border: 1px solid #cccccc !important; 
+            padding: 8px 10px !important; 
+            border-radius: 4px !important; 
+            width: 100% !important; 
+            box-sizing: border-box !important; 
+            font-size: 14px !important;
+            outline: none !important;
+            height: 38px !important;
+        }
+        .cm-hub-main-card .cm-field-txt:focus { border-color: #98ceb5 !important; }
+        
+        .cm-hub-main-card .cm-field-label { 
+            display: block !important; 
+            font-weight: bold !important; 
+            margin-bottom: 5px !important; 
+            color: #555555 !important; 
+            font-size: 13px !important; 
+            text-align: left !important;
+        }
+        
+        /* 🎯 CONTROLS AND INTERACTION ENGAGEMENT BUTTONS */
+        .cm-hub-main-card button { 
+            background: #98ceb5 !important; 
+            color: #333333 !important; 
+            border: none !important; 
+            padding: 8px 15px !important; 
+            border-radius: 5px !important; 
+            cursor: pointer !important; 
+            font-weight: bold !important; 
+            font-size: 13px !important;
+            height: 38px !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+        .cm-hub-main-card button:hover { background: #87bd9e !important; }
+        
+        .cm-hub-main-card .cm-btn-danger { 
+            background: #dc2626 !important; 
+            color: white !important;
+        }
+        .cm-hub-main-card .cm-btn-danger:hover { background: #b91c1c !important; }
+        
+        .cm-hub-main-card .cm-btn-secondary { 
+            background: #f1f3f5 !important; 
+            color: #495057 !important;
+            border: 1px solid #ced4da !important;
+            height: 32px !important;
+            font-size: 12px !important;
+            font-weight: 600 !important;
+        }
+        .cm-hub-main-card .cm-btn-secondary:hover { background: #e9ecef !important; }
+        
+        /* 🎯 EXTERNAL BACK ACTION NAVIGATION ANCHOR */
+        .cm-hub-back-navigation-container {
+            max-width: 100% !important;
+            margin: 30px auto 0 auto !important;
+            text-align: center !important;
+        }
+        .cm-hub-back-route-btn {
+            display: inline-block !important;
+            background: #475569 !important;
+            color: #ffffff !important;
+            text-decoration: none !important;
+            padding: 10px 24px !important;
+            border-radius: 5px !important;
+            font-size: 13px !important;
+            font-weight: 700 !important;
+            font-family: sans-serif !important;
+        }
+        .cm-hub-back-route-btn:hover { background: #334155 !important; }
+
+        /* 🎯 PAGINATION BUTTONS STYLING */
+        .cm-hub-pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin-top: 20px;
+        }
+        .cm-hub-page-btn {
+            background: #f1f3f5 !important;
+            color: #495057 !important;
+            border: 1px solid #ced4da !important;
+            padding: 5px 12px !important;
+            border-radius: 4px !important;
+            cursor: pointer;
+            font-size: 12px !important;
+            height: 32px !important;
+        }
+        .cm-hub-page-btn.active {
+            background: #98ceb5 !important;
+            color: #333333 !important;
+            border-color: #98ceb5 !important;
+        }
+
+        /* 🎯 CORNER CANCEL BUTTON FOR PC & MOBILE */
+        .cm-hub-cancel-corner-btn {
+            position: absolute !important;
+            top: 22px !important;
+            right: 25px !important;
+            background: #ef4444 !important;
+            color: white !important;
+            border: none !important;
+            border-radius: 4px !important;
+            width: 28px !important;
+            height: 28px !important;
+            font-size: 14px !important;
+            font-weight: bold !important;
+            cursor: pointer !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            padding: 0 !important;
+            z-index: 10;
+        }
+        .cm-hub-cancel-corner-btn:hover { background: #dc2626 !important; }
+
+        /* ================================================================= */
+        /* 📱 PERFECT MOBILE RESPONSIVE ENGINE (FIXED OVERFLOW & LAYER INPUTS) */
+        /* ================================================================= */
+        @media screen and (max-width: 768px) {
+            .cm-hub-layout-wrapper {
+                margin: 20px auto !important;
+                padding: 0 10px !important; /* Bounding padding අඩු කළා overflow නැති වෙන්න */
+            }
+            .cm-hub-grid {
+                grid-template-columns: 1fr !important;
+                gap: 20px !important;
+            }
+            .cm-hub-main-card {
+                padding: 15px !important; /* Card padding එක අඩු කළා */
+            }
+            
+            /* 🎯 MOBILE LAYER ROW REALIGNMENT: එක පෙළට ඉඩ මදි නිසා vertical (block) කරනවා */
+            .cm-hub-dynamic-row {
+                flex-direction: column !important;
+                align-items: stretch !important;
+                position: relative !important;
+                padding-top: 45px !important; /* X බටන් එකට උඩින් ඉඩ තැබීමට */
+            }
+            .cm-hub-dynamic-row .l-key {
+                width: 100% !important;
+                margin-bottom: 8px !important;
+            }
+            .cm-hub-dynamic-row div[style*="flex:2"] {
+                width: 100% !important;
+            }
+            /* X බටන් එක row එකේ උඩ දකුණු කෙළවරට absolute කරනවා */
+            .cm-hub-dynamic-row .cm-btn-danger {
+                position: absolute !important;
+                top: 10px !important;
+                right: 10px !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 💻 සර්වර් එකෙන් ඔටෝමැටිකලි ලෝඩ් වන හෙඩර් එක -->
+    {{HEADER}}
+
+    <!-- 🛠️ UNIQUE IDENTIFIED LAYOUT CONTEXT -->
+    <div class="cm-hub-layout-wrapper">
+        
+        <!-- 🎯 TOP NAVIGATION CONTAINER -->
+        <div style="display: flex !important; justify-content: flex-end !important; margin-bottom: 20px !important; width: 100% !important;">
+            <a href="/designertools" class="cm-hub-back-route-btn" style="margin: 0 !important;">⬅ Back to Dashboard</a>
+        </div>
+        
+        <div class="cm-hub-grid">
+            <!-- LEFT CARD: DEPLOYED LIST[cite: 6] -->
+            <div class="cm-hub-main-card">
+                <h2>📂 Deployed Custom Video Cards</h2>
+                <div id="cardsFolderContainer"></div>
+                <!-- Pagination Container -->
+                <div id="paginationContainer" class="cm-hub-pagination"></div>
+            </div>
+
+            <!-- RIGHT CARD: EDIT SPECIFICATIONS PANEL[cite: 6] -->
+            <div class="cm-hub-main-card" id="editFormPanel" style="display: none;">
+                <!-- 🎯 TOP RIGHT CORNER CANCEL BUTTON -->
+                <button type="button" class="cm-hub-cancel-corner-btn" onclick="closeEditorWindow()">X</button>
+
+                <h2>✏️ Modify Card Cluster: <span id="editingCardTitle" style="color:#87bd9e;"></span></h2>
+                <form id="updateForm">
+                    <input type="hidden" id="edit_theme_name">
+                    <div style="margin-bottom:16px;">
+                        <label class="cm-field-label">Routing Endpoint API URL Address:</label>
+                        <input type="text" id="edit_api_url" class="cm-field-txt" required readonly style="opacity:0.6; background:#f1f3f5 !important;">
+                    </div>
+                    <div style="margin-bottom:16px;">
+                        <label class="cm-field-label">Canvas Background File Param Name:</label>
+                        <input type="text" id="edit_bg_key" class="cm-field-txt" required>
+                    </div>
+
+                    <h3>Configured Template Layers (Modify Layout Configuration)</h3>
+                    <div id="editLayersContainer"></div>
+                    <button type="button" class="cm-btn-secondary" style="margin-bottom:15px;" onclick="addEditLayerRow('', '')">+ Add Extra Tracking Layer</button>
+                    <button type="submit" style="background:#98ceb5 !important; color:#333333 !important; width:100% !important; font-size:14px !important; height:44px !important;">Save & Override Specifications Profile</button>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- 💻 සර්වර් එකෙන් ඔටෝමැටිකලි ලෝඩ් වන ෆුටර් එක -->
+    {{FOOTER}}
+
+    <script>
+        // Pagination States
+        let allCardsData = [];
+        let currentPage = 1;
+        const cardsPerPage = 10;
+
+        async function fetchActiveCards() {
+            const res = await fetch('/api/themes');
+            allCardsData = await res.json();
+            renderCardsPage(1);
+        }
+
+        function renderCardsPage(page) {
+            currentPage = page;
+            const container = document.getElementById('cardsFolderContainer');
+            container.innerHTML = allCardsData.length === 0 ? '<p style="color:#666666; font-size:13px;">No physical cards registered.</p>' : '';
+            
+            const startIndex = (page - 1) * cardsPerPage;
+            const endIndex = startIndex + cardsPerPage;
+            const pageData = allCardsData.slice(startIndex, endIndex);
+
+            pageData.forEach(c => {
+                const div = document.createElement('div');
+                div.className = 'cm-hub-card-item-row';
+                div.innerHTML = `
+                    <div class="cm-hub-card-name-wrapper">
+                        <span style="font-size:14px; color:#333333;">📂 <b>${c.theme_name}</b></span>
+                    </div>
+                    <div class="cm-hub-card-btn-wrapper">
+                        <button type="button" onclick="loadCardIntoEditor('${c.theme_name}', '${c.api_endpoint_url}')">Edit</button>
+                        <button type="button" class="cm-btn-danger" onclick="deleteCard('${c.theme_name}')">Delete</button>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+
+            setupPaginationControls();
+        }
+
+        function setupPaginationControls() {
+            const paginationContainer = document.getElementById('paginationContainer');
+            paginationContainer.innerHTML = '';
+            
+            const totalPages = Math.ceil(allCardsData.length / cardsPerPage);
+            if (totalPages <= 1) return;
+
+            for (let i = 1; i <= totalPages; i++) {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = `cm-hub-page-btn ${i === currentPage ? 'active' : ''}`;
+                btn.innerText = i;
+                btn.onclick = () => renderCardsPage(i);
+                paginationContainer.appendChild(btn);
+            }
+        }
+
+        function closeEditorWindow() {
+            document.getElementById('editFormPanel').style.display = 'none';
+        }
+
+        async function loadCardIntoEditor(name, apiUrl) {
+            const editPanel = document.getElementById('editFormPanel');
+            editPanel.style.display = 'block';
+            document.getElementById('editingCardTitle').innerText = `${name}.js`;
+            document.getElementById('edit_theme_name').value = name;
+            document.getElementById('edit_api_url').value = apiUrl;
+
+            // USER SNAP CONTROLLER (Smooth snap directly to window component location)
+            editPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+            const res = await fetch(`/api/themes/meta/${name}`);
+            const meta = await res.json();
+            document.getElementById('edit_bg_key').value = meta.bg_param_name;
+
+            const layersContainer = document.getElementById('editLayersContainer');
+            layersContainer.innerHTML = '';
+            if(meta.layers) {
+                meta.layers.forEach(l => { addEditLayerRow(l.field_key, l.tracking_video_name); });
+            }
+        }
+
+        function addEditLayerRow(key = '', videoName = '') {
+            const container = document.getElementById('editLayersContainer');
+            const div = document.createElement('div');
+            div.className = 'cm-hub-dynamic-row';
+            
+            // 🎯 MOBILE සහ PC දෙකටම ගැළපෙන පරිදි inline styles සහ block structures යාවත්කාලීන කළා
+            div.style.cssText = 'display: flex !important; flex-direction: column !important; gap: 10px !important; margin-bottom: 15px !important; background: #f8f9fa !important; padding: 12px !important; border-radius: 6px !important; border: 1px solid #eaeaea !important; box-sizing: border-box !important; width: 100% !important;';
+            
+            div.innerHTML = `
+                <!-- 🎯 පළමු පේළිය: Input එක සහ X බටන් එක නූලටම දකුණට යනකම් පෙළගැස්වීම -->
+                <div style="display: flex !important; gap: 10px !important; width: 100% !important; align-items: center !important; box-sizing: border-box !important;">
+                    <input type="text" placeholder="Param Key" class="l-key" value="${key}" required style="flex: 1 !important; height: 38px !important; margin: 0 !important; border: 1px solid #cccccc !important; border-radius: 4px !important; padding: 0 10px !important; box-sizing: border-box !important; background: #ffffff !important; color: #333333 !important; font-size: 14px !important; outline: none !important;">
+                    <button type="button" class="cm-btn-danger" style="height: 38px !important; width: 38px !important; padding: 0 !important; margin: 0 !important; flex-shrink: 0 !important; cursor: pointer !important; display: inline-flex !important; align-items: center !important; justify-content: center !important; border-radius: 4px !important;" onclick="this.parentElement.parentElement.remove()">X</button>
+                </div>
+                
+                <!-- 🎯 දෙවැනි පේළිය: Choose File එක සහ Active Template විස්තරය -->
+                <div style="width: 100% !important; display: flex !important; flex-direction: column !important; box-sizing: border-box !important;">
+                    <input type="file" class="l-video" style="height: 38px !important; margin: 0 !important; background: #ffffff !important; border: 1px solid #cccccc !important; border-radius: 4px !important; padding: 6px 10px !important; box-sizing: border-box !important; color: #333333 !important; font-size: 13px !important; display: block !important; width: 100% !important;">
+                    ${videoName ? `<span style="font-size: 11px !important; color: #555555 !important; font-family: monospace !important; padding-left: 2px !important; margin-top: 4px !important; display: block !important; text-align: left !important; line-height: 1.2 !important;">Active Template: ${videoName}</span>` : ''}
+                    <input type="hidden" class="l-existing-video-fallback" value="${videoName}">
+                </div>
+            `;
+            container.appendChild(div);
+        }
+
+        async function deleteCard(name) {
+            if (confirm(`⚠️ Warning: [${name}.js] සහ [${name}.py] සදහටම මැකීමට ඉඩ දෙන්නද?`)) {
+                await fetch(`/api/themes/${name}`, { method: 'DELETE' });
+                closeEditorWindow();
+                fetchActiveCards();
+            }
+        }
+
+        document.getElementById('updateForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData();
+            formData.append('theme_name', document.getElementById('edit_theme_name').value);
+            formData.append('api_url', document.getElementById('edit_api_url').value);
+            formData.append('bg_key', document.getElementById('edit_bg_key').value);
+
+            const rows = document.querySelectorAll('#editLayersContainer .cm-hub-dynamic-row');
+            const layersMeta = [];
+
+            rows.forEach((row, idx) => {
+                const key = row.querySelector('.l-key').value;
+                const existing = row.querySelector('.l-existing-video-fallback').value;
+                layersMeta.push({ field_key: key, existing_video: existing, order_index: idx });
+                const fileInput = row.querySelector('.l-video');
+                if (fileInput.files[0]) formData.append(`video_layer_${idx}`, fileInput.files[0]);
+            });
+            formData.append('layers_metadata', JSON.stringify(layersMeta));
+
+            const res = await fetch('/api/themes/update', { method: 'POST', body: formData });
+            const result = await res.json();
+            alert(result.message);
+            location.reload();
+        });
+
+        fetchActiveCards();
+    </script>
+</body>
+</html>

@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dynamic Route File Matrix Tester</title>
+    <style>
+        /* 🎯 FORCE HIDING SKIP LINKS TO PREVENT NAVIGATION COLLISION */
+        .skipLinks { display: none !important; }
+
+        /* 🎯 RESET ONLY FOR THIS CONTEXT - NO PADDING APPLIED TO BODY */
+        html, body { 
+            background: #ffffff !important; 
+            margin: 0 !important;
+            padding: 0 !important;
+            font-family: system-ui, sans-serif; 
+            color: #333333; 
+        }
+
+        /* 🎯 UNIQUE COMPONENT WRAPPER EXCLUSIVELY MATCHING THE LAYOUT BRIDGE */
+        .vt-hub-layout-wrapper {
+            max-width: 1188px;
+            margin: 60px auto;
+            padding: 0 20px;
+            box-sizing: border-box;
+        }
+        
+        /* 🎯 UNIQUE BOUNDING BOX WITH INSULATED LIGHT BACKGROUND */
+        .vt-hub-main-box { 
+            background: #ffffff !important; 
+            max-width: 650px; 
+            margin: 0 auto; 
+            padding: 30px; 
+            border-radius: 8px; 
+            border: 1px solid #cccccc; 
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            box-sizing: border-box;
+        }
+
+        .vt-hub-main-box h2 { 
+            font-size: 20px !important; 
+            margin-top: 0 !important; 
+            margin-bottom: 20px !important; 
+            border-bottom: 2px solid #98ceb5 !important; 
+            padding-bottom: 8px !important; 
+            color: #333333 !important; 
+        }
+
+        .vt-hub-main-box h3 { 
+            font-size: 15px !important; 
+            margin-top: 25px !important; 
+            margin-bottom: 12px !important; 
+            color: #333333 !important; 
+        }
+        
+        /* 🎯 INSULATED VERTICAL ALIGNMENT ROW ENGINE FOR INPUTS */
+        .vt-hub-dynamic-row { 
+            display: flex !important; 
+            flex-direction: column !important; 
+            margin-bottom: 15px !important; 
+            background: #f8f9fa !important; 
+            padding: 12px !important; 
+            border-radius: 6px !important; 
+            border: 1px solid #eaeaea !important;
+            box-sizing: border-box !important;
+            width: 100% !important;
+        }
+        
+        .vt-hub-main-box .vt-field-txt { 
+            background: #ffffff !important; 
+            color: #333333 !important; 
+            border: 1px solid #cccccc !important; 
+            padding: 8px 10px !important; 
+            border-radius: 4px !important; 
+            width: 100% !important; 
+            box-sizing: border-box !important; 
+            font-size: 14px !important;
+            outline: none !important;
+            height: 38px !important;
+        }
+        .vt-hub-main-box .vt-field-txt:focus { border-color: #98ceb5 !important; }
+
+        /* HTML ඩිෆෝල්ට් File input එක ලස්සනට සකස් කිරීමට */
+        .vt-hub-main-box input[type="file"] {
+            padding: 6px 10px !important;
+            font-size: 13px !important;
+        }
+        
+        .vt-hub-main-box .vt-field-label { 
+            display: block !important; 
+            font-weight: bold !important; 
+            margin-bottom: 6px !important; 
+            color: #555555 !important; 
+            font-size: 13px !important; 
+            text-align: left !important;
+        }
+        
+        /* 🎯 FORM SUBMISSION CONTROLLER BUTTON */
+        .vt-hub-main-box .vt-btn-primary-action { 
+            background: #98ceb5 !important; 
+            color: #333333 !important; 
+            border: none !important; 
+            padding: 12px 20px !important; 
+            border-radius: 5px !important; 
+            cursor: pointer !important; 
+            font-weight: bold !important; 
+            width: 100% !important; 
+            margin-top: 15px !important; 
+            font-size: 14px !important;
+            height: 44px !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+        .vt-hub-main-box .vt-btn-primary-action:hover { background: #87bd9e !important; }
+        
+        /* 🎯 EXTERNAL BACK ACTION NAVIGATION ANCHOR ON TOP RIGHT */
+        .vt-hub-back-navigation-row {
+            max-width: 650px;
+            margin: 0 auto 20px auto;
+            display: flex;
+            justify-content: flex-end;
+        }
+        .vt-hub-back-route-btn {
+            display: inline-block !important;
+            background: #475569 !important;
+            color: #ffffff !important;
+            text-decoration: none !important;
+            padding: 10px 24px !important;
+            border-radius: 5px !important;
+            font-size: 13px !important;
+            font-weight: 700 !important;
+            font-family: sans-serif !important;
+        }
+        .vt-hub-back-route-btn:hover { background: #334155 !important; }
+
+        /* 📱 MOBILE VIEW CORRECTIONS */
+        @media screen and (max-width: 768px) {
+            .vt-hub-layout-wrapper {
+                margin: 20px auto !important;
+                padding: 0 10px !important;
+            }
+            .vt-hub-main-box {
+                padding: 20px 15px !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 💻 සර්වර් එකෙන් ඔටෝමැටිකලි ලෝඩ් වන හෙඩර් එක -->
+    {{HEADER}}
+
+    <!-- 🛠️ UNIQUE IDENTIFIED LAYOUT CONTEXT -->
+    <div class="vt-hub-layout-wrapper">
+        
+        <!-- 🎯 TOP RIGHT BACK TO DASHBOARD LINK ROW -->
+        <div class="vt-hub-back-navigation-row">
+            <a href="/designertools" class="vt-hub-back-route-btn">⬅ Back to Dashboard</a>
+        </div>
+        
+        <!-- MAIN VIDEO TESTER BOX -->
+        <div class="vt-hub-main-box">
+            <h2>🎬 Generated JS File Video Tester</h2>
+            
+            <div style="margin-bottom: 20px;">
+                <label class="vt-field-label">Select Active Custom Generated JS File Route:</label>
+                <select id="themeSelector" class="vt-field-txt" onchange="loadMetaFieldsAndSetupForm()">
+                    <option value="">-- Select Target JS File --</option>
+                </select>
+            </div>
+            
+            <form id="renderForm" enctype="multipart/form-data">
+                <div id="dynamicInputsContainer"></div>
+                <button type="submit" id="submitBtn" class="vt-btn-primary-action" style="display:none;">Generate Video Pipeline Sequence</button>
+            </form>
+            
+            <div id="outputContainer" style="margin-top:25px; text-align:center;"></div>
+        </div>
+
+    </div>
+
+    <!-- 💻 සර්වර් එකෙන් ඔටෝමැටිකලි ලෝඩ් වන ෆුටර් එක -->
+    {{FOOTER}}
+
+    <script>
+        let availableRoutes = [];
+        let targetExecutionEndpoint = '';
+
+        async function initSelector() {
+            const res = await fetch('/api/themes');
+            availableRoutes = await res.json();
+            const selector = document.getElementById('themeSelector');
+            selector.innerHTML = '<option value="">-- Choose Target File to Test --</option>';
+            availableRoutes.forEach(r => {
+                selector.innerHTML += `<option value="${r.theme_name}">${r.theme_name}.js</option>`;
+            });
+        }
+
+        async function loadMetaFieldsAndSetupForm() {
+            const val = document.getElementById('themeSelector').value;
+            const container = document.getElementById('dynamicInputsContainer');
+            const btn = document.getElementById('submitBtn');
+            container.innerHTML = '';
+            
+            if(!val) { btn.style.display = 'none'; return; }
+            
+            const matchedRoute = availableRoutes.find(r => r.theme_name === val);
+            targetExecutionEndpoint = matchedRoute.api_endpoint_url;
+
+            const metaRes = await fetch(`/api/themes/meta/${val}`);
+            const metaData = await metaRes.json();
+            
+            // 🎯 CANVAS BACKGROUND INPUT WITH MATCHING HARMONIZED ROW STYLE
+            container.innerHTML += `
+                <div class="vt-hub-dynamic-row" style="border: 1px dashed #98ceb5 !important; background: #fff !important;">
+                    <label class="vt-field-label" style="color:#87bd9e;">⭐ Canvas Background Layout (${metaData.bg_param_name}):</label>
+                    <input type="file" name="${metaData.bg_param_name}" class="vt-field-txt" required>
+                </div>`;
+            
+            // 🎯 OVERLAY LAYERS WITH DYNAMIC ROWS STYLE
+            metaData.layers.forEach(l => {
+                container.innerHTML += `
+                    <div class="vt-hub-dynamic-row">
+                        <label class="vt-field-label">Overlay Target Asset Image [${l.field_key}]:</label>
+                        <input type="file" name="${l.field_key}" class="vt-field-txt" required>
+                    </div>`;
+            });
+            btn.style.display = 'inline-flex';
+        }
+
+        document.getElementById('renderForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const out = document.getElementById('outputContainer');
+            out.innerHTML = '<h3 style="color:#555555; font-size:14px;">⏳ System rendering processing inside the anti-jam Queue node...</h3>';
+            
+            const formData = new FormData(e.target);
+            
+            try {
+                console.log("🚀 Request hitting API Endpoint URL Location:", targetExecutionEndpoint);
+                const res = await fetch(targetExecutionEndpoint, { method: 'POST', body: formData });
+                const result = await res.json();
+                
+                if(result.success) {
+                    out.innerHTML = `
+                        <h3 style="color:#87bd9e; font-size:16px;">✨ Transcoding Stream Complete!</h3>
+                        <video width="100%" controls style="border-radius:8px; margin-top:10px; border: 1px solid #cccccc; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+                            <source src="${result.videoUrl}" type="video/mp4">
+                        </video>`;
+                } else {
+                    out.innerHTML = `<h3 style="color:#dc2626; font-size:14px;">❌ Render instance loop error.</h3>`;
+                }
+            } catch (err) {
+                out.innerHTML = `<h3 style="color:#dc2626; font-size:14px;">❌ Server connection failure or endpoint missing.</h3>`;
+            }
+        });
+
+        initSelector();
+    </script>
+</body>
+</html>

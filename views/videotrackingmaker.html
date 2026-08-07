@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CardApp Template Engine Creation Provision Panel</title>
+    <style>
+        /* 🎯 FORCE HIDING SKIP LINKS TO PREVENT NAVIGATION COLLISION */
+        .skipLinks { display: none !important; }
+
+        /* 🎯 RESET ONLY FOR THIS CONTEXT - NO PADDING APPLIED TO BODY */
+        html, body { 
+            background: #ffffff !important; 
+            margin: 0 !important;
+            padding: 0 !important;
+            font-family: system-ui, sans-serif; 
+            color: #333333; 
+        }
+
+        /* 🎯 UNIQUE HUB COMPONENT WRAPPER EXCLUSIVELY MATCHING THE LAYOUT BRIDGE */
+        .tm-hub-layout-wrapper {
+            max-width: 1188px;
+            margin: 60px auto;
+            padding: 0 20px;
+            box-sizing: border-box;
+        }
+        
+        /* 🎯 UNIQUE BOUNDING BOX WITH INSULATED LIGHT BACKGROUND */
+        .tm-hub-main-box { 
+            background: #ffffff; 
+            max-width: 650px; 
+            margin: 0 auto; 
+            padding: 30px; 
+            border-radius: 8px; 
+            border: 1px solid #cccccc; 
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            box-sizing: border-box;
+        }
+
+        .tm-hub-main-box h2 { 
+            font-size: 20px; 
+            margin-top: 0; 
+            margin-bottom: 20px; 
+            border-bottom: 2px solid #98ceb5; 
+            padding-bottom: 8px; 
+            color: #333333; 
+        }
+
+        .tm-hub-main-box h3 { 
+            font-size: 15px; 
+            margin-top: 20px; 
+            margin-bottom: 12px; 
+            color: #333333; 
+        }
+        
+        /* 🎯 INSULATED VERTICAL ALIGNMENT ROW ENGINE */
+        .tm-hub-dynamic-row { 
+            display: flex !important; 
+            gap: 10px !important; 
+            margin-bottom: 10px !important; 
+            background: #f8f9fa !important; 
+            padding: 10px !important; 
+            border-radius: 6px !important; 
+            border: 1px solid #eaeaea !important;
+            align-items: center !important; 
+            box-sizing: border-box !important;
+        }
+        
+        .tm-hub-main-box .tm-field-txt { 
+            background: #ffffff !important; 
+            color: #333333 !important; 
+            border: 1px solid #cccccc !important; 
+            padding: 8px 10px !important; 
+            border-radius: 4px !important; 
+            width: 100% !important; 
+            box-sizing: border-box !important; 
+            font-size: 14px !important;
+            outline: none !important;
+            height: 38px !important; /* Perfect uniform structural line */
+        }
+        .tm-hub-main-box .tm-field-txt:focus { border-color: #98ceb5 !important; }
+        
+        .tm-hub-main-box .tm-field-label { 
+            display: block !important; 
+            font-weight: bold !important; 
+            margin-bottom: 5px !important; 
+            color: #555555 !important; 
+            font-size: 13px !important; 
+            text-align: left !important;
+        }
+        
+        /* 🎯 FORM SUBMISSION CONTROLLER */
+        .tm-hub-main-box .tm-btn-primary-compile { 
+            background: #98ceb5 !important; 
+            color: #333333 !important; 
+            border: none !important; 
+            padding: 12px 20px !important; 
+            border-radius: 5px !important; 
+            cursor: pointer !important; 
+            font-weight: bold !important; 
+            width: 100% !important; 
+            margin-top: 15px !important; 
+            font-size: 14px !important;
+            height: 44px !important;
+        }
+        .tm-hub-main-box .tm-btn-primary-compile:hover { background: #87bd9e !important; }
+        
+        .tm-hub-main-box .tm-btn-row-add { 
+            background: #f1f3f5 !important; 
+            color: #495057 !important;
+            border: 1px solid #ced4da !important;
+            width: auto !important; 
+            font-size: 12px !important; 
+            padding: 6px 12px !important;
+            border-radius: 4px !important;
+            font-weight: 600 !important;
+            cursor: pointer !important;
+        }
+        .tm-hub-main-box .tm-btn-row-add:hover { background: #e9ecef !important; }
+        
+        /* 🎯 PRETTIER ROUTING API CONTEXT ALIGNMENT (FIXED BASELINE) */
+        .tm-hub-api-wrapper { 
+            display: flex !important; 
+            align-items: center !important; 
+            background: #ffffff !important; 
+            border: 1px solid #cccccc !important; 
+            border-radius: 4px !important; 
+            padding: 0 10px !important;
+            box-sizing: border-box !important;
+            height: 38px !important;
+            width: 100% !important;
+        }
+        .tm-hub-api-wrapper:focus-within { border-color: #98ceb5 !important; }
+        
+        .tm-hub-api-prefix { 
+            color: #666666 !important; 
+            font-weight: bold !important; 
+            font-family: monospace !important; 
+            font-size: 14px !important; 
+            /* 🎯 flex අයින් කරලා margin එකකින් /api/ කෑල්ල විතරක් 2px පහත් කළා: */
+            display: inline-block !important;
+            margin-top: 2px !important; 
+        }
+        
+        .tm-hub-api-wrapper input { 
+            border: none !important; 
+            background: transparent !important; 
+            padding: 0 !important; 
+            outline: none !important; 
+            color: #333333 !important; 
+            font-size: 14px !important; 
+            width: 100% !important; 
+            height: 100% !important; 
+            margin: 0 !important; 
+            /* 🎯 input එකේ flex අයින් කරලා text vertical align එක default තැබුවා: */
+            display: inline-block !important;
+        }
+        
+        /* 🎯 EXTERNAL BACK ACTION NAVIGATION ANCHOR */
+        .tm-hub-back-navigation-container {
+            max-width: 650px;
+            margin: 20px auto 0 auto;
+            text-align: center;
+        }
+        .tm-hub-back-route-btn {
+            display: inline-block;
+            background: #475569;
+            color: #ffffff;
+            text-decoration: none;
+            padding: 10px 24px;
+            border-radius: 5px;
+            font-size: 13px;
+            font-weight: 700;
+            font-family: sans-serif;
+        }
+        .tm-hub-back-route-btn:hover { background: #334155; }
+    </style>
+</head>
+<body>
+
+    <!-- 💻 සර්වර් එකෙන් ඔටෝමැටිකලි ලෝඩ් වන හෙඩර් එක -->
+    {{HEADER}}
+
+    <!-- 🛠️ UNIQUE IDENTIFIED LAYOUT CONTEXT -->
+    <div class="tm-hub-layout-wrapper">
+        
+        <!-- 🎯 TOP NAVIGATION ROW (BACK TO DASHBOARD ON TOP RIGHT) -->
+        <div style="max-width: 650px; margin: 0 auto 20px auto; display: flex; justify-content: flex-end;">
+            <a href="/designertools" class="tm-hub-back-route-btn" style="margin: 0 !important;">⬅ Back to Dashboard</a>
+        </div>
+        
+        <!-- MAIN CREATION PANEL BOX -->
+        <div class="tm-hub-main-box">
+            <h2>🛠️ Map New Custom Video Card Template (Creation Mode)</h2>
+            <form id="crudForm">
+                <div style="margin-bottom:16px;">
+                    <label class="tm-field-label">Theme Identifier Name (e.g. Christmas Card 01):</label>
+                    <input type="text" id="crud_theme_name" class="tm-field-txt" placeholder="e.g. Christmas Card 01" required oninput="autoGenerateApiUrl(this.value)">
+                </div>
+                <div style="margin-bottom:16px;">
+                    <label class="tm-field-label">Routing Endpoint API URL Path Location:</label>
+                    <div class="tm-hub-api-wrapper">
+                        <span class="tm-hub-api-prefix">/api/</span>
+                        <input type="text" id="crud_api_url_editable" placeholder="christmas_card_01" required oninput="validateUrlInput(this)">
+                    </div>
+                </div>
+                <div style="margin-bottom:16px;">
+                    <label class="tm-field-label">Canvas Background File Param Key Identifier Name:</label>
+                    <input type="text" id="crud_bg_key" class="tm-field-txt" placeholder="e.g. table" required>
+                </div>
+                
+                <h3>Dynamic Multilayer Tracking Video Targets Definition</h3>
+                <div id="crudLayersContainer"></div>
+                <button type="button" class="tm-btn-row-add" onclick="addCrudLayerRow()">+ Push Dynamic Overlay Element Row</button>
+                
+                <button type="submit" class="tm-btn-primary-compile">Compile & Generate Distinct JS / PY Files</button>
+            </form>
+        </div>
+
+    </div>
+
+    <!-- 💻 සර්වර් එකෙන් ඔටෝමැටිකලි ලෝඩ් වන ෆුටර් එක -->
+    {{FOOTER}}
+
+    <script>
+        function autoGenerateApiUrl(nameValue) {
+            const urlInputField = document.getElementById('crud_api_url_editable');
+            urlInputField.value = nameValue.trim().toLowerCase().replace(/[^a-z0-9]+/g, '_');
+        }
+
+        function validateUrlInput(input) {
+            input.value = input.value.replace(/[^a-z0-9_]/g, '');
+        }
+
+        function addCrudLayerRow() {
+            const container = document.getElementById('crudLayersContainer');
+            const div = document.createElement('div');
+            div.className = 'tm-hub-dynamic-row';
+            /* Isolated inputs using inline custom structural parameters to bypass framework overrides */
+            div.innerHTML = `
+                <input type="text" placeholder="Image name" class="l-key" required style="flex:1; height:38px; margin:0; border: 1px solid #cccccc; border-radius: 4px; padding: 0 10px; box-sizing: border-box; background:#ffffff; color:#333333; font-size:14px; outline:none;">
+                <input type="file" class="l-video" style="flex:2; height:38px; margin:0; background: #ffffff; border: 1px solid #cccccc; border-radius: 4px; padding: 6px 10px; box-sizing: border-box; color:#333333; font-size:13px;" required>
+                <button type="button" style="height:38px; width:38px; margin:0; border:none; border-radius:4px; background:#dc2626; color:white; font-weight:bold; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; font-size:14px; flex-shrink:0;" onclick="this.parentElement.remove()">X</button>
+            `;
+            container.appendChild(div);
+        }
+
+        document.getElementById('crudForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData();
+            formData.append('theme_name', document.getElementById('crud_theme_name').value);
+            formData.append('api_url', '/api/' + document.getElementById('crud_api_url_editable').value);
+            formData.append('bg_key', document.getElementById('crud_bg_key').value);
+            
+            const rows = document.querySelectorAll('#crudLayersContainer .tm-hub-dynamic-row');
+            const layersMeta = [];
+            
+            rows.forEach((row, idx) => {
+                const key = row.querySelector('.l-key').value;
+                layersMeta.push({ field_key: key, order_index: idx });
+                const fileInput = row.querySelector('.l-video');
+                if(fileInput.files[0]) {
+                    formData.append(`video_layer_${idx}`, fileInput.files[0]);
+                }
+            });
+            formData.append('layers_metadata', JSON.stringify(layersMeta));
+            
+            const res = await fetch('/api/themes/save', { method: 'POST', body: formData });
+            const result = await res.json();
+            
+            if (result.success) {
+                alert(result.message);
+                document.getElementById('crudForm').reset();
+                document.getElementById('crudLayersContainer').innerHTML = '';
+            } else {
+                alert(result.error);
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="de" class="wf-personello-n4-active wf-asap-n4-active wf-amaticsc-n4-active wf-active">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    
+    <!-- ========================================== -->
+    <!-- 🚀 Original Stylesheets -->
+    <!-- ========================================== -->
+    <link href="/views/personelloweb/login_files/default.css" type="text/css" rel="stylesheet"> 
+    <link rel="stylesheet" href="/views/personelloweb/login_files/fonts.css" media="all">
+    
+    <title>CardMaker | Home</title> 
+
+    <style>
+        /* 🎯 PERSONELLO ORIGINAL ASAP FONT INJECTION */
+        @font-face {
+            font-family: 'Asap Custom';
+            src: url('/views/personelloweb/MeinKonto_files/asap-v21-latin-ext_latin-regular.woff2') format('woff2');
+            font-weight: 700;
+            font-style: normal;
+        }
+        @font-face {
+            font-family: 'Asap Custom';
+            src: url('/views/personelloweb/MeinKonto_files/asap-v21-latin-ext_latin-regular.woff2') format('woff2');
+            font-weight: 400;
+            font-style: normal;
+        }
+
+        /* 🎯 PROTECTION */
+        .cardmaker-isolated-zone {
+            background-color: #ffffff;
+            color: #333;
+            font-family: 'Asap Custom', 'Segoe UI', sans-serif;
+            width: 100%;
+            display: block;
+        }
+
+        .cardmaker-isolated-zone * {
+            box-sizing: border-box !important;
+        }
+
+        /* 🛠️ Global Wrapper */
+        .cardmaker-isolated-zone .page-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* BREADCRUMB BAR */
+        #breadcrumb {
+            background-color: #ededed !important; 
+            padding: 10px 0 !important;
+            border-bottom: 1px solid #e2e8f0 !important;
+            box-sizing: border-box !important;
+        }
+
+        #breadcrumb .limiter {
+            display: flex !important;
+            justify-content: space-between !important;
+            align-items: center !important;
+            width: calc(100% - 24px) !important;
+            max-width: 1180px !important;
+            margin: 0 auto !important;
+            background: transparent !important; 
+            border: none !important;
+        }
+
+        #breadcrumb .limiter p {
+            margin: 0 !important;
+            padding: 0 !important;
+            color: #666666 !important;
+            font-size: 13px !important;
+            display: inline-block !important;
+        }
+
+        #breadcrumb a {
+            background: none !important;       
+            background-color: transparent !important;
+            border: none !important;           
+            padding: 0 !important;
+            margin: 0 !important;
+            display: inline !important;
+            float: none !important;
+            color: #4a5568;
+            text-decoration: none;
+        }
+        
+        #breadcrumb a:hover {
+            text-decoration: underline !important;
+        }
+
+        .pso-breadcrumb-logout-btn {
+            display: flex;
+            align-items: center;
+            gap: 0px;
+            color: #4a5568 !important;
+            text-decoration: none;
+            transition: transform 0.2s ease;
+        }
+
+        .pso-breadcrumb-logout-btn:hover {
+            transform: scale(1.05) !important;
+        }
+
+        .pso-breadcrumb-logout-btn img {
+            height: 40px;
+            width: auto;
+            object-fit: contain;
+            vertical-align: middle;
+            filter: none !important;
+            border-radius: 0 !important;
+        }
+
+        /* Main Content Showcase */
+        .cardmaker-isolated-zone .main-content {
+            padding: 40px 0;
+        }
+
+        /* GRID LAYOUT */
+        .cardmaker-isolated-zone .showcase-grid {
+            display: grid !important;
+            grid-template-columns: 280px repeat(3, 1fr) !important; 
+            gap: 20px !important;
+            align-items: start !important;
+        }
+
+        /* Card Container Styles */
+        .cardmaker-isolated-zone .card-wrapper {
+            background-color: #f5f6f8;
+            border: 2px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 14px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none !important;
+            width: 100%;
+        }
+
+        .cardmaker-isolated-zone .card-wrapper:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            border-color: #92ccb6;
+        }
+
+        .cardmaker-isolated-zone .card-title-text {
+            font-family: 'Asap Custom', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 12px;
+            text-align: right;
+            width: 100%;
+        }
+
+        .cardmaker-isolated-zone .card-img {
+            width: 100%;
+            height: auto;
+            aspect-ratio: 1 / 1;
+            object-fit: cover;
+            display: block;
+            border-radius: 10px;
+        }
+
+        /* SIDEBAR PANEL */
+        .cardmaker-isolated-zone .sidebar-panel {
+            background-color: #f5f6f8;
+            border: 2px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 14px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none !important;
+            width: 100%;
+        }
+
+        .cardmaker-isolated-zone .sidebar-links {
+            width: 100% !important;
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            gap: 16px !important; 
+        }
+
+        .cardmaker-isolated-zone .sidebar-item {
+            text-align: center !important;
+            width: 100% !important;
+            display: block !important;
+        }
+
+        .cardmaker-isolated-zone .sidebar-text {
+            font-family: 'Asap Custom', sans-serif !important;
+            font-size: 18px !important; 
+            color: #444 !important;
+            letter-spacing: 0.5px !important;
+            text-transform: uppercase !important;
+            display: block !important;
+            line-height: 1.25 !important;
+            font-weight: 700;
+        }
+
+        .cardmaker-isolated-zone .heart-separator {
+            color: #444 !important;
+            font-size: 11px !important;
+            margin-top: 12px !important;
+            display: block !important;
+        }
+
+        header, footer, #breadcrumb {
+            box-sizing: content-box !important;
+        }
+
+        .pso-unified-footer-back-wrapper {
+            display: flex !important;
+            justify-content: center !important;
+            align-items: center !important;
+            width: 100% !important;
+            margin-top: 40px !important;
+            margin-bottom: 20px !important;
+            text-align: center !important;
+        }
+
+        .pso-unified-footer-back-wrapper .pso-back-3d-btn {
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            background: transparent !important;
+            background-color: transparent !important;
+            border: none !important;
+            outline: none !important;
+            padding: 0 !important;
+            box-shadow: none !important;
+            cursor: pointer !important;
+            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+        }
+
+        .pso-unified-footer-back-wrapper .pso-back-3d-btn:hover {
+            transform: translateY(-5px) scale(1.04) !important;
+        }
+
+        .pso-unified-footer-back-wrapper .pso-back-3d-btn img {
+            height: 70px !important;
+            width: auto !important;
+            object-fit: contain !important;
+            border-radius: 0 !important;
+            background: transparent !important;
+            border: none !important;
+        }
+
+        /* MOBILE VIEW ENGINE */
+        @media screen and (max-width: 768px) {
+            html, body, .cardmaker-isolated-zone {
+                background-color: #ffffff !important;
+                background: #ffffff !important;
+                overflow-x: hidden !important;
+                max-width: 100% !important;
+                width: 100% !important;
+            }
+
+            .cardmaker-isolated-zone .page-container {
+                padding: 0 10px !important;
+            }
+
+            #breadcrumb {
+                background-color: #ffffff !important; 
+                padding: 5px 0 !important;
+            }
+            
+            #breadcrumb .limiter p, #breadcrumb .limiter a:not(.pso-breadcrumb-logout-btn) {
+                display: none !important; 
+            }
+            
+            #breadcrumb .limiter {
+                display: flex !important;
+                justify-content: space-between !important;
+                align-items: center !important;
+                padding: 10px 0px !important;
+                background: #ffffff !important;
+                width: calc(100% - 24px) !important; 
+                margin: 0 auto !important;
+                max-width: 100% !important;
+            }
+            
+            #breadcrumb .limiter::before {
+                content: "< Konto";
+                display: inline-block !important;
+                font-size: 1.7rem;
+                color: #666666;
+                cursor: pointer;
+                font-weight: bold;
+            }
+            
+            .pso-breadcrumb-logout-btn {
+                display: inline-flex !important;
+                font-size: 13px !important;
+            }
+
+            .cardmaker-isolated-zone .main-content {
+                padding: 10px 0 25px 0 !important;
+            }
+
+            .cardmaker-isolated-zone .showcase-grid {
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: center !important;
+                gap: 20px !important;
+                width: 100% !important;
+            }
+
+            .cardmaker-isolated-zone .card-wrapper {
+                flex: none !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                border-radius: 16px !important;
+                padding: 16px !important;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06) !important;
+                background-color: #f8f9fa !important;
+            }
+
+            .cardmaker-isolated-zone .card-title-text {
+                font-size: 18px !important;
+                margin-bottom: 12px !important;
+            }
+
+            .cardmaker-isolated-zone .card-img {
+                border-radius: 12px !important;
+            }
+
+            .cardmaker-isolated-zone .sidebar-panel {
+                order: 99 !important; 
+                width: 100% !important;
+                aspect-ratio: auto !important; 
+                padding: 15px !important;
+                margin-top: 15px !important;
+            }
+
+            .pso-unified-footer-back-wrapper {
+                display: flex !important;
+                justify-content: center !important;
+                align-items: center !important;
+                width: 100% !important;
+                margin-top: 30px !important;
+                margin-bottom: 5px !important; 
+                text-align: center !important;
+            }
+            .pso-unified-footer-back-wrapper .pso-back-3d-btn {
+                display: inline-flex !important;
+                cursor: pointer !important;
+            }
+            .pso-unified-footer-back-wrapper .pso-back-3d-btn img {
+                height: 60px !important;
+                width: auto !important;
+                object-fit: contain !important;
+            }
+        }
+    </style>
+</head>
+
+<body class="theme default" id="pageStart">
+
+    <!-- HEADER AREA -->
+    {{HEADER}}
+
+    <!-- BREADCRUMB BAR -->
+    <div id="breadcrumb" role="navigation" aria-label="Breadcrumbs"> 
+        <div class="limiter"> 
+            <p>Du befindest dich hier: <a href="https://de.personello.com/">Home</a> <span class="icon-chevron-right"></span> <a href="{{AUTH_SERVER}}/mypersonello">Konto</a> <span class="icon-chevron-right"></span> Generieren </p> 
+            
+            <a href="{{AUTH_SERVER}}/api/auth/logout" class="pso-breadcrumb-logout-btn" title="Abmelden">
+                <img src="/views/personelloweb/MeinKonto_files/logout.svg" alt="Logout">
+            </a>
+        </div> 
+    </div>
+
+    <!-- Protected Content Zone Start -->
+    <div class="cardmaker-isolated-zone">
+
+        <div class="page-container">
+            <main class="main-content">
+
+                <div class="showcase-grid" id="homeCardFeed">
+                    <!-- SIDEBAR PANEL -->
+                    <div class="sidebar-panel">
+                        <div class="sidebar-links">
+                            <div class="sidebar-item">
+                                <div class="sidebar-text">Verbreite Freude</div>
+                                <div class="heart-separator">❤</div>
+                            </div>
+                            <div class="sidebar-item">
+                                <div class="sidebar-text">Lächeln und teilen</div>
+                                <div class="heart-separator">❤</div>
+                            </div>
+                            <div class="sidebar-item">
+                                <div class="sidebar-text">Wunderschöne Karten</div>
+                                <div class="heart-separator">❤</div>
+                            </div>
+                            <div class="sidebar-item">
+                                <div class="sidebar-text">Mühelose Erstellung</div>
+                                <div class="heart-separator">❤</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dynamic Cards Rendered by JS -->
+                </div>
+
+                <!-- 3D BACK BUTTON -->
+                <div class="pso-unified-footer-back-wrapper">
+                    <a href="{{AUTH_SERVER}}/mypersonello" class="pso-back-3d-btn" title="Zurück zu Konto">
+                        <img src="/web_images/back.svg" alt="Back to Konto">
+                    </a>
+                </div>
+            </main>
+        </div>
+
+    </div>
+
+    <!-- FOOTER AREA -->
+    {{FOOTER}}
+
+    <!-- ================================================================= -->
+    <!-- 🚀 UNIFIED FASTAPI DB & CARD WEB ID RESOLUTION ENGINE -->
+    <!-- ================================================================= -->
+    <script>
+    // 🎯 .env එකෙන් එන Dynamic Python Port එක Set කිරීම
+        window.ENV_PYTHON_PORT = "{{PYTHON_PORT}}";
+        
+        const CURRENT_HOST = window.location.hostname;
+        const PY_PORT = window.ENV_PYTHON_PORT && !window.ENV_PYTHON_PORT.includes("{{") 
+                        ? window.ENV_PYTHON_PORT 
+                        : 8001;
+
+        const BACKEND_STATIC = `http://${CURRENT_HOST}:${PY_PORT}`;
+        const API_URL = `${BACKEND_STATIC}/api/cards`;
+
+        async function loadAllCardsForHome() {
+            try {
+                const response = await fetch(API_URL);
+                if (!response.ok) throw new Error("Failed to fetch cards from central database");
+                const allCards = await response.json();
+
+                const container = document.getElementById('homeCardFeed');
+                if (!container) return;
+
+                const sidebarHTML = container.querySelector('.sidebar-panel') ? container.querySelector('.sidebar-panel').outerHTML : '';
+                container.innerHTML = sidebarHTML;
+
+                if (allCards.length === 0) {
+                    container.innerHTML += `<p style="text-align:center; padding:20px; width:100%;">Keine Karten gefunden.</p>`;
+                    return;
+                }
+
+                allCards.forEach((card, index) => {
+                    // 🎯 1. Address bar එකට පෙන්වීමට card_web_id ප්‍රමුඛතාවය ලෙස ලබාගනී (නැතහොත් card_id භාවිතා කරයි)
+                    const urlCardId = card.card_web_id && card.card_web_id.trim() !== "" ? card.card_web_id.trim() : card.card_id;
+                    const displayNr = `Nr:${index + 1}`; 
+                    
+                    // 🎯 2. Image preview එක Base64 හෝ saved static file එකෙන් auto-resolve කරයි
+                    let imageSrc = "/web_images/cards/default_preview.png";
+                    if (card.card_image && card.card_image.length > 50) {
+                        imageSrc = card.card_image;
+                    } else if (card.folder_name) {
+                        imageSrc = `${BACKEND_STATIC}/image_templates/${card.folder_name}/${card.folder_name}_preview.png`;
+                    }
+
+                    // 🎯 3. Address bar එකේ id එක ලෙස Card Web ID එක show වන link එක සෑදීම
+                    container.innerHTML += `
+                        <a href="/cards/card?card_id=${encodeURIComponent(urlCardId)}" class="card-wrapper">
+                            <div class="card-title-text">${displayNr}</div>
+                            <img src="${imageSrc}" alt="${card.card_name}" class="card-img">
+                        </a>
+                    `;
+                });
+            } catch (error) {
+                console.error("Error loading home feed cards:", error);
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            loadAllCardsForHome();
+
+            const breadcrumbMobile = document.getElementById('breadcrumb');
+            if (breadcrumbMobile) {
+                breadcrumbMobile.addEventListener('click', function(e) {
+                    if (window.innerWidth <= 768 && e.offsetX < window.innerWidth - 120) { 
+                        window.location.href = "{{AUTH_SERVER}}/mypersonello";
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

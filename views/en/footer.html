@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en" class="wf-personello-n4-active wf-asap-n4-active wf-amaticsc-n4-active wf-active">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    
+    <!-- ========================================== -->
+    <!-- 1. ICONS & STYLESHEETS -->
+    <!-- ========================================== -->
+    <link rel="apple-touch-icon" sizes="180x180" href="https://de.personello.com/assets/grid/img/apple-touch-icon-180x180.png"> 
+    <link rel="apple-touch-icon" sizes="152x152" href="https://de.personello.com/assets/grid/img/apple-touch-icon-152x152.png"> 
+    <link rel="apple-touch-icon" sizes="120x120" href="https://de.personello.com/assets/grid/img/apple-touch-icon-120x120.png"> 
+    <link rel="apple-touch-icon" sizes="76x76" href="https://de.personello.com/assets/grid/img/apple-touch-icon-76x76.png"> 
+    <link href="/views/personelloweb/MeinKonto_files/default.css" type="text/css" rel="stylesheet"> 
+    <link rel="stylesheet" href="/views/personelloweb/MeinKonto_files/fonts.css" media="all">
+
+    <style>
+        /* 1. PC View එක පරණ විදිහටම තියන්න (කිසිම වෙනසක් වෙන්නේ නෑ) */
+        @media screen and (min-width: 769px) {
+            .mobile-only-content { display: none !important; }
+            
+            /* PC එකේ scrollbar එක ඉවත් කිරීමට */
+            footer #usefulLinks .serviceBox {
+                overflow: visible !important;
+                min-height: auto !important;
+                height: auto !important;
+            }
+        }
+    
+        /* 2. Mobile View එකේදී ඔක්කොම හංගා පින්තූරය විතරක් පෙන්වයි */
+        @media screen and (max-width: 768px) {
+            /* Footer එකේ තියෙන ඔක්කොම content ටික සැඟවීම */
+            #priceTaxHint, #socialSignup, #usefulLinks, #testimonials, #textLinks, #pso-copyright { 
+                display: none !important; 
+            }
+    
+            /* පින්තූරය විතරක් පෙන්වීම */
+            .mobile-only-content { 
+                display: block !important; 
+                width: 100% !important; 
+                text-align: center; 
+                background: #595959 !important; 
+            }
+            .mobile-only-content img { 
+                width: 100% !important; 
+                height: auto !important; 
+                display: block !important;
+                border-radius: 0 !important;
+            }
+        }
+    </style>
+    
+    <title>My Account</title> 
+    <meta name="description" content=""> 
+    <meta name="page-topic" content="Shop,Business"> 
+    <meta name="robots" content="noindex">
+    <link rel="canonical" href="https://de.personello.com/mypersonello/">
+
+    <!-- ========================================== -->
+    <!-- 2. TRACKING & SYSTEM SCRIPTS -->
+    <!-- ========================================== -->
+    <script src="/views/personelloweb/MeinKonto_files/token_create.js.download"></script>
+    <script type="text/javascript" async="" src="/views/personelloweb/MeinKonto_files/destination"></script>
+    <script type="text/javascript" async="" src="/views/personelloweb/MeinKonto_files/identify_b8133453.js.download"></script>
+    <script type="text/javascript" async="" src="/views/personelloweb/MeinKonto_files/main.MTIwMGUyODI1MQ.js.download" data-id="CH5QRURC77U2I5R8KB00"></script>
+    <script async="" src="/views/personelloweb/MeinKonto_files/clarity.js.download"></script>
+    <script src="/views/personelloweb/MeinKonto_files/5218341.js.download" type="text/javascript" async="" data-ueto="ueto_de322d7c49"></script>
+    <script type="text/javascript" async="" src="/views/personelloweb/MeinKonto_files/f.txt"></script>
+    <link rel="modulepreload" href="https://widgets.trustedshops.com/assets/trustbadge.CIN3wqyk.js">
+</head>
+
+    <!-- WebFont Configuration -->
+    <script type="text/javascript"> 
+        WebFontConfig = {
+            custom : {
+                families : [ 'personello', 'Asap:400,400i,700', 'Amatic SC' ],
+                urls : [ "/views/personelloweb/MeinKonto_files/fonts.css"]
+            }
+        };
+        var dataLayer = [{"event":"WebServer","WebServer":"04"},{"event":"sign_up","method":"Google","user_id":"a4a36db761d1915dae507f5b7d1249dd4945142a7d54b50fe26f700758ed93d1"},{"google_remarketing_label":"8GOFCOfQkwMQgKC3_wM"},{"event":"dynRemarketing","google_tag_params":{"ecomm_pagetype":"siteview","ecomm_prodid":[],"ecomm_totalvalue":""}}]; 
+    </script> 
+
+        <!-- ========================================== -->
+        <!-- 7. FOOTER SECTION (ENGLISH TRANSLATED) -->
+        <!-- ========================================== -->
+        <footer id="footer"> 
+            <p id="priceTaxHint" role="note" aria-label="Price Notice"> <span class="limiter"> * all prices incl. VAT, plus <a href="https://de.personello.com/service/versandkostenrechner.htm">shipping costs</a> </span> </p> 
+            <div id="socialSignup" role="region" aria-label="Newsletter and Social Networks"> 
+                <div class="limiter"> 
+                    <div class="col6 first" id="newsletterSubscription" role="region" aria-label="Newsletter Signup"> 
+                        <p id="newsletterFormLabel" class="title">Inspiration in the Personello Newsletter</p> 
+                        <form action="https://de.personello.com/mypersonello/#newsletterSubscription" method="post" id="newsletter" role="form" aria-labelledby="newsletterFormLabel"> 
+                            <input type="hidden" id="frmStr_newsletterApiUrl" value="https://newsletter.personello.com"> 
+                            <fieldset role="group" aria-label="Newsletter Input Fields"> 
+                                <input id="frmstr_email" type="email" placeholder="Your email address" name="frmstr_email" aria-label="Enter email address" required=""> 
+                                <button type="submit" onclick="subscribeToNewsletter('frmstr_email', 'pso-footer');">Subscribe </button> 
+                            </fieldset> 
+                            <p id="subscribeError" class="error" aria-live="assertive"></p> 
+                            <p id="subscribeSuccess" class="success" aria-live="polite"></p> 
+                        </form> 
+                        <p class="small"> The newsletter contains discount promotions, new gift ideas, and DIY instructions. For your registration, we will give you a 5-EUR voucher for your next order. Unsubscribing is possible at any time. <a id="incentiveConditions" href="javascript:void(0);" data-reveal-id="modalIncentiveConditions">All voucher conditions »</a> </p> 
+                        <div class="newsletterSubscriptionLoading"> <img loading="lazy" src="/views/personelloweb/MeinKonto_files/ico_loading.gif" alt="" aria-hidden="true"> </div> 
+                        <p id="incentive"> 5,-€<br> <small>Voucher</small> </p> 
+                    </div> 
+                    <div class="col6"> 
+                        <p class="title">Let's be friends</p> 
+                        <div class="socialLinks"> 
+                            <a href="https://www.facebook.com/Personello" aria-label="Personello on Facebook"><span class="icon-facebook" aria-hidden="true"></span></a> 
+                            <a href="https://www.instagram.com/personello_com" aria-label="Personello on Instagram"><span class="icon-instagram" aria-hidden="true"></span></a> 
+                            <a href="https://www.pinterest.com/Personello" aria-label="Personello on Pinterest"><span class="icon-pinterest" aria-hidden="true"></span></a> 
+                            <a href="https://www.youtube.com/personello_video" aria-label="Personello YouTube Channel"><span class="icon-youtube" aria-hidden="true"></span></a> 
+                            <a href="https://www.tiktok.com/@personello" aria-label="Personello TikTok Channel"><span class="icon-tiktok" aria-hidden="true"></span></a> 
+                        </div> 
+                        <p class="title">#personello</p> 
+                    </div> 
+                </div> 
+            </div> 
+            <div id="usefulLinks" role="region" aria-label="Help Area and Customer Information"> 
+                <div class="limiter"> 
+                    <div class="row"> 
+                        <div id="kundenservice" class="col4 serviceBox first" role="region" aria-label="Customer Service Team"> 
+                            <div> 
+                                <p class="title"> Your service team is here for you! </p> 
+                                <div id="serviceTeam" role="group" aria-label="Customer Service Members"> 
+                                    <img class="authorImg" loading="lazy" src="/views/personelloweb/MeinKonto_files/1.webp" alt="Service Team Member" data-pin-nopin="true" aria-hidden="true" width="80" height="80"> 
+                                    <img class="authorImg" loading="lazy" src="/views/personelloweb/MeinKonto_files/2.webp" alt="Service Team Member" data-pin-nopin="true" aria-hidden="true" width="80" height="80"> 
+                                    <img class="authorImg" loading="lazy" src="/views/personelloweb/MeinKonto_files/3.webp" alt="Service Team Member" data-pin-nopin="true" aria-hidden="true" width="80" height="80"> 
+                                    <img class="authorImg" loading="lazy" src="/views/personelloweb/MeinKonto_files/4.webp" alt="Service Team Member" data-pin-nopin="true" aria-hidden="true" width="80" height="80"> 
+                                    <img class="authorImg" loading="lazy" src="/views/personelloweb/MeinKonto_files/5.webp" alt="Service Team Member" data-pin-nopin="true" aria-hidden="true" width="80" height="80"> 
+                                    <img class="authorImg" loading="lazy" src="/views/personelloweb/MeinKonto_files/6.webp" alt="Service Team Member" data-pin-nopin="true" aria-hidden="true" width="80" height="80"> 
+                                    <img class="authorImg" loading="lazy" src="/views/personelloweb/MeinKonto_files/7.webp" alt="Service Team Member" data-pin-nopin="true" aria-hidden="true" width="80" height="80"> 
+                                </div> 
+                                <p class="phone"><span class="icon-phone" aria-hidden="true"></span> <small>Phone (Mon-Fri from 9:00 AM - 4:00 PM):</small><br> <a href="javascript:void(0)">06841 979 165</a><br> </p> 
+                                <p class="email"><span class="icon-email"></span> <small>Email:</small><br> <a href="mailto:service@personello.com">service@personello.com</a></p> 
+                                <ul class="linkList"> 
+                                    <li><a href="https://de.personello.com/service/">All Help Topics</a></li> 
+                                    <li><a href="https://de.personello.com/service/bestellstatus.htm">Where is my order?</a></li> 
+                                </ul> 
+                            </div> 
+                        </div> 
+                        <div class="col4 serviceBox"> 
+                            <div id="USPs" role="region" aria-label="Benefits at Personello"> 
+                                <p class="title"> Your benefits at Personello </p> 
+                                <div> <span class="icon icon-gift" aria-hidden="true"></span> <p> <strong>Products that spread joy</strong><br> Over 100 personalized gift ideas </p> </div> 
+                                <div> <span class="icon icon-truck" aria-hidden="true"></span> <p> <strong>Secure Delivery</strong><br> via DHL </p> </div> 
+                                <div> <span class="icon icon-speech-bubbles" aria-hidden="true"></span> <p> <strong>Personal Consultation</strong><br> Help with designing upon request </p> </div> 
+                                <div> <span class="icon icon-like" aria-hidden="true"></span> <p> <strong>Satisfaction</strong><br> Top customer reviews </p> </div> 
+                                <div> <span class="icon icon-checkmark" aria-hidden="true"></span> <p> <strong>Top Quality</strong><br> Own production in Homburg/Saar </p> </div> 
+                            </div> 
+                        </div> 
+                        <div class="col4 serviceBox"> 
+                            <div id="trustElements" role="region" aria-label="Shop safely and payment methods"> 
+                                <p class="title">Shop quickly and safely</p> 
+                                <div class="col4 first flex-sort"> 
+                                    <div class="col2"> 
+                                        <div id="psoCustomTrustbadge" style="font-size: 0px; min-height: auto;"><div id="trustbadge-custom-desktop-container-98e3dadd90eb493088abdc5597a70810" style="position: relative; display: inline-block;"><div class="_uuhri8"><div id="minimized-trustbadge-98e3dadd90eb493088abdc5597a70810" data-testid="minimized-trustbadge-inline" class="_1xjdu86"><button class="_1m28fw0"><div class="_1ngrtvo"><div class="_58nn68"><img alt="Trusted Shops Seal" width="50" height="50" src="/views/personelloweb/MeinKonto_files/sprite.6b83167aeea54f81c755d67d609fd23a61b5b620.svg" class="_svs0nk"></div><div class="_19u1u8h"><div id="ratingStarsContainer-98e3dadd90eb493088abdc5597a70810" data-testid="rating-stars-container" aria-label="Rating: 4.75 out of 5 stars" role="img" class="_l3si5b"><div class="_oi2u7p"><img alt="" width="34" height="32" src="/views/personelloweb/MeinKonto_files/sprite(1).6b83167aeea54f81c755d67d609fd23a61b5b620.svg" data-testid="rating-star-gray" class="_ocvjfo"><img alt="" width="34" height="32" src="/views/personelloweb/MeinKonto_files/sprite(1).6b83167aeea54f81c755d67d609fd23a61b5b620.svg" data-testid="rating-star-gray" class="_ocvjfo"><img alt="" width="34" height="32" src="/views/personelloweb/MeinKonto_files/sprite(1).6b83167aeea54f81c755d67d609fd23a61b5b620.svg" data-testid="rating-star-gray" class="_ocvjfo"><img alt="" width="34" height="32" src="/views/personelloweb/MeinKonto_files/sprite(1).6b83167aeea54f81c755d67d609fd23a61b5b620.svg" data-testid="rating-star-gray" class="_ocvjfo"><img alt="" width="34" height="32" src="/views/personelloweb/MeinKonto_files/sprite(1).6b83167aeea54f81c755d67d609fd23a61b5b620.svg" data-testid="rating-star-gray" class="_s5w1eh"></div><div class="_1ox0wt3"><img alt="" width="34" height="32" src="/views/personelloweb/MeinKonto_files/sprite(2).6b83167aeea54f81c755d67d609fd23a61b5b620.svg" data-testid="rating-star-yellow" class="_ocvjfo"><img alt="" width="34" height="32" src="/views/personelloweb/MeinKonto_files/sprite(2).6b83167aeea54f81c755d67d609fd23a61b5b620.svg" data-testid="rating-star-yellow" class="_ocvjfo"><img alt="" width="34" height="32" src="/views/personelloweb/MeinKonto_files/sprite(2).6b83167aeea54f81c755d67d609fd23a61b5b620.svg" data-testid="rating-star-yellow" class="_ocvjfo"><img alt="" width="34" height="32" src="/views/personelloweb/MeinKonto_files/sprite(2).6b83167aeea54f81c755d67d609fd23a61b5b620.svg" data-testid="rating-star-yellow" class="_ocvjfo"><img alt="" width="34" height="32" src="/views/personelloweb/MeinKonto_files/sprite(2).6b83167aeea54f81c755d67d609fd23a61b5b620.svg" data-testid="rating-star-yellow" class="_s5w1eh"></div></div><p class="_1y4d1gb"><span class="_biou2p">4.75</span></p><p class="_1mqnt3i">Excellent</p></div></div><div class="_j58mgc"></div><p class="_yju31g">Buyer Protection</p></button><button id="trustbadge-minimized-menu-button-98e3dadd90eb493088abdc5597a70810" aria-label="Menu" class="_qmwjye"><img alt="" width="10" height="3" src="/views/personelloweb/MeinKonto_files/sprite(3).6b83167aeea54f81c755d67d609fd23a61b5b620.svg" class="_ne054x"></button></div></div></div></div> 
+                                        <a href="https://www.trustedshops.de/bewertung/info_X029C698F3D8BB9F86ACE0EBF26F5548C.html"> <img loading="lazy" src="/views/personelloweb/MeinKonto_files/X029C698F3D8BB9F86ACE0EBF26F5548C_info.gif" alt="Trusted Shops Reviews" width="190" height="127"> </a> 
+                                    </div> 
+                                    <div class="col2"> <img loading="lazy" class="inline-img lazy-loaded" src="/views/personelloweb/MeinKonto_files/ts_award_col2.jpg" data-src="/views/personelloweb/MeinKonto_files/ts_award_col2.jpg" alt="Trusted Shops Award" width="270" height="203"> </div> 
+                                </div> 
+                                <p class="title">Payment Methods</p> 
+                                <div class="col4 first zahlarten"> 
+                                    <a href="https://de.personello.com/service/zahlarten.htm" aria-label="More about our payment methods"></a> 
+                                    <img loading="lazy" src="/views/personelloweb/MeinKonto_files/paypal.svg" alt="PayPal" data-pin-nopin="true"> 
+                                    <img loading="lazy" src="/views/personelloweb/MeinKonto_files/klarna.svg" alt="Klarna" data-pin-nopin="true"> 
+                                    <img loading="lazy" src="/views/personelloweb/MeinKonto_files/visa.svg" alt="Visa" data-pin-nopin="true"> 
+                                    <img loading="lazy" src="/views/personelloweb/MeinKonto_files/mastercard.svg" alt="MasterCard" data-pin-nopin="true"> 
+                                    <img loading="lazy" src="/views/personelloweb/MeinKonto_files/amex.svg" alt="American Express" data-pin-nopin="true"> 
+                                    <img loading="lazy" src="/views/personelloweb/MeinKonto_files/applepay.svg" alt="Apple Pay" data-pin-nopin="true"> 
+                                    <img loading="lazy" src="/views/personelloweb/MeinKonto_files/googlepay.svg" alt="Google Pay" data-pin-nopin="true"> 
+                                    <img loading="lazy" src="/views/personelloweb/MeinKonto_files/amazon-pay.svg" alt="Amazon Pay" data-pin-nopin="true"> 
+                                </div> 
+                            </div> 
+                        </div> 
+                    </div> 
+                    <div class="row" id="quickLinks" role="group" aria-label="Further Information"> 
+                        <div class="col3 first" role="group" aria-labelledby="footer-company"> 
+                            <p class="title" id="footer-company">The Company</p> 
+                            <ul class="linkList"> 
+                                <li><a href="https://de.personello.com/ueber-uns/">About Us</a></li> 
+                                <li><a href="https://de.personello.com/jobs/">Jobs</a></li> 
+                                <li><a href="https://de.personello.com/presse/">Press</a></li> 
+                                <li><a href="https://de.personello.com/ueber-uns/kooperationen.htm">Cooperations</a></li> 
+                                <li><a href="https://de.personello.com/ueber-uns/kooperationen.htm">Partner Program</a></li> 
+                            </ul> 
+                        </div> 
+                        <div class="col3" role="group" aria-labelledby="footer-information"> 
+                            <p class="title" id="footer-information">Information</p> 
+                            <ul class="linkList"> 
+                                <li><a href="https://de.personello.com/service/agb.htm">Terms & Conditions</a></li> 
+                                <li><a href="https://de.personello.com/service/widerrufsrecht.htm">Right of Withdrawal</a></li> 
+                                <li><a href="https://de.personello.com/service/datenschutz.htm">Data Protection</a></li> 
+                                <li><a href="https://de.personello.com/service/datenschutz.htm#jm_OptOut">Cookie Settings</a></li> 
+                                <li><a href="https://de.personello.com/impressum.htm">Legal Notice</a></li> 
+                            </ul> 
+                        </div> 
+                        <div class="col3" role="group" aria-labelledby="footer-servicelinks"> 
+                            <p class="title" id="footer-servicelinks">Service</p> 
+                            <ul class="linkList"> 
+                                <li><a href="https://de.personello.com/produkte/">Prices</a></li> 
+                                <li><a href="https://de.personello.com/service/zahlarten.htm">Payment Methods</a></li> 
+                                <li><a href="https://de.personello.com/mengenanfragen/">Volume Discount</a></li> 
+                                <li><a href="https://de.personello.com/service/lieferzeit.htm">Shipping & Delivery Times</a></li> 
+                                <li><a href="https://de.personello.com/service/">All Help Topics</a></li> 
+                            </ul> 
+                        </div> 
+                        <div class="col3" role="group" aria-labelledby="footer-i18n"> 
+                            <p class="title">Right of Withdrawal</p> 
+                            <a href="https://de.personello.com/service/widerrufsrecht.htm#jm_musterformular" class="defaultButton link">Cancel Order</a> <br><br> 
+                            <p class="title" id="footer-i18n">Personello International</p> 
+                            <div class="flags"> 
+                                <a href="https://fr.personello.com/"><img src="/views/personelloweb/MeinKonto_files/fr.svg" data-src="/views/personelloweb/MeinKonto_files/fr.svg" alt="France" loading="lazy" width="40" height="30" class="lazy-loaded"></a> 
+                                <a href="https://nl.personello.com/"><img src="/views/personelloweb/MeinKonto_files/nl.svg" data-src="/views/personelloweb/MeinKonto_files/nl.svg" alt="Netherlands" loading="lazy" width="40" height="30" class="lazy-loaded"></a> 
+                            </div> 
+                        </div> 
+                    </div> 
+                </div> 
+            </div> 
+            <div id="testimonials" class="clear" role="region" aria-label="Media Presence"> 
+                <div class="limiter"> 
+                    <p class="title">As seen on </p> 
+                    <img loading="lazy" src="/views/personelloweb/MeinKonto_files/testimonials.jpg" alt="Personello in the media" data-pin-nopin="true" width="1188" height="51"> 
+                </div> 
+            </div> 
+            <div class="mobile-only-content" style="display:none;">
+                 <img src="/views/personelloweb/MeinKonto_files/mobile.jpg" alt="Footer Mobile View">
+            </div>
+
+        </footer> 
+    </div> 
+    
+    <div id="textLinks" class="limiter" role="region" aria-label="Copyright and Location"> 
+        <div id="pso-copyright">From Homburg with <span class="icon-heart" aria-hidden="true"></span> <br> © 2026 Personello - Photo Gifts (04) </div> 
+    </div> 
+
+    <!-- ========================================== -->
+    <!-- 8. MODALS & FORMS -->
+    <!-- ========================================== -->
+    <div id="modalIncentiveConditions" class="reveal-modal" data-nosnippet="true"> 
+        <div class="row"> <div class="col12"> <p class="title"> Newsletter Registration</p> <p><strong>The promotional conditions:</strong><br> Minimum order value 24.95 EUR incl. VAT, excl. shipping costs. Voucher valid for the array assortment on www.Personello.com. Voucher value incl. VAT will be deducted in the shopping cart. No cash payout possible. Cannot be combined with other vouchers. </p> </div> </div> <div class="row"> <p class="title">What awaits you</p> <div class="col3 first"> <ul class="uspList"> <li>1-2 newsletters per month</li> <li>exclusive benefits for subscribers</li> <li>discounts & vouchers</li> <li>the latest gifts</li> </ul> </div> <div class="col3"> <ul class="uspList"> <li>gift ideas for every occasion</li> <li>become a product tester</li> <li>DIYs & crafting tips</li> <li>guides & decoration ideas</li> </ul> </div> </div> <div class="row"> <div class="col12"> <a class="defaultButton ok close-modal" href="javascript:void(0);"> understood</a> </div> </div> 
+    </div> 
+
+    <div id="globalContactFormContainer" data-nosnippet="true"> 
+        <div class="col4 first globalContactFormContent"> <p id="globalContactFormClose"><span class="icon-delete-circle muted large"></span></p> <form role="form" arial-label="Contact Form"> <p>Why would you like to contact us?</p> <select> <option value="complaint">I want to make a complaint.</option> <option value="cancellation">I want to cancel.</option> <option value="address">I want to change my delivery address.</option> <option value="orderstatus">Where is my order?</option> <option value="receipt">I want to send a transfer receipt.</option> <option value="other">other question</option> </select> </form> </div> <div class="col4 first globalContactFormContent" data-key="complaint"> <p class="infoText">Please use our form for <a href="https://de.personello.com/service/reklamation.htm">complaints</a>.</p> </div> <div class="col4 first globalContactFormContent" data-key="address"> <p class="infoText">Please use our form to <a href="https://de.personello.com/service/lieferadresse-aendern.htm">change the delivery address</a>.</p> </div> <div class="col4 first globalContactFormContent" data-key="orderstatus"> <p class="infoText">You can check the status of your order <a href="https://de.personello.com/service/bestellstatus.htm">directly online</a>.</p> </div> <div class="col4 first globalContactFormContent" data-key="other"> <form id="globalContactForm"> <input type="hidden" id="globalContactFormCsrf"> <p class="title">How can we help you?</p> <div id="globalContactFormResponse"></div> <input id="globalContactFormMail" type="email" name="frmStr_email" placeholder="Your email address" required=""> <textarea id="globalContactFormText" name="frmStr_text" placeholder="Your message to us" required=""></textarea> <div id="globalContactFormCaptchaContainer"></div> <br> <button id="globalContactFormSubmitButton" type="submit">Send</button> </form> </div> 
+    </div> 
+
+    <!-- ========================================== -->
+    <!-- 9. FOOTER SCRIPTS & COOKIE BANNERS -->
+    <!-- ========================================== -->
+    <script src="/views/personelloweb/MeinKonto_files/jquery-1.11.1.min.js.download"></script> 
+    <script type="text/javascript" src="/views/personelloweb/MeinKonto_files/youtube.js.download"></script> 
+
+
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5TP9QX" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript> 
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start': new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0], j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src= 'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f); })(window,document,'script','dataLayer','GTM-MHP9348');</script> 
+    <script type="text/javascript"> window.onload = function ( e ) { if(typeof init == 'function') { init(); } }; $('a[href^="tel:"]').each(function(){$(this).attr("href", "javascript:void(0)");}); </script> 
+    <script type="text/javascript" src="/views/personelloweb/MeinKonto_files/desktop.js.download"></script> 
+    <script src="/views/personelloweb/MeinKonto_files/mypso.js.download"></script>
+    <script type="text/javascript" id="" charset="">(function(){var a="undefined";sessionStorage.setItem("catalog_id",a)})();</script>
+    <script type="text/javascript" id="" charset="">!function(d,g,e){d.TiktokAnalyticsObject=e;var a=d[e]=d[e]||[];a.methods="page track identify instances debug on off once ready alias group enableCookie disableCookie".split(" ");a.setAndDefer=function(b,c){b[c]=function(){b.push([c].concat(Array.prototype.slice.call(arguments,0)))}};for(d=0;d<a.methods.length;d++)a.setAndDefer(a,a.methods[d]);a.instance=function(b){b=a._i[b]||[];for(var c=0;c<a.methods.length;c++)a.setAndDefer(b,a.methods[c]);return b};a.load=function(b,c){var f="https://analytics.tiktok.com/i18n/pixel/events.js"; a._i=a._i||{};a._i[b]=[];a._i[b]._u=f;a._t=a._t||{};a._t[b]=+new Date;a._o=a._o||{};a._o[b]=c||{};c=document.createElement("script");c.type="text/javascript";c.async=!0;c.src=f+"?sdkid="+b+"&lib="+e;b=document.getElementsByTagName("script")[0];b.parentNode.insertBefore(c,b)};a.load("CH5QRURC77U2I5R8KB00");a.page()}(window,document,"ttq");</script>
+    <script type="text/javascript" id="" charset="">!function(b,e,f,g,a,c,d){b.fbq||(a=b.fbq=function(){a.callMethod?a.callMethod.apply(a,arguments):a.queue.push(arguments)},b._fbq||(b._fbq=a),a.push=a,a.loaded=!0,a.version="2.0",a.queue=[],c=e.createElement(f),c.async=!0,c.src=g,d=e.getElementsByTagName(f)[0],d.parentNode.insertBefore(c,d))}(window,document,"script","https://connect.facebook.net/en_US/fbevents.js");fbq("init","1110307009099925");fbq("track","PageView");</script>
+    <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=1110307009099925&amp;ev=PageView&amp;noscript=1"></noscript>
+    <script type="text/javascript" id="" charset="">window.dataLayer.push({event:"consent_mode_ready",consent_mode_ready:!0});</script> 
+    
+    <!-- JSON-LD Scripts -->
+    <script type="application/ld+json"> 
+    {
+        "@context": "http://schema.org",
+        "@type": "Organization",
+        "name": "Personello GmbH",
+        "url": "https://de.personello.com",
+        "logo": "https://de.personello.com/container/logo-personello-quadratisch.jpg",
+        "address": { "@type": "PostalAddress", "addressLocality": "Homburg", "postalCode": "66424", "streetAddress": "Zum Lokschuppen 1" },
+        "contactPoint": { "@type": "ContactPoint", "contactType": "customer service", "email": "service@personello.com", "telephone": "+49 6841 979 165", "availableLanguage": [ { "@type": "Language", "name": "German", "alternateName": "de" }, { "@type": "Language", "name": "French", "alternateName": "fr" }, { "@type": "Language", "name": "English", "alternateName": "en" }, { "@type": "Language", "name": "Spanish", "alternateName": "es" }, { "@type": "Language", "name": "Dutch", "alternateName": "nl" }, { "@type": "Language", "name": "Italian", "alternateName": "it" } ] }
+    } 
+    </script> 
+    <script type="application/ld+json"> 
+    {
+        "@context": "http://schema.org/",
+        "@type": "WebPage",
+        "copyrightHolder": "Personello GmbH",
+        "copyrightYear": "2026",
+        "isFamilyFriendly": "True",
+        "name": "My Account",
+        "image": "https://de.personello.com/container/logo-personello.jpg"
+    } 
+    </script> 
+    <script type="application/ld+json"> 
+    {
+        "@context": "http://schema.org",
+        "type": "BreadcrumbList",
+        "itemListElement": [ { "@type": "ListItem", "position": 1, "item": { "@id": "/", "name": "Home" } }, { "@type": "ListItem", "position": 2, "item": { "@id": "/mypersonello/index.htm", "name": "My Account" } } ]
+    } 
+    </script> 
+    <script> 
+        (function(d) {
+        var wf = d.createElement('script'), s = d.scripts[0];
+        wf.src = 'https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js';
+        wf.integrity = "sha256-gQFqxr6FC3LfXU+qDDzsjiwbC6AEVxIUSmdmrfrUC+4=";
+        wf.crossOrigin = "anonymous";
+        wf.onerror = function(){
+        var wf = d.createElement('script');
+        wf.src = '/assets/vendor/webfont-1.6.26.min.js?v=81016ac6be850b72df5d4faa0c3cec8e2c1b0ba0045712144a6766adfad40bee';
+        wf.async = true;
+        s.parentNode.insertBefore(wf, s);
+        };
+        wf.async = true;
+        s.parentNode.insertBefore(wf, s);
+        })(document); 
+    </script> 
+    <script type="text/javascript"> 
+        function showTrustedShopFooter() { document.getElementById( "psoCustomTrustbadge" ).scrollIntoView(); }
+        (function() { loadAsyncTrustedShopBadge( 'X029C698F3D8BB9F86ACE0EBF26F5548C', 'psoCustomTrustbadge', 'psoCustomCheckoutDiv' ); })(); 
+    </script> 
+
+    <div id="batBeacon290583193622" style="width: 0px; height: 0px; display: none; visibility: hidden;"><img id="batBeacon576503027798" width="0" height="0" alt="" src="/views/personelloweb/MeinKonto_files/0" style="width: 0px; height: 0px; display: none; visibility: hidden;"></div>
+    <script type="module" src="/views/personelloweb/MeinKonto_files/trustbadge.js.download" charset="utf-8" data-type="trustbadge-business-logic"></script>
+    <iframe id="trustbadge-iframe" tabindex="-1" title="Trustbadge" style="display: none;" src="/views/personelloweb/MeinKonto_files/saved_resource.html"></iframe>
+</body>
+</html>

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Designer Tools Hub</title>
+    <style>
+        /* 🎯 FORCE PURE WHITE BACKGROUND FOR THE WHOLE PAGE & BODY */
+        html, body {
+            background: #ffffff !important;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Personello Style Matching Sheet */
+        .pso-hub-container {
+            max-width: 1188px;
+            margin: 60px auto;
+            padding: 0 20px;
+            text-align: center;
+            box-sizing: border-box;
+        }
+
+        .pso-hub-title {
+            font-family: 'Asap', sans-serif;
+            font-size: 3.6rem;
+            font-weight: 700;
+            color: #333333;
+            margin-bottom: 12px;
+        }
+
+        .pso-hub-subtitle {
+            font-family: 'Asap', sans-serif;
+            font-size: 1.6rem;
+            color: #666666;
+            margin-bottom: 40px;
+        }
+
+        /* Responsive Dashboard Grid Grid */
+        .pso-hub-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+        }
+
+        .pso-tool-card {
+            background: #ffffff;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 30px 24px;
+            width: 280px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .pso-tool-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+            border-color: #98ceb5;
+        }
+
+        .pso-tool-icon {
+            font-size: 3.6rem;
+            margin-bottom: 15px;
+        }
+
+        .pso-tool-name {
+            font-family: 'Asap', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #333333;
+            margin-bottom: 10px;
+        }
+
+        .pso-tool-desc {
+            font-family: 'Asap', sans-serif;
+            font-size: 1.3rem;
+            color: #777777;
+            margin-bottom: 24px;
+            line-height: 1.4;
+            flex-grow: 1;
+        }
+
+        /* Personello Custom Action Accent Button style */
+        .pso-tool-btn {
+            display: inline-block;
+            background: #98ceb5;
+            color: #333333;
+            text-decoration: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            font-family: 'Asap', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 700;
+            transition: background 0.2s ease;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .pso-tool-btn:hover {
+            background: #87bd9e;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 💻 Automated Header Injection Node -->
+    {{HEADER}}
+
+    <!-- 🛠️ MAIN HUB BODY -->
+    <div class="pso-hub-container">
+        <h1 class="pso-hub-title">Designer Tools Dashboard</h1>
+        <p class="pso-hub-subtitle">Please select a tool from below to begin your editing session.</p>
+
+        <div class="pso-hub-grid">
+            
+            <!-- Card 1: Video Tracking Maker -->
+            <div class="pso-tool-card">
+                <div class="pso-tool-icon">🎬</div>
+                <div class="pso-tool-name">Card Tracking Maker</div>
+                <p class="pso-tool-desc">Create and configure precise video tracking points for motion templates.</p>
+                <a href="/designertools/tracking" class="pso-tool-btn">Open →</a>
+            </div>
+
+            <!-- Card 2: Video Cards Editor -->
+            <div class="pso-tool-card">
+                <div class="pso-tool-icon">🎬🛠️</div>
+                <div class="pso-tool-name">Card Tracking Editor</div>
+                <p class="pso-tool-desc">Modify and manage dynamic video card layers and their underlying assets.</p>
+                <a href="/designertools/editor" class="pso-tool-btn">Open →</a>
+            </div>
+
+            <!-- Card 3: Video Test Pipeline -->
+            <div class="pso-tool-card">
+                <div class="pso-tool-icon">🧪</div>
+                <div class="pso-tool-name">Card Video Test</div>
+                <p class="pso-tool-desc">Run automation pipeline rendering tests and preview output configurations.</p>
+                <a href="/designertools/test" class="pso-tool-btn">Open →</a>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- 💻 Automated Footer Injection Node -->
+    {{FOOTER}}
+
+</body>
+</html>

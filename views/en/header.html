@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en" class="wf-personello-n4-active wf-asap-n4-active wf-amaticsc-n4-active wf-active">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    
+    <!-- 📁 පද්ධතියේ ඇති සැබෑ CSS සහ Fonts නිවැරදිව සම්බන්ධ කිරීම -->
+    <link href="/views/personelloweb/MeinKonto_files/default.css" type="text/css" rel="stylesheet"> 
+    <link rel="stylesheet" href="/views/personelloweb/MeinKonto_files/fonts.css" media="all">
+    
+    <title>My Account</title> 
+    <link rel="canonical" href="https://de.personello.com/mypersonello/">
+
+    <!-- ================================================================= -->
+    <!-- 🎯 RESPONSIVE HYBRID VIEWPORT ENGINE -->
+    <!-- ================================================================= -->
+    <style>
+        /* --- [1. MOBILE VIEW ONLY STYLING] --- */
+        /* තිරයේ පළල 768px හෝ ඊට අඩු වන විට (මොබයිල් එකේදී) පමණක් ක්‍රියාත්මක වේ */
+        @media screen and (max-width: 768px) {
+            /* PC එකේ තිබ්බ විශාල Elements ඔක්කොම සඟවන්න */
+            #uspBar, .trustedShops, .searchBar, .quickLinks, #mainNav, .skipLinks {
+                display: none !important;
+            }
+
+            /* මොබයිල් එකේදී මුළු Header එකම එක පේළියක ලස්සනට පෙළගැස්වීම */
+            header.limiter {
+                display: flex !important;
+                flex-direction: row !important;
+                align-items: center !important;
+                justify-content: space-between !important;
+                padding: 12px 18px !important;
+                background: #ffffff !important;
+                border-bottom: 1px solid #ccc !important;
+                max-width: 100% !important;
+                width: 100% !important;
+                box-sizing: border-box !important;
+            }
+
+            /* වම්පස: Hamburger + Logo Wrapper එක සක්‍රීය කිරීම */
+            .pso-mobile-left {
+                display: flex !important;
+                align-items: center !important;
+                gap: 15px !important;
+            }
+
+            /* Hamburger Button එක පෙන්වීම */
+            .pso-mobile-hamburger {
+                display: flex !important;
+                background: none !important;
+                border: none !important;
+                cursor: pointer !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+
+            .pso-mobile-hamburger span.icon-menu:before {
+                font-size: 2.8rem !important;
+                color: #777777 !important;
+            }
+
+            #logo {
+                margin: 0 !important;
+                padding: 0 !important;
+                display: flex !important;
+                align-items: center !important;
+            }
+
+            #logo img {
+                max-height: 42px !important; 
+                width: auto !important;
+            }
+
+            /* දකුණුපස: Icons Wrapper එක සක්‍රීය කිරීම */
+            .pso-mobile-right {
+                display: flex !important;
+                align-items: center !important;
+                gap: 24px !important;
+            }
+
+            .pso-mobile-btn {
+                display: flex !important;
+                background: none !important;
+                border: none !important;
+                padding: 0 !important;
+                cursor: pointer !important;
+                align-items: center !important;
+                text-decoration: none !important;
+            }
+
+            .pso-mobile-btn span.icon-search:before,
+            .pso-mobile-btn span.icon-shopping-cart:before {
+                font-size: 2.8rem !important;
+                color: #777777 !important;
+            }
+
+            html.wf-personello-n4-active *:before, html.wf-personello-n4-active *:after {
+                display: inline-block !important;
+            }
+        }
+
+        /* --- [2. PC/DESKTOP VIEW ONLY STYLING] --- */
+        /* තිරයේ පළල 769px හෝ ඊට වැඩි වන විට (පරිගණකයේදී) පමණක් ක්‍රියාත්මක වේ */
+        @media screen and (min-width: 769px) {
+            /* මොබයිල් වෙනුවෙන් හදපු Wrapper ටැග්ස් PC එකේ Layout එකට බාධා නොවන සේ සාමාන්‍ය තත්ත්වයට පත් කිරීම */
+            .pso-mobile-left, .pso-mobile-right {
+                display: contents !important;
+            }
+
+            /* PC එකේදී මොබයිල් Hamburger එක සහ දකුණුපස අමතර Icons සඟවන්න */
+            .pso-mobile-hamburger, .pso-mobile-right {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+
+<body class="theme default" id="pageStart">
+
+    <div id="g_id_onload" data-client_id="118009632692-d0b811a33p1ljvn7usc7f266rp5d9ap8.apps.googleusercontent.com" data-login_uri="https://your.domain/your_login_endpoint" data-auto_prompt="false"></div> 
+    
+    <script type="text/javascript"> 
+        WebFontConfig = {
+            custom : {
+                families : [ 'personello', 'Asap:400,400i,700', 'Amatic SC' ],
+                urls : [ "/views/personelloweb/MeinKonto_files/fonts.css"]
+            }
+        };
+    </script> 
+
+    <noscript> <link href="/views/personelloweb/MeinKonto_files/default.css" type="text/css" rel="stylesheet"> </noscript>
+
+    <!-- 💻 PC Top Bar (Skip Links) - මොබයිල් එකේදී ඔටෝමැටිකලි මැකේ -->
+    <div class="skipLinks" role="navigation" aria-label="Skip Links"> 
+        <a href="https://de.personello.com/mypersonello/#content">Skip to content</a> 
+        <a href="https://de.personello.com/mypersonello/#footer">Skip to footer</a> 
+        <a href="https://de.personello.com/mypersonello/#accSearch">Search for a gift</a> 
+    </div> 
+
+    <div id="container" class=""> 
+        <div id="containerPushMessage" class="notifyBox"> 
+            <p><span class="large icon-checkmark-circle"></span> The product has been added to your shopping cart.</p> 
+        </div> 
+
+        <!-- 💻 PC Top USP Bar (Über 100 Geschenkideen, Sichere Lieferung,...) - මොබයිල් එකේදී ඔටෝමැටිකලි මැකේ -->
+        <div id="uspBar" role="region" aria-label="Quick Information"> 
+            <div class="limiter"> 
+                <span class="usp" aria-hidden="true"> <span class="icon-gift"></span> Over 100 gift ideas </span> 
+                <span class="usp"> <span class="icon-truck" aria-hidden="true"></span> Secure delivery </span> 
+                <span class="usp"> <span class="icon-checkmark" aria-hidden="true"></span> Invoice purchase with Klarna </span> 
+                <span class="usp"> <span class="icon-phone" aria-hidden="true"></span> Support: 06841-979165 </span> 
+            </div> 
+        </div> 
+
+        <!-- ================================================================= -->
+        <!-- 🎯 HYBRID MULTI-VIEWPORT HEADER -->
+        <!-- ================================================================= -->
+        <header class="limiter"> 
+            
+            <!-- 📱 මොබයිල් වම්පස කොටස: Hamburger Menu සහ Logo එක පෙළට ගනී -->
+            <div class="pso-mobile-left">
+                <!-- Mobile Hamburger Toggle (PC එකේදී ස්වයංක්‍රීයව සැඟවේ) -->
+                <button class="pso-mobile-hamburger" aria-label="Open menu" onclick="alert('Menu Toggled!')">
+                    <span class="icon-menu"></span>
+                </button>
+
+                <!-- Personello මධ්‍යම ලාංඡනය (Logo) -->
+                <div id="logo"> 
+                    <a href="https://de.personello.com/"> 
+                        <img src="/views/personelloweb/MeinKonto_files/logo_personello.svg" alt="Logo Personello Photo Gifts" width="220" height="60"> 
+                    </a> 
+                </div> 
+            </div>
+
+            <!-- 💻 PC Trusted Shops Badge - මොබයිල් එකේදී ඔටෝමැටිකලි මැකේ -->
+            <div class="trustedShops"> 
+                <a onclick="dataLayer.push({'lochref':'https://de.personello.com', 'origElhref':'https://www.trustedshops.de/bewertung/info_X029C698F3D8BB9F86ACE0EBF26F5548C.html', 'fotogeschenkelabel':'header', 'event':'header'});" href="javascript:showTrustedShopFooter()"> 
+                    <img src="/views/personelloweb/MeinKonto_files/ico_trusted-shops-header.jpg" alt="Trusted Shops" width="60" height="60"> 
+                </a> 
+            </div> 
+
+            <!-- 💻 PC Search Bar - Personello Original Structure with Adaptable Search -->
+            <div class="searchBar"> 
+                <form action="#" role="search" aria-label="Product Search" onsubmit="event.preventDefault();"> 
+                    <input id="accSearch" type="search" name="q" size="30" placeholder="Search on this page..." class="frmStr_searchBox" value="" aria-label="Search term" oninput="triggerPageSearch(this.value)"> 
+                    <button type="button" class="searchSubmit" style="background: #98ceb5 !important;" aria-label="Start search"><span class="icon-search"></span></button> 
+                </form> 
+            </div> 
+
+            <!-- 🎯 Global Search Dispatcher Script -->
+            <script>
+                function triggerPageSearch(query) {
+                    const searchEvent = new CustomEvent('pageSearch', { 
+                        detail: { query: query.trim().toLowerCase() } 
+                    });
+                    window.dispatchEvent(searchEvent);
+                }
+            </script> 
+
+            <!-- 💻 PC Quick Links (My Account, Help, Shopping Cart Links) - මොබයිල් එකේදී ඔටෝමැටිකලි මැකේ -->
+            <div class="quickLinks" role="navigation" aria-label="Quick Links"> 
+                <a href="https://de.personello.com/mypersonello/" class="muted"> 
+                    <img class="mainNavIcon" src="/views/personelloweb/MeinKonto_files/mein_konto.svg" alt="" width="32" height="32"> 
+                    <span class="linkText">My Account</span> 
+                </a> 
+                <a href="https://de.personello.com/service/" class="muted"> 
+                    <img class="mainNavIcon" src="/views/personelloweb/MeinKonto_files/hilfe.svg" alt="" width="32" height="32"> 
+                    <span class="linkText">Help</span> 
+                </a> 
+                <a href="https://de.personello.com/checkout/warenkorb.htm" class="muted" id="checkoutLogo"> 
+                    <img class="mainNavIcon" src="/views/personelloweb/MeinKonto_files/warenkorb.svg" alt="" width="32" height="32"> 
+                    <span class="linkText">Shopping Cart</span> 
+                </a> 
+            </div> 
+
+            <!-- 📱 මොබයිල් දකුණුපස කොටස: Search සහ Cart Icon දෙක (PC එකේදී ස්වයංක්‍රීයව සැඟවේ) -->
+            <div class="pso-mobile-right">
+                <!-- Search Icon -->
+                <button class="pso-mobile-btn" aria-label="Start search" onclick="alert('Search Toggled!')">
+                    <span class="icon-search"></span>
+                </button>
+                <!-- Cart Icon (Updated with custom dynamic structural path) -->
+                <a href="https://de.personello.com/checkout/warenkorb.htm" class="muted" id="checkoutLogoMobile"> 
+                    <img class="mainNavIcon" src="/views/personelloweb/MeinKonto_files/warenkorb.svg" alt="" width="32" height="32"> 
+                </a>
+            </div>
+
+        </header> 
+        <!-- ================================================================= -->
+
+        <!-- 💻 PC Navigation Menu (Fotogeschenke, Gravur, Männer, Frauen...) - මොබයිල් එකේදී ඔටෝමැටිකලි මැකේ -->
+        <nav id="mainNav" aria-label="Main Menu"> 
+            <div class="limiter"> 
+                <ul id="topMenu"> 
+                    <li><a href="https://de.personello.com/fotogeschenke.htm" onclick="dataLayer.push({'lochref':'Navi Link Klicks','event':'navilink'});">Photo Gifts</a></li> 
+                    <li><a href="https://de.personello.com/geschenke/gravur.htm" onclick="dataLayer.push({'lochref':'Navi Link Klicks','event':'navilink'});">Engraving</a></li> 
+                    <li class="flyOut"> <a class="showSubNav small" href="https://de.personello.com/geschenke/maenner.htm" onclick="dataLayer.push({'lochref':'Navi Link Klicks','event':'navilink'});">Men <span class="icon-chevron-down"></span></a> 
+                        <ul class="subNav muted"> 
+                            <li> <a href="https://de.personello.com/geschenke/geschenke-fuer-papa.htm">Dad</a> </li> 
+                            <li> <a href="https://de.personello.com/geschenke/geschenke-fuer-opa.htm">Grandpa</a> </li> 
+                            <li> <a href="https://de.personello.com/geschenke/geschenke-fuer-bruder.htm">Brother</a> </li> 
+                            <li> <a href="https://de.personello.com/liebe/freund.htm"> Boyfriend <span class="icon-heart"></span> </a> </li> 
+                            <li> <a href="https://de.personello.com/inspirationen/geschenke-verpacken/diy-geschenkideen-fuer-maenner.htm">DIY Gifts</a> </li> 
+                        </ul> 
+                    </li> 
+                    <li class="flyOut"> <a class="showSubNav small" href="https://de.personello.com/geschenke/frauen.htm" onclick="dataLayer.push({'lochref':'Navi Link Klicks','event':'navilink'});">Women <span class="icon-chevron-down"></span></a> 
+                        <ul class="subNav muted"> 
+                            <li> <a href="https://de.personello.com/geschenke/geschenke-fuer-mama.htm">Mom</a> </li> 
+                            <li> <a href="https://de.personello.com/geschenke/geschenke-fuer-oma.htm">Grandma</a> </li> 
+                            <li> <a href="https://de.personello.com/geschenke/geschenke-fuer-schwester.htm">Sister</a> </li> 
+                            <li> <a href="https://de.personello.com/liebe/freundin.htm">Girlfriend <span class="icon-heart"></span></a> </li> 
+                            <li> <a href="https://de.personello.com/geschenke/fuer-beste-freundin.htm">Best Girlfriend</a> </li> 
+                            <li> <a href="https://de.personello.com/geschenke/geschenke-fuer-schwiegermutter.htm">Mother-in-law</a> </li> 
+                            <li> <a href="https://de.personello.com/geschenke/geschenke-fuer-patentante.htm">Godmother</a> </li> 
+                        </ul> 
+                    </li> 
+                    <li><a href="https://de.personello.com/geburtstag/" onclick="dataLayer.push({'lochref':'Navi Link Klicks','event':'navilink'});">Birthday</a> </li> 
+                    <li><a href="https://de.personello.com/hochzeit/" onclick="dataLayer.push({'lochref':'Navi Link Klicks','event':'navilink'});">Wedding</a> </li> 
+                    <li class="flyOut"> <a class="showSubNav" href="https://de.personello.com/geschenke.htm" onclick="dataLayer.push({'lochref':'Navi Link Klicks','event':'navilink'});">Find Gifts <span class="icon-chevron-down"></span></a> 
+                        <ul class="subNav muted"> 
+                            <li> <a href="https://de.personello.com/anlaesse.htm">All Occasions</a> </li> 
+                            <li> <a href="https://de.personello.com/empfaenger.htm">All Recipients</a> </li> 
+                            <li> <a href="https://de.personello.com/interessen.htm">All Interests</a> </li> 
+                            <li> <a href="https://de.personello.com/produkte/?frmStr_view=gallery">All Products</a> </li> 
+                            <li> <a href="https://de.personello.com/inspirationen/">All Inspirations</a> </li> 
+                            <li> <a href="https://de.personello.com/neu.htm">New Arrivals</a> </li> 
+                            <li> <a href="https://de.personello.com/top50.htm">Top 50 Products</a> </li> 
+                        </ul> 
+                    </li> 
+                </ul> 
+            </div> 
+        </nav> 
+
+    </div>
+</body>
+</html>

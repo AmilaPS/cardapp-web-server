@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CardApp - Ultimate Production Suite</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 0; background-color: #f1f2f6; display: flex; height: 100vh; overflow: hidden; }
+        *, *:before, *:after { box-sizing: border-box; }
+        .sidebar-tabs { width: 260px; background: #2f3640; color: white; display: flex; flex-direction: column; padding: 20px 0; }
+        .sidebar-tabs h2 { padding: 0 20px; font-size: 18px; margin-bottom: 25px; color: #f5f6fa; border-bottom: 1px solid #487eb0; padding-bottom: 10px; }
+        .tab-btn { background: none; border: none; color: #a4b0be; padding: 12px 20px; text-align: left; font-size: 15px; font-weight: bold; cursor: pointer; transition: 0.2s; border-left: 4px solid transparent; }
+        .tab-btn:hover { background: #353b48; color: white; }
+        .tab-btn.active { background: #718093; color: white; border-left-color: #00a8ff; }
+        .content-area { flex: 1; padding: 25px; overflow-y: auto; height: 100%; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 2px solid #dcdde1; padding-bottom: 10px; }
+        .grid-list { display: flex; flex-direction: column; gap: 10px; margin-top: 15px; }
+        .item-row { background: white; padding: 15px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border: 1px solid #dfe4ea; }
+        .item-info { font-size: 15px; font-weight: bold; color: #2f3640; }
+        .item-info span { font-size: 12px; color: #718093; margin-left: 10px; font-weight: normal; }
+        .btn-blue { background: #0984e3; color: white; border: none; padding: 8px 16px; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 13px; }
+        .btn-green { background: #2ed573; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 14px; }
+        .btn-danger { background: #ff7675; color: white; border: none; padding: 8px 14px; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 13px; margin-left: 5px; }
+        .editor-container { background: white; border: 2px solid #2ed573; border-radius: 12px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-top: 20px; }
+        .form-group { display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px; width: 100%; }
+        label { font-size: 12px; font-weight: bold; color: #57606f; }
+        input[type="text"], input[type="number"], select { padding: 6px 10px; border: 1px solid #ced4da; border-radius: 5px; font-size: 13px; width: 100%; }
+        .row { display: flex; gap: 8px; width: 100%; align-items: center; }
+        .row > .form-group { flex: 1; min-width: 0; }
+        .quad-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; width: 100%; }
+        canvas { background: #dfe4ea; max-width: 100%; height: auto; border: 1px solid #a4b0be; margin-top: 12px; border-radius: 6px; }
+        .layer-item { background: #f1f2f6; border-left: 4px solid #0984e3; padding: 12px; margin-bottom: 12px; border-radius: 4px; }
+        
+        .switch { position: relative; display: inline-block; width: 44px; height: 22px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 22px; }
+        .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: #0984e3; }
+        input:checked + .slider:before { transform: translateX(22px); }
+        .asset-row-box { background: #f8f9fa; border: 1px dashed #ced4da; padding: 12px; margin-bottom: 10px; border-radius: 6px; }
+
+        .pagination-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; background: white; padding: 12px 20px; border-radius: 8px; border: 1px solid #dfe4ea; }
+        .page-num-btn { background: #f1f2f6; color: #2f3640; border: 1px solid #dcdde1; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 13px; transition: 0.2s; }
+        .page-num-btn:hover { background: #dfe4ea; }
+        .page-num-btn.active { background: #0984e3; color: white; border-color: #0984e3; }
+        .search-bar-input { padding: 10px 15px; border: 1px solid #ced4da; border-radius: 6px; font-size: 14px; width: 100%; margin-bottom: 5px; box-shadow: inset 0 1px 3px rgba(0,0,0,0.05); }
+
+        .card-img-preview-box { width: 70px; height: 70px; border-radius: 8px; border: 1px solid #ccc; object-fit: cover; display: none; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar-tabs">
+        <h2>Control Studio</h2>
+        <button class="tab-btn active" onclick="switchTab('card_maker_tab')">Card Maker</button>
+        <button class="tab-btn" onclick="switchTab('image_maker_tab')">Image Maker</button>
+        <button class="tab-btn" onclick="switchTab('fonts_tab')">Fonts Manager</button>
+        <button class="tab-btn" onclick="switchTab('hints_tab')">Text Slot Hints</button>
+    </div>
+
+    <div class="content-area">
+        
+        <!-- TAB 1: CARD MAKER -->
+        <div id="card_maker_tab" class="tab-content active">
+            <div class="header-row">
+                <h1 style="margin:0; font-size:22px; color:#2f3640;">Existing Cards Node Registry</h1>
+                <button class="btn-green" onclick="openNewCardEditor()">+ Add Card</button>
+            </div>
+            
+            <div style="margin-bottom: 15px;">
+                <input type="text" id="search_cards" class="search-bar-input" placeholder="🔍 සෙවීමට කාඩ්පතේ නම හෝ ID එක ටයිප් කරන්න..." oninput="handleCardSearch()">
+            </div>
+
+            <div id="cardsListContainer" class="grid-list"></div>
+            
+            <div id="cards_pagination" class="pagination-footer">
+                <div id="cards_page_info" style="font-size:13px; color:#718093; font-weight:bold;">Showing 0-0 of 0</div>
+                <div id="cards_page_numbers" style="display:flex; gap:5px;"></div>
+            </div>
+            
+            <div id="cardEditorSection" class="editor-container" style="display: none;">
+                <h3 id="panelTitle" style="margin-top:0; color:#2ed573; font-size:16px;">Tuning Card Assets</h3>
+                <div class="row">
+                    <div class="form-group" style="flex: 1;">
+                        <label>Cardmaker ID (Unique Identifier Code)</label>
+                        <input type="text" id="card_id_input" placeholder="e.g. CC001001">
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label>Card web ID</label>
+                        <input type="text" id="card_web_id" placeholder="e.g. Cristmas_Card_01">
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label>Card Name</label>
+                        <input type="text" id="card_name" placeholder="e.g. Cristmas Card 01" oninput="autoGenerateFolderName(this.value)">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group" style="flex: 1.5;">
+                        <label>Folder Path/Name (Locked on Update)</label>
+                        <input type="text" id="folder_name" readonly style="background:#f1f2f6; font-weight:bold; color:#2f3640;">
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label>Card Image (Saved as Base64)</label>
+                        <img id="card_img_preview" class="card-img-preview-box">
+                        <input type="file" id="card_image_file" accept="image/*" onchange="previewCardImage(event)">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group"><label>Keywords</label><input type="text" id="keywords" placeholder="christmas, womans, mens, all"></div>
+                    <div class="form-group"><label>Image Slots</label><input type="text" id="image_slots" placeholder="Image_01"></div>
+                    <div class="form-group"><label>Text Slots</label><input type="text" id="text_slots" placeholder="text_01,text_02"></div>
+                </div>
+
+                <div style="margin: 18px 0; border-top: 1px solid #dcdde1; padding-top: 12px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                        <h4 style="margin:0; font-size:14px; color:#2f3640;">Upload Images / Link Video Requirements</h4>
+                        <button class="btn-blue" type="button" onclick="addAssetRow()">Add Images</button>
+                    </div>
+                    <div id="assetsWrapper"></div>
+                </div>
+
+                <div class="form-group"><label>API Route Link Path</label><input type="text" id="api_link" value="/api/christmas"></div>
+                
+                <div style="background:#f1f2f6; padding:15px; border-radius:8px; margin-bottom:15px; border: 1px solid #dfe4ea;">
+                    <h4 style="margin-top:0; margin-bottom:12px; font-size:13px; color:#2f3640; border-bottom: 1px solid #ced4da; padding-bottom: 4px;">Blueprint & Design Template Directives</h4>
+                    
+                    <!-- 🎨 DESIGN LAYOUT ROW -->
+                    <div class="asset-row-box" style="display: flex; gap: 10px; align-items: center; width: 100%;">
+                        <span style="width: 140px; font-size: 13px; font-weight: bold; color: #2f3640;">Design Layout</span>
+                        
+                        <div id="design_file_container" class="asset-file-container" style="flex: 1; display: flex; align-items: center; gap: 8px;">
+                            <input type="file" id="design_file" accept="image/*" style="font-size: 12px; max-width: 200px;">
+                            <small id="design_file_indicator" style="color: #555; font-style: italic; white-space: nowrap;"></small>
+                        </div>
+
+                        <label style="display: flex; align-items: center; gap: 5px; font-weight: bold; font-size: 12px; cursor: pointer; white-space: nowrap;">
+                            <input type="checkbox" id="design_use_im" onchange="toggleBlueprintMode('design')"> Image Maker
+                        </label>
+                        
+                        <select id="design_canvas_id" class="blueprint_canvas_select" style="width: 180px; padding: 5px; display: none;">
+                            <option value="">Select Canvas</option>
+                        </select>
+                    </div>
+
+                    <!-- 🎨 PREVIEW IMAGE ROW -->
+                    <div class="asset-row-box" style="display: flex; gap: 10px; align-items: center; width: 100%;">
+                        <span style="width: 140px; font-size: 13px; font-weight: bold; color: #2f3640;">Preview Image</span>
+                        
+                        <div id="preview_file_container" class="asset-file-container" style="flex: 1; display: flex; align-items: center; gap: 8px;">
+                            <input type="file" id="preview_file" accept="image/*" style="font-size: 12px; max-width: 200px;">
+                            <small id="preview_file_indicator" style="color: #555; font-style: italic; white-space: nowrap;"></small>
+                        </div>
+
+                        <label style="display: flex; align-items: center; gap: 5px; font-weight: bold; font-size: 12px; cursor: pointer; white-space: nowrap;">
+                            <input type="checkbox" id="preview_use_im" onchange="toggleBlueprintMode('preview')"> Image Maker
+                        </label>
+                        
+                        <select id="preview_canvas_id" class="blueprint_canvas_select" style="width: 180px; padding: 5px; display: none;">
+                            <option value="">Select Canvas</option>
+                        </select>
+                    </div>
+
+                    <!-- 🎨 CUT & CREASE ROW -->
+                    <div class="asset-row-box" style="display: flex; gap: 10px; align-items: center; width: 100%;">
+                        <span style="width: 140px; font-size: 13px; font-weight: bold; color: #2f3640;">Cut & Crease</span>
+                        
+                        <div id="cut_file_container" class="asset-file-container" style="flex: 1; display: flex; align-items: center; gap: 8px;">
+                            <input type="file" id="cut_file" accept="image/*" style="font-size: 12px; max-width: 200px;">
+                            <small id="cut_file_indicator" style="color: #555; font-style: italic; white-space: nowrap;"></small>
+                        </div>
+
+                        <label style="display: flex; align-items: center; gap: 5px; font-weight: bold; font-size: 12px; cursor: pointer; white-space: nowrap;">
+                            <input type="checkbox" id="cut_use_im" onchange="toggleBlueprintMode('cut')"> Image Maker
+                        </label>
+                        
+                        <select id="cut_canvas_id" class="blueprint_canvas_select" style="width: 180px; padding: 5px; display: none;">
+                            <option value="">Select Canvas</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <button class="btn-green" style="padding:12px; flex:1;" type="button" onclick="submitCardToBackend()">Submit & Save Structure</button>
+                    <button id="btnTestGeneration" class="btn-green" style="background:#f39c12; padding:12px; display:none;" type="button" onclick="testVideoPipeline()">Test Generation</button>
+                    <button id="btnCreatePDF" class="btn-green" style="background:#9b59b6; padding:12px; display:none;" type="button" onclick="generatePrintPDF()">Create PDF</button>
+                    <button class="btn-blue" style="background:#718093; padding:12px;" type="button" onclick="document.getElementById('cardEditorSection').style.display='none'">Cancel</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: IMAGE MAKER -->
+        <div id="image_maker_tab" class="tab-content">
+            <div class="header-row">
+                <h1 style="margin:0; font-size:22px; color:#0984e3;">Canvases Template Registry</h1>
+                <button class="btn-green" style="background:#0984e3;" onclick="openNewCanvasEditor()">+ Add New Canvas</button>
+            </div>
+            
+            <div style="margin-bottom: 15px;">
+                <input type="text" id="search_canvases" class="search-bar-input" placeholder="🔍 සෙවීමට කැන්වස් එකේ නම හෝ ID එක ටයිප් කරන්න..." oninput="handleCanvasSearch()">
+            </div>
+
+            <div id="canvasListContainer" class="grid-list"></div>
+            
+            <div id="canvases_pagination" class="pagination-footer">
+                <div id="canvases_page_info" style="font-size:13px; color:#718093; font-weight:bold;">Showing 0-0 of 0</div>
+                <div id="canvases_page_numbers" style="display:flex; gap:5px;"></div>
+            </div>
+            
+            <div id="canvasEditorSection" class="editor-container" style="display: none; border-color: #0984e3;">
+                <h3 id="editorTitle" style="margin-top:0; color:#0984e3; font-size:16px;">Canvas workspace</h3>
+                <div class="row" style="margin-bottom: 12px;">
+                    <div class="form-group" style="flex:1.5;">
+                        <label style="color:#0984e3; font-weight:bold;">Select Linked Card Node</label>
+
+                        <select id="canvas_card_id" onchange="updateSavedBgPathHint()"></select>
+                    </div>
+                    <div class="form-group" style="flex:1;">
+                        <label style="color:#0984e3; font-weight:bold;">Target Storage Folder</label>
+                        <select id="category_folder" onchange="updateSavedBgPathHint()">
+                            <option value="root">Card Images (Root)</option>
+                            <option value="design">Design Sub-folder</option>
+                            <option value="cut_and_crease">Cut & Crease Sub-folder</option>
+                            <option value="preview">Preview Sub-folder</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group" style="flex: 0.3;"><label>Canvas ID</label><input type="text" id="canvas_id" value=""></div>
+                    <div class="form-group"><label>Canvas Name</label><input type="text" id="canvas_name" value=""></div>
+                </div>
+                <div class="row">
+                    <div class="form-group"><label>Width (px)</label><input type="number" id="canvasWidth" value="1200" onchange="resizeCanvas()"></div>
+                    <div class="form-group"><label>Height (px)</label><input type="number" id="canvasHeight" value="800" onchange="resizeCanvas()"></div>
+                </div>
+
+                <!-- 🎯 UPDATED BACKGROUND SELECTION SECTION -->
+                <div class="row" style="margin-bottom: 5px;">
+                    <div class="form-group" style="flex: 1.2;">
+                        <label style="color:#0984e3; font-weight:bold;">Choose Existing Background Image (from Folder)</label>
+                        <select id="existing_bg_select" onchange="onSelectExistingBgImage()">
+                            <option value="none">-- Select Card Node First --</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="flex: 0.8;">
+                        <label>Or Upload New Background Image</label>
+                        <input type="file" id="bgUpload" accept="image/*" onchange="loadBackground(event)">
+                    </div>
+                </div>
+                <span id="bg_path_hint" style="font-size:11px; font-weight:bold; color:gray; margin-top:0; margin-bottom:12px; display:block;"></span>
+
+                <div style="display: flex; gap: 10px; margin-bottom: 12px;">
+                    <button class="btn-blue" style="background:#2ed573;" onclick="addLayer('Image')">+ Image Layer</button>
+                    <button class="btn-blue" style="background:#9b59b6;" onclick="addLayer('Text')">+ Text Layer</button>
+                </div>
+                <div id="layersContainer"></div>
+                <canvas id="templateCanvas" width="1200" height="800"></canvas>
+                <div class="row" style="margin-top: 15px; margin-bottom: 10px;">
+                    <div class="form-group" style="flex: 0.5; max-width: 200px;">
+                        <label style="color:#0984e3; font-weight:bold;">Output Image Format</label>
+                        <select id="canvas_output_format">
+                            <option value="png">PNG Format (Default)</option>
+                            <option value="jpg">JPG Format (Compressed)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row" style="margin-top:10px;">
+                    <button class="btn-green" style="background:#0984e3; flex:1; padding:12px;" onclick="saveTemplateToDatabase()">Save & Commit Canvas</button>
+                    <button class="btn-green" style="background:#e67e22; padding:12px;" onclick="testRenderUserCardImage()">Save Image</button>
+                    <button class="btn-blue" style="background:#718093; padding:12px;" onclick="document.getElementById('canvasEditorSection').style.display='none'">Cancel</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3: FONTS MANAGER -->
+        <div id="fonts_tab" class="tab-content">
+            <div class="header-row">
+                <h1 style="margin:0; font-size:22px; color:#2f3640;">System Font Vault</h1>
+                <div style="display:flex; gap:10px; align-items:center;">
+                    <input type="text" id="new_font_name" placeholder="Font Display Name" style="width:180px;">
+                    <input type="file" id="font_file_upload" accept=".ttf,.otf" style="font-size:12px;">
+                    <button class="btn-green" onclick="uploadNewFont()">+ Upload Font</button>
+                </div>
+            </div>
+            
+            <div style="margin-bottom: 15px;">
+                <input type="text" id="search_fonts" class="search-bar-input" placeholder="🔍 සෙවීමට ෆොන්ට් එකක නම ටයිප් කරන්න..." oninput="handleFontSearch()">
+            </div>
+
+            <div id="fontsListContainer" class="grid-list"></div>
+            
+            <div id="fonts_pagination" class="pagination-footer">
+                <div id="fonts_page_info" style="font-size:13px; color:#718093; font-weight:bold;">Showing 0-0 of 0</div>
+                <div id="fonts_page_numbers" style="display:flex; gap:5px;"></div>
+            </div>
+        </div>
+
+        <!-- TAB 4: TEXT SLOT HINTS -->
+        <div id="hints_tab" class="tab-content">
+            <div class="header-row">
+                <h1 style="margin:0; font-size:22px; color:#2f3640;">Text Slot Hints</h1>
+            </div>
+            <div class="editor-container" style="display:block;">
+                <div class="form-group">
+                    <label>Text Slot Hints</label>
+                    <div style="display:flex; gap:10px;">
+                        <input type="text" id="global_text_hints" placeholder="Name 01, Name 02, X+X">
+                        <button class="btn-green" type="button" onclick="saveGlobalHints()">Submit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <script>
+        window.ENV_PYTHON_PORT = "{{PYTHON_PORT}}";
+    </script>
+    <script src="/public/template_builder.js"></script>
+</body>
+</html>
