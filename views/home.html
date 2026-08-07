@@ -430,13 +430,21 @@
     <script>
     // 🎯 .env එකෙන් එන Dynamic Python Port එක Set කිරීම
         window.ENV_PYTHON_PORT = "{{PYTHON_PORT}}";
-        
+
         const CURRENT_HOST = window.location.hostname;
-        const PY_PORT = window.ENV_PYTHON_PORT && !window.ENV_PYTHON_PORT.includes("{{") 
+        const rawPyPort = window.ENV_PYTHON_PORT && !window.ENV_PYTHON_PORT.includes("{{") 
                         ? window.ENV_PYTHON_PORT 
                         : 8001;
 
-        const BACKEND_STATIC = `http://${CURRENT_HOST}:${PY_PORT}`;
+        let BACKEND_STATIC;
+
+        // Railway Public Domain එකක්ද නැතහොත් Local Port එකක්ද යන්න Check කිරීම
+        if (typeof rawPyPort === 'string' && rawPyPort.startsWith('http')) {
+            BACKEND_STATIC = rawPyPort;
+        } else {
+            BACKEND_STATIC = `http://${CURRENT_HOST}:${rawPyPort}`;
+        }
+
         const API_URL = `${BACKEND_STATIC}/api/cards`;
 
         async function loadAllCardsForHome() {
