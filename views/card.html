@@ -388,7 +388,14 @@
         
         const VIDEO_SERVER_BASE = window.location.origin; // Express App Origin (Port 3000)
         const AUTH_SERVER_URL = "{{AUTH_SERVER}}";
-        const SHARE_BASE_LINK = "{{SHARE_LINK}}";
+        // 🎯 SAFE SHARE BASE LINK ENGINE (Ensures Trailing Slash & Valid Domain)
+        let rawShareLink = "{{SHARE_LINK}}";
+        if (!rawShareLink || rawShareLink.includes("{{") || !rawShareLink.startsWith("http")) {
+            rawShareLink = "https://personello-mock-server-production.up.railway.app/views/ulf_storage/Cards/";
+        } else if (!rawShareLink.endsWith("/")) {
+            rawShareLink += "/";
+        }
+        const SHARE_BASE_LINK = rawShareLink;
         const HOME_PAGE_LINK = "{{PAGE_LINK}}";
 
         let currentCardId = null;
