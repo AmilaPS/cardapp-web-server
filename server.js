@@ -68,7 +68,7 @@ const pythonTarget = process.env.PYTHON_SERVER_URL || `http://${NETWORK_IP}:3001
 // =================================================================
 const checkAuth = (req, res, next) => {
     if (req.query.user_id) {
-        res.cookie('main_user_id', req.query.user_id, { maxAge: 24 * 60 * 60 * 1000 });
+        res.cookie('main_user_id', req.query.user_id, { maxAge: 4 * 60 * 60 * 1000 });
         return next();
     }
 
