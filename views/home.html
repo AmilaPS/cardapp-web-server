@@ -428,7 +428,6 @@
     <!-- 🚀 UNIFIED FASTAPI DB & CARD WEB ID RESOLUTION ENGINE -->
     <!-- ================================================================= -->
     <script>
-        
         // 🔐 IMMEDIATE FRONTEND AUTH CHECK
         (function enforceAuth() {
             function getCookie(name) {
@@ -448,10 +447,7 @@
             }
         })();
 
-        // Page එක Load වෙද්දීම Auth Check එක ක්‍රියාත්මක වේ
-        checkUserSession();
-
-    // 🎯 .env එකෙන් එන Dynamic Python Port එක Set කිරීම
+        // 🎯 .env එකෙන් එන Dynamic Python Port එක Set කිරීම
         window.ENV_PYTHON_PORT = "{{PYTHON_PORT}}";
 
         const CURRENT_HOST = window.location.hostname;
@@ -461,7 +457,6 @@
 
         let BACKEND_STATIC;
 
-        // Railway Public Domain එකක්ද නැතහොත් Local Port එකක්ද යන්න Check කිරීම
         if (typeof rawPyPort === 'string' && rawPyPort.startsWith('http')) {
             BACKEND_STATIC = rawPyPort;
         } else {
@@ -488,11 +483,9 @@
                 }
 
                 allCards.forEach((card, index) => {
-                    // 🎯 1. Address bar එකට පෙන්වීමට card_web_id ප්‍රමුඛතාවය ලෙස ලබාගනී (නැතහොත් card_id භාවිතා කරයි)
                     const urlCardId = card.card_web_id && card.card_web_id.trim() !== "" ? card.card_web_id.trim() : card.card_id;
                     const displayNr = `Nr:${index + 1}`; 
                     
-                    // 🎯 2. Image preview එක Base64 හෝ saved static file එකෙන් auto-resolve කරයි
                     let imageSrc = "/web_images/cards/default_preview.png";
                     if (card.card_image && card.card_image.length > 50) {
                         imageSrc = card.card_image;
@@ -500,7 +493,6 @@
                         imageSrc = `${BACKEND_STATIC}/image_templates/${card.folder_name}/${card.folder_name}_preview.png`;
                     }
 
-                    // 🎯 3. Address bar එකේ id එක ලෙස Card Web ID එක show වන link එක සෑදීම
                     container.innerHTML += `
                         <a href="/cards/card?card_id=${encodeURIComponent(urlCardId)}" class="card-wrapper">
                             <div class="card-title-text">${displayNr}</div>
