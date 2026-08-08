@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CardApp Engine Matrix Management Console</title>
     <style>
         /* 🎯 FORCE HIDING SKIP LINKS TO PREVENT NAVIGATION COLLISION */
@@ -14,6 +15,149 @@
             padding: 0 !important;
             font-family: system-ui, sans-serif; 
             color: #333333; 
+        }
+
+        /* 🚀 BREADCRUMB BAR STYLES */
+        #breadcrumb {
+            background-color: #ededed !important; 
+            padding: 10px 0 !important;
+            border-bottom: 1px solid #e2e8f0 !important;
+            box-sizing: border-box !important;
+        }
+
+        #breadcrumb .limiter {
+            display: flex !important;
+            justify-content: space-between !important;
+            align-items: center !important;
+            width: calc(100% - 24px) !important;
+            max-width: 1180px !important;
+            margin: 0 auto !important;
+            padding: 0 20px !important;
+            background: transparent !important; 
+            border: none !important;
+        }
+
+        #breadcrumb .limiter p {
+            margin: 0 !important;
+            padding: 0 !important;
+            color: #666666 !important;
+            font-size: 13px !important;
+            display: inline-block !important;
+        }
+
+        #breadcrumb a {
+            background: none !important;       
+            background-color: transparent !important;
+            border: none !important;           
+            padding: 0 !important;
+            margin: 0 !important;
+            display: inline !important;
+            float: none !important;
+            color: #4a5568;
+            text-decoration: none;
+        }
+        
+        #breadcrumb a:hover {
+            text-decoration: underline !important;
+        }
+
+        .pso-breadcrumb-logout-btn {
+            display: flex;
+            align-items: center;
+            gap: 0px;
+            color: #4a5568 !important;
+            text-decoration: none;
+            transition: transform 0.2s ease;
+        }
+
+        .pso-breadcrumb-logout-btn:hover {
+            transform: scale(1.05) !important;
+        }
+
+        .pso-breadcrumb-logout-btn img {
+            height: 40px;
+            width: auto;
+            max-width: 40px !important;
+            object-fit: contain;
+            vertical-align: middle;
+            filter: none !important;
+            border-radius: 0 !important;
+        }
+
+        /* 🛡️ ADMIN RESTRICTION OVERLAY STYLES */
+        .admin-restriction-overlay {
+            display: none; 
+            position: fixed !important;
+            top: 0 !important; 
+            left: 0 !important; 
+            right: 0 !important;
+            bottom: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            background-color: #ffffff !important;
+            z-index: 999999 !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            justify-content: center !important;
+            padding: 24px !important;
+            font-family: system-ui, sans-serif !important;
+            text-align: center !important;
+            margin: 0 auto !important;
+            box-sizing: border-box !important;
+        }
+
+        .admin-badge-icon {
+            font-size: 70px !important;
+            color: #2c3e50 !important;
+            margin: 0 auto 35px auto !important; 
+            text-align: center !important;
+            display: block !important;
+            animation: pulse 2s infinite !important;
+        }
+
+        .admin-warning-title {
+            font-size: 28px !important;
+            font-weight: bold !important;
+            color: #2c3e50 !important;
+            margin-bottom: 15px !important;
+            text-align: center !important;
+            width: 100% !important;
+        }
+
+        .admin-warning-desc {
+            font-size: 16px !important;
+            color: #7f8c8d !important;
+            max-width: 450px !important;
+            line-height: 1.6 !important;
+            margin: 0 auto 30px auto !important; 
+            text-align: center !important;
+            display: block !important;
+        }
+
+        .admin-redirect-btn {
+            background-color: #2c3e50 !important;
+            color: #ffffff !important;
+            font-size: 16px !important;
+            font-weight: bold !important;
+            padding: 14px 45px !important;
+            border: none !important;
+            border-radius: 8px !important;
+            box-shadow: 0 4px 15px rgba(44, 62, 80, 0.4) !important;
+            transition: all 0.3s !important;
+            margin: 0 auto !important; 
+            display: inline-block !important;
+            cursor: pointer;
+        }
+
+        .admin-redirect-btn:hover {
+            background-color: #1a252f !important;
+            transform: translateY(-2px) !important;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
         }
 
         /* 🎯 UNIQUE GRID COMPONENT WRAPPER EXCLUSIVELY MATCHING THE LAYOUT BRIDGE */
@@ -90,7 +234,7 @@
         }
         .cm-hub-card-name-wrapper {
             flex: 1 !important;
-            min-width: 0 !important; /* දිග නමක් ආවොත් text එක කපන්නේ නැතුව ලස්සනට තියාගන්න */
+            min-width: 0 !important;
             white-space: nowrap !important;
             overflow: hidden !important;
             text-overflow: ellipsis !important;
@@ -98,7 +242,7 @@
         .cm-hub-card-btn-wrapper {
             display: flex !important;
             gap: 6px !important;
-            flex-shrink: 0 !important; /* බටන් කිසිම වෙලාවක පොඩි වෙන්න නොදේ */
+            flex-shrink: 0 !important;
         }
         
         .cm-hub-main-card .cm-field-txt { 
@@ -223,27 +367,56 @@
         .cm-hub-cancel-corner-btn:hover { background: #dc2626 !important; }
 
         /* ================================================================= */
-        /* 📱 PERFECT MOBILE RESPONSIVE ENGINE (FIXED OVERFLOW & LAYER INPUTS) */
+        /* 📱 PERFECT MOBILE RESPONSIVE ENGINE */
         /* ================================================================= */
         @media screen and (max-width: 768px) {
+            #breadcrumb {
+                background-color: #ffffff !important;
+                padding: 5px 0 !important;
+            }
+            #breadcrumb .limiter p, #breadcrumb .limiter a:not(.pso-breadcrumb-logout-btn) {
+                display: none !important;
+            }
+            #breadcrumb .limiter {
+                display: flex !important;
+                justify-content: space-between !important;
+                align-items: center !important;
+                padding: 10px 0px !important;
+                background: #ffffff !important;
+                width: calc(100% - 24px) !important;
+                margin: 0 auto !important;
+                max-width: 100% !important;
+            }
+            #breadcrumb .limiter::before {
+                content: "< Designer Tools";
+                display: inline-block !important;
+                font-size: 1.7rem;
+                color: #666666;
+                cursor: pointer;
+                font-weight: bold;
+            }
+            .pso-breadcrumb-logout-btn {
+                display: inline-flex !important;
+                font-size: 13px !important;
+            }
+
             .cm-hub-layout-wrapper {
                 margin: 20px auto !important;
-                padding: 0 10px !important; /* Bounding padding අඩු කළා overflow නැති වෙන්න */
+                padding: 0 10px !important;
             }
             .cm-hub-grid {
                 grid-template-columns: 1fr !important;
                 gap: 20px !important;
             }
             .cm-hub-main-card {
-                padding: 15px !important; /* Card padding එක අඩු කළා */
+                padding: 15px !important;
             }
             
-            /* 🎯 MOBILE LAYER ROW REALIGNMENT: එක පෙළට ඉඩ මදි නිසා vertical (block) කරනවා */
             .cm-hub-dynamic-row {
                 flex-direction: column !important;
                 align-items: stretch !important;
                 position: relative !important;
-                padding-top: 45px !important; /* X බටන් එකට උඩින් ඉඩ තැබීමට */
+                padding-top: 45px !important;
             }
             .cm-hub-dynamic-row .l-key {
                 width: 100% !important;
@@ -252,7 +425,6 @@
             .cm-hub-dynamic-row div[style*="flex:2"] {
                 width: 100% !important;
             }
-            /* X බටන් එක row එකේ උඩ දකුණු කෙළවරට absolute කරනවා */
             .cm-hub-dynamic-row .cm-btn-danger {
                 position: absolute !important;
                 top: 10px !important;
@@ -261,10 +433,32 @@
         }
     </style>
 </head>
-<body>
+<body class="theme default" id="pageStart">
+
+    <!-- 🛡️ ADMIN RESTRICTION OVERLAY -->
+    <div class="admin-restriction-overlay" id="adminGatekeeperScreen">
+        <div class="admin-badge-icon">🛡️</div>
+        <h2 class="admin-warning-title">Exklusives ADMIN-Feature</h2>
+        <p class="admin-warning-desc">
+            Der Zugriff auf den Card Tracking Editor steht exklusiv unseren <strong>ADMIN-Mitgliedern</strong> zur Verfügung. 
+            Bitte wenden Sie sich an den Systemadministrator oder kehren Sie zur Startseite zurück.
+        </p>
+        <button class="admin-redirect-btn" onclick="window.location.href='/home'">Zur Startseite</button>
+    </div>
 
     <!-- 💻 සර්වර් එකෙන් ඔටෝමැටිකලි ලෝඩ් වන හෙඩර් එක -->
     {{HEADER}}
+
+    <!-- 🚀 BREADCRUMB BAR (LEFT: HOME & DESIGNER TOOLS LINKS / RIGHT: LOGOUT) -->
+    <div id="breadcrumb" role="navigation" aria-label="Breadcrumbs"> 
+        <div class="limiter"> 
+            <p>Du befindest dich hier: <a href="/home">Home</a> <span class="icon-chevron-right"></span> <a href="/designertools">Designer Tools</a> <span class="icon-chevron-right"></span> Card Tracking Editor </p> 
+            
+            <a href="/logout" class="pso-breadcrumb-logout-btn" title="Abmelden">
+                <img src="/views/personelloweb/MeinKonto_files/logout.svg" alt="Logout">
+            </a>
+        </div> 
+    </div>
 
     <!-- 🛠️ UNIQUE IDENTIFIED LAYOUT CONTEXT -->
     <div class="cm-hub-layout-wrapper">
@@ -275,7 +469,7 @@
         </div>
         
         <div class="cm-hub-grid">
-            <!-- LEFT CARD: DEPLOYED LIST[cite: 6] -->
+            <!-- LEFT CARD: DEPLOYED LIST -->
             <div class="cm-hub-main-card">
                 <h2>📂 Deployed Custom Video Cards</h2>
                 <div id="cardsFolderContainer"></div>
@@ -283,7 +477,7 @@
                 <div id="paginationContainer" class="cm-hub-pagination"></div>
             </div>
 
-            <!-- RIGHT CARD: EDIT SPECIFICATIONS PANEL[cite: 6] -->
+            <!-- RIGHT CARD: EDIT SPECIFICATIONS PANEL -->
             <div class="cm-hub-main-card" id="editFormPanel" style="display: none;">
                 <!-- 🎯 TOP RIGHT CORNER CANCEL BUTTON -->
                 <button type="button" class="cm-hub-cancel-corner-btn" onclick="closeEditorWindow()">X</button>
@@ -313,7 +507,66 @@
     <!-- 💻 සර්වර් එකෙන් ඔටෝමැටිකලි ලෝඩ් වන ෆුටර් එක -->
     {{FOOTER}}
 
+    <!-- ================================================================= -->
+    <!-- 🚀 AUTHENTICATION, ROLE VALIDATION & EDITOR ENGINE -->
+    <!-- ================================================================= -->
     <script>
+        // 🔐 IMMEDIATE FRONTEND AUTH CHECK
+        (function enforceAuth() {
+            function getCookie(name) {
+                const value = `; ${document.cookie}`;
+                const parts = value.split(`; ${name}=`);
+                if (parts.length === 2) return parts.pop().split(';').shift();
+                return null;
+            }
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const queryToken = urlParams.get('token');
+            const cookieUserId = getCookie('main_user_id');
+
+            if (!cookieUserId && !queryToken) {
+                window.location.href = "{{AUTH_SERVER}}/mypersonello/login";
+            }
+        })();
+
+        // 👤 HELPER TO READ LOGGED-IN USER DATA
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+            return null;
+        }
+
+        const CURRENT_USER_ID = getCookie('main_user_id');
+        const CURRENT_USER_ROLE = getCookie('user_role'); // "Admin" or "User"
+        const IS_ADMIN = document.body.getAttribute('data-user-admin') === 'true' || CURRENT_USER_ROLE === 'Admin';
+
+        // 🛡️ STRICT ADMIN ACCESS CHECK FOR TRACKING EDITOR
+        function checkUserAdminStatus() {
+            return IS_ADMIN || CURRENT_USER_ROLE === 'Admin';
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const isAdminUser = checkUserAdminStatus();
+            if (!isAdminUser) {
+                const overlay = document.getElementById('adminGatekeeperScreen');
+                if (overlay) {
+                    overlay.style.display = 'flex'; 
+                    window.scrollTo(0, 0);
+                    document.body.style.overflow = 'hidden'; 
+                }
+            }
+
+            const breadcrumbMobile = document.getElementById('breadcrumb');
+            if (breadcrumbMobile) {
+                breadcrumbMobile.addEventListener('click', function(e) {
+                    if (window.innerWidth <= 768 && e.offsetX < 150) { 
+                        window.location.href = "/designertools";
+                    }
+                });
+            }
+        });
+
         // Pagination States
         let allCardsData = [];
         let currentPage = 1;
@@ -399,17 +652,14 @@
             const div = document.createElement('div');
             div.className = 'cm-hub-dynamic-row';
             
-            // 🎯 MOBILE සහ PC දෙකටම ගැළපෙන පරිදි inline styles සහ block structures යාවත්කාලීන කළා
             div.style.cssText = 'display: flex !important; flex-direction: column !important; gap: 10px !important; margin-bottom: 15px !important; background: #f8f9fa !important; padding: 12px !important; border-radius: 6px !important; border: 1px solid #eaeaea !important; box-sizing: border-box !important; width: 100% !important;';
             
             div.innerHTML = `
-                <!-- 🎯 පළමු පේළිය: Input එක සහ X බටන් එක නූලටම දකුණට යනකම් පෙළගැස්වීම -->
                 <div style="display: flex !important; gap: 10px !important; width: 100% !important; align-items: center !important; box-sizing: border-box !important;">
                     <input type="text" placeholder="Param Key" class="l-key" value="${key}" required style="flex: 1 !important; height: 38px !important; margin: 0 !important; border: 1px solid #cccccc !important; border-radius: 4px !important; padding: 0 10px !important; box-sizing: border-box !important; background: #ffffff !important; color: #333333 !important; font-size: 14px !important; outline: none !important;">
                     <button type="button" class="cm-btn-danger" style="height: 38px !important; width: 38px !important; padding: 0 !important; margin: 0 !important; flex-shrink: 0 !important; cursor: pointer !important; display: inline-flex !important; align-items: center !important; justify-content: center !important; border-radius: 4px !important;" onclick="this.parentElement.parentElement.remove()">X</button>
                 </div>
                 
-                <!-- 🎯 දෙවැනි පේළිය: Choose File එක සහ Active Template විස්තරය -->
                 <div style="width: 100% !important; display: flex !important; flex-direction: column !important; box-sizing: border-box !important;">
                     <input type="file" class="l-video" style="height: 38px !important; margin: 0 !important; background: #ffffff !important; border: 1px solid #cccccc !important; border-radius: 4px !important; padding: 6px 10px !important; box-sizing: border-box !important; color: #333333 !important; font-size: 13px !important; display: block !important; width: 100% !important;">
                     ${videoName ? `<span style="font-size: 11px !important; color: #555555 !important; font-family: monospace !important; padding-left: 2px !important; margin-top: 4px !important; display: block !important; text-align: left !important; line-height: 1.2 !important;">Active Template: ${videoName}</span>` : ''}
