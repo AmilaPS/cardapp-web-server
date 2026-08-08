@@ -64,18 +64,28 @@ const SHARE_LINK = process.env.SHARE_LINK || `http://${NETWORK_IP}:${ULF_PORT}/v
 const pythonTarget = process.env.PYTHON_SERVER_URL || `http://${NETWORK_IP}:3001`;
 
 // =================================================================
-// 🔐 AUTH CHECK MIDDLEWARE (Personello Logged-in check එක)
+// 🔐 SECURE AUTH VERIFICATION MIDDLEWARE
 // =================================================================
-const checkAuth = (req, res, next) => {
-    if (req.query.user_id) {
-        res.cookie('main_user_id', req.query.user_id, { maxAge: 4 * 60 * 60 * 1000 });
-        return next();
+const checkAuth = async (req, res, next) => {
+    let userId = req.cookies ? req.cookies.main_user_id : null;
+
+    // Cookie එක නැතිව URL එකෙන් user_id එකක් ආවොත් Mock Server එකෙන් Verify කරයි
+    if (!userId && req.query.user_id) {
+        try {
+            const verifyRes = await axios.get(`${AUTH_SERVER}/api/auth/verify-user?user_id=${req.query.user_id}`);
+            if (verifyRes.data && verifyRes.data.valid) {
+                res.cookie('main_user_id', req.query.user_id, { maxAge: 4 * 60 * 60 * 1000 });
+                userId = req.query.user_id;
+                console.log(`✅ [CardApp Server] Verified User ID ${userId} via Auth Server.`);
+            }
+        } catch (err) {
+            console.log("❌ Invalid/Fake user_id attempt in URL!");
+        }
     }
 
-    const userId = req.cookies ? req.cookies.main_user_id : null;
-
+    // Verify වුණේ නැත්නම් direct Login එකට Redirect කරයි
     if (!userId || userId === 'null' || userId === 'undefined') {
-        console.log("⚠️ User not logged in! Redirecting to Personello Auth Server...");
+        console.log("⚠️ User not logged in! Redirecting to Auth Server...");
         return res.redirect(`${AUTH_SERVER}/mypersonello/login`);
     }
 
