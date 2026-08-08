@@ -1485,7 +1485,9 @@
                 currentSet.forEach((card, index) => {
                     const isChecked = selectedCardsRegistry.some(selectedId => String(selectedId) === String(card.id)) ? 'checked' : '';
                     const imageSrc = card.img || '/web_images/default_card.png';
-                    const displayNr = `Nr:${card.id || (index + 1)}`;
+                    
+                    // 🚀 HOME EKE WAGE ORDER NUMBER EKA SET KIREEMA (Nr:1, Nr:2, Nr:3...)
+                    const displayNr = `Nr:${startIndex + index + 1}`;
 
                     grid.innerHTML += `
                         <div class="card-item" onclick="toggleCardSelection('${card.id}', event)">
