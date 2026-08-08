@@ -429,8 +429,8 @@
     <!-- ================================================================= -->
     <script>
         
-        // 🔐 FRONTEND AUTH CHECK
-        function checkUserSession() {
+        // 🔐 IMMEDIATE FRONTEND AUTH CHECK
+        (function enforceAuth() {
             function getCookie(name) {
                 const value = `; ${document.cookie}`;
                 const parts = value.split(`; ${name}=`);
@@ -438,13 +438,15 @@
                 return null;
             }
 
-            const userId = getCookie('main_user_id');
+            const urlParams = new URLSearchParams(window.location.search);
+            const queryUserId = urlParams.get('user_id');
+            const cookieUserId = getCookie('main_user_id');
 
-            // Cookie එක නැත්නම් Auth Server එකට Auto Direct කරයි
-            if (!userId) {
+            // Cookie එකක් නැත්නම් සහ Query Param එකක් නැත්නම් Redirect කරයි
+            if (!cookieUserId && !queryUserId) {
                 window.location.href = "{{AUTH_SERVER}}/login";
             }
-        }
+        })();
 
         // Page එක Load වෙද්දීම Auth Check එක ක්‍රියාත්මක වේ
         checkUserSession();
