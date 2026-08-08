@@ -428,7 +428,7 @@
     <!-- 🚀 UNIFIED FASTAPI DB & CARD WEB ID RESOLUTION ENGINE -->
     <!-- ================================================================= -->
     <script>
-        // 🔐 IMMEDIATE FRONTEND AUTH CHECK
+        // 🔐 IMMEDIATE FRONTEND AUTH CHECK (Token & Cookie Validation)
         (function enforceAuth() {
             function getCookie(name) {
                 const value = `; ${document.cookie}`;
@@ -438,14 +438,26 @@
             }
 
             const urlParams = new URLSearchParams(window.location.search);
-            const queryUserId = urlParams.get('user_id');
+            const queryToken = urlParams.get('token');
             const cookieUserId = getCookie('main_user_id');
 
-            // Cookie එකක් නැත්නම් සහ Query Param එකක් නැත්නම් Redirect කරයි
-            if (!cookieUserId && !queryUserId) {
+            // Cookie එකක් නැත්නම් සහ SSO Token එකක් නැත්නම් Redirect කරයි
+            if (!cookieUserId && !queryToken) {
                 window.location.href = "{{AUTH_SERVER}}/mypersonello/login";
             }
         })();
+
+        // 👤 HELPER TO READ LOGGED-IN USER DATA
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+            return null;
+        }
+
+        const CURRENT_USER_ID = getCookie('main_user_id');
+        const CURRENT_USER_ROLE = getCookie('user_role'); // "Admin" or "User"
+        const IS_ADMIN = document.body.getAttribute('data-user-admin') === 'true';
 
         // 🎯 .env එකෙන් එන Dynamic Python Port එක Set කිරීම
         window.ENV_PYTHON_PORT = "{{PYTHON_PORT}}";
