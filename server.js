@@ -76,7 +76,7 @@ const checkAuth = (req, res, next) => {
 
     if (!userId || userId === 'null' || userId === 'undefined') {
         console.log("⚠️ User not logged in! Redirecting to Personello Auth Server...");
-        return res.redirect(`${AUTH_SERVER}/login`);
+        return res.redirect(`${AUTH_SERVER}/mypersonello/login`);
     }
 
     next();
