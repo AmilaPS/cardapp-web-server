@@ -115,6 +115,14 @@ const renderWithLayout = (pageName, req, res) => {
     res.status(404).send(`${pageName}.html not found in views.`);
 };
 
+// 🚪 LOGOUT ENGINE (Local Cookies Clear කර Auth Server එකට Redirect කිරීම)
+app.get('/logout', (req, res) => {
+    res.clearCookie('main_user_id');
+    res.clearCookie('user_role');
+    console.log("🚪 [CardApp Server] Local user cookies cleared successfully.");
+    return res.redirect(`${AUTH_SERVER}/api/auth/logout`);
+});
+
 // 🎯 PRETTIER UI ROUTES (Auth Secured)
 app.get('/', checkAuth, (req, res) => renderWithLayout('home', req, res));
 app.get('/home', checkAuth, (req, res) => renderWithLayout('home', req, res));
