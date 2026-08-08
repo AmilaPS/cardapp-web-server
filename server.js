@@ -67,16 +67,14 @@ const pythonTarget = process.env.PYTHON_SERVER_URL || `http://${NETWORK_IP}:3001
 // 🔐 AUTH CHECK MIDDLEWARE (Personello Logged-in check එක)
 // =================================================================
 const checkAuth = (req, res, next) => {
-    // 💡 Query Param එකකින් user_id එක ආවොත් (Login එකෙන් redirect වෙද්දී) direct Cookie එක Lock කරයි
     if (req.query.user_id) {
         res.cookie('main_user_id', req.query.user_id, { maxAge: 24 * 60 * 60 * 1000 });
-        console.log(`[CardApp Server] 🍪 Cookie locked via Query Param for User ID: ${req.query.user_id}`);
         return next();
     }
 
     const userId = req.cookies ? req.cookies.main_user_id : null;
 
-    if (!userId) {
+    if (!userId || userId === 'null' || userId === 'undefined') {
         console.log("⚠️ User not logged in! Redirecting to Personello Auth Server...");
         return res.redirect(`${AUTH_SERVER}/login`);
     }
@@ -175,7 +173,7 @@ app.post('/api/analytics/track-share', (req, res) => {
 // =================================================================
 // 🎯 DYNAMIC MULTI-LAYOUT COMPILER ENGINE
 // =================================================================
-app.get('/:page.html', (req, res, next) => {
+app.get('/:page.html', checkAuth, (req, res, next) => {
     const pageName = req.params.page;
     if (pageName === 'header' || pageName === 'footer') return next();
     renderWithLayout(pageName, req, res);
