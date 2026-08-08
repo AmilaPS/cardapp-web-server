@@ -100,14 +100,14 @@ const renderWithLayout = (pageName, req, res) => {
 };
 
 // 🎯 PRETTIER UI ROUTES FOR DESIGNER TOOLS & CARDMAKER SUITE
-app.get('/', (req, res) => renderWithLayout('designertools', req, res));
+app.get('/', (req, res) => renderWithLayout('home', req, res));
 app.get('/designertools', (req, res) => renderWithLayout('designertools', req, res));
 app.get('/designertools/tracking', (req, res) => renderWithLayout('videotrackingmaker', req, res));
 app.get('/designertools/editor', (req, res) => renderWithLayout('videocardseditor', req, res));
 app.get('/designertools/test', (req, res) => renderWithLayout('videotest', req, res));
 
 // 🎯 NEW PRODUCTION SUITE & CARDMAKER PAGES
-app.get('/builder', (req, res) => renderWithLayout('template_builder', req, res));
+app.get('/designertools/builder', (req, res) => renderWithLayout('template_builder', req, res));
 
 // 💡 UPDATE: /home එකට එද්දී auth server එකෙන් එවන query param එකෙන් කුකිය Lock කිරීම සහ Role එක Detect කිරීම
 app.get('/home', (req, res) => {
