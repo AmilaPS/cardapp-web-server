@@ -69,18 +69,18 @@ const pythonTarget = process.env.PYTHON_SERVER_URL || `http://${NETWORK_IP}:3001
 const checkAuth = async (req, res, next) => {
     let userId = req.cookies ? req.cookies.main_user_id : null;
 
-    // Cookie එක නැතිව URL එකෙන් One-time Token එකක් ආවොත් පමණක් verify කරයි
     if (!userId && req.query.token) {
         try {
             const verifyRes = await axios.get(`${AUTH_SERVER}/api/auth/verify-token?token=${req.query.token}`);
             if (verifyRes.data && verifyRes.data.valid) {
                 userId = verifyRes.data.user_id;
-                
-                // සාර්ථක Verification එකෙන් පසු Cookie එක Lock කරයි
+                const userRole = verifyRes.data.user_role || 'User';
+
+                // 🍪 Cookies Locking (Admin / User)
                 res.cookie('main_user_id', userId, { maxAge: 4 * 60 * 60 * 1000 });
-                console.log(`✅ [CardApp Server] SSO Token Verified successfully for User ID: ${userId}`);
-                
-                // Clean URL එකක් සඳහා /home එකට redirect කරයි
+                res.cookie('user_role', userRole, { maxAge: 4 * 60 * 60 * 1000 });
+
+                console.log(`✅ [CardApp Server] SSO Verified for User ID: ${userId} | Role: ${userRole}`);
                 return res.redirect('/home');
             }
         } catch (err) {
@@ -88,7 +88,6 @@ const checkAuth = async (req, res, next) => {
         }
     }
 
-    // Cookie එකත් නැත්නම්, Token එකත් Invalid නම් Direct Login එකට Redirect කරයි
     if (!userId || userId === 'null' || userId === 'undefined') {
         console.log("⚠️ User not logged in! Redirecting to Auth Server...");
         return res.redirect(`${AUTH_SERVER}/mypersonello/login`);
@@ -118,8 +117,8 @@ const renderWithLayout = (pageName, req, res) => {
             htmlContent = htmlContent.replaceAll('{{SHARE_LINK}}', SHARE_LINK);
             htmlContent = htmlContent.replaceAll('{{PYTHON_PORT}}', pythonTarget);
 
-            const isProUser = (req.cookies && req.cookies.user_role === 'pro') ? 'true' : 'false';
-            htmlContent = htmlContent.replace('<body', `<body data-user-pro="${isProUser}"`);
+            const isAdminUser = (req.cookies && req.cookies.user_role === 'Admin') ? 'true' : 'false';
+            htmlContent = htmlContent.replace('<body', `<body data-user-admin="${isAdminUser}"`);
 
             return res.send(htmlContent);
         } catch (err) {
