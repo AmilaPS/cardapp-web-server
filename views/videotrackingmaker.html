@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CardApp Template Engine Creation Provision Panel</title>
     <style>
         /* 🎯 FORCE HIDING SKIP LINKS TO PREVENT NAVIGATION COLLISION */
@@ -16,10 +17,153 @@
             color: #333333; 
         }
 
+        /* 🚀 BREADCRUMB BAR STYLES */
+        #breadcrumb {
+            background-color: #ededed !important; 
+            padding: 10px 0 !important;
+            border-bottom: 1px solid #e2e8f0 !important;
+            box-sizing: border-box !important;
+        }
+
+        #breadcrumb .limiter {
+            display: flex !important;
+            justify-content: space-between !important;
+            align-items: center !important;
+            width: calc(100% - 24px) !important;
+            max-width: 1180px !important;
+            margin: 0 auto !important;
+            padding: 0 20px !important;
+            background: transparent !important; 
+            border: none !important;
+        }
+
+        #breadcrumb .limiter p {
+            margin: 0 !important;
+            padding: 0 !important;
+            color: #666666 !important;
+            font-size: 13px !important;
+            display: inline-block !important;
+        }
+
+        #breadcrumb a {
+            background: none !important;       
+            background-color: transparent !important;
+            border: none !important;           
+            padding: 0 !important;
+            margin: 0 !important;
+            display: inline !important;
+            float: none !important;
+            color: #4a5568;
+            text-decoration: none;
+        }
+        
+        #breadcrumb a:hover {
+            text-decoration: underline !important;
+        }
+
+        .pso-breadcrumb-logout-btn {
+            display: flex;
+            align-items: center;
+            gap: 0px;
+            color: #4a5568 !important;
+            text-decoration: none;
+            transition: transform 0.2s ease;
+        }
+
+        .pso-breadcrumb-logout-btn:hover {
+            transform: scale(1.05) !important;
+        }
+
+        .pso-breadcrumb-logout-btn img {
+            height: 40px;
+            width: auto;
+            max-width: 40px !important;
+            object-fit: contain;
+            vertical-align: middle;
+            filter: none !important;
+            border-radius: 0 !important;
+        }
+
+        /* 🛡️ ADMIN RESTRICTION OVERLAY STYLES */
+        .admin-restriction-overlay {
+            display: none; 
+            position: fixed !important;
+            top: 0 !important; 
+            left: 0 !important; 
+            right: 0 !important;
+            bottom: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            background-color: #ffffff !important;
+            z-index: 999999 !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            justify-content: center !important;
+            padding: 24px !important;
+            font-family: system-ui, sans-serif !important;
+            text-align: center !important;
+            margin: 0 auto !important;
+            box-sizing: border-box !important;
+        }
+
+        .admin-badge-icon {
+            font-size: 70px !important;
+            color: #2c3e50 !important;
+            margin: 0 auto 35px auto !important; 
+            text-align: center !important;
+            display: block !important;
+            animation: pulse 2s infinite !important;
+        }
+
+        .admin-warning-title {
+            font-size: 28px !important;
+            font-weight: bold !important;
+            color: #2c3e50 !important;
+            margin-bottom: 15px !important;
+            text-align: center !important;
+            width: 100% !important;
+        }
+
+        .admin-warning-desc {
+            font-size: 16px !important;
+            color: #7f8c8d !important;
+            max-width: 450px !important;
+            line-height: 1.6 !important;
+            margin: 0 auto 30px auto !important; 
+            text-align: center !important;
+            display: block !important;
+        }
+
+        .admin-redirect-btn {
+            background-color: #2c3e50 !important;
+            color: #ffffff !important;
+            font-size: 16px !important;
+            font-weight: bold !important;
+            padding: 14px 45px !important;
+            border: none !important;
+            border-radius: 8px !important;
+            box-shadow: 0 4px 15px rgba(44, 62, 80, 0.4) !important;
+            transition: all 0.3s !important;
+            margin: 0 auto !important; 
+            display: inline-block !important;
+            cursor: pointer;
+        }
+
+        .admin-redirect-btn:hover {
+            background-color: #1a252f !important;
+            transform: translateY(-2px) !important;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
         /* 🎯 UNIQUE HUB COMPONENT WRAPPER EXCLUSIVELY MATCHING THE LAYOUT BRIDGE */
         .tm-hub-layout-wrapper {
             max-width: 1188px;
-            margin: 60px auto;
+            margin: 40px auto;
             padding: 0 20px;
             box-sizing: border-box;
         }
@@ -75,7 +219,7 @@
             box-sizing: border-box !important; 
             font-size: 14px !important;
             outline: none !important;
-            height: 38px !important; /* Perfect uniform structural line */
+            height: 38px !important;
         }
         .tm-hub-main-box .tm-field-txt:focus { border-color: #98ceb5 !important; }
         
@@ -117,7 +261,7 @@
         }
         .tm-hub-main-box .tm-btn-row-add:hover { background: #e9ecef !important; }
         
-        /* 🎯 PRETTIER ROUTING API CONTEXT ALIGNMENT (FIXED BASELINE) */
+        /* 🎯 PRETTIER ROUTING API CONTEXT ALIGNMENT */
         .tm-hub-api-wrapper { 
             display: flex !important; 
             align-items: center !important; 
@@ -136,7 +280,6 @@
             font-weight: bold !important; 
             font-family: monospace !important; 
             font-size: 14px !important; 
-            /* 🎯 flex අයින් කරලා margin එකකින් /api/ කෑල්ල විතරක් 2px පහත් කළා: */
             display: inline-block !important;
             margin-top: 2px !important; 
         }
@@ -151,15 +294,15 @@
             width: 100% !important; 
             height: 100% !important; 
             margin: 0 !important; 
-            /* 🎯 input එකේ flex අයින් කරලා text vertical align එක default තැබුවා: */
             display: inline-block !important;
         }
         
         /* 🎯 EXTERNAL BACK ACTION NAVIGATION ANCHOR */
         .tm-hub-back-navigation-container {
             max-width: 650px;
-            margin: 20px auto 0 auto;
-            text-align: center;
+            margin: 0 auto 20px auto;
+            display: flex;
+            justify-content: flex-end;
         }
         .tm-hub-back-route-btn {
             display: inline-block;
@@ -173,18 +316,81 @@
             font-family: sans-serif;
         }
         .tm-hub-back-route-btn:hover { background: #334155; }
+
+        /* 📱 MOBILE VIEW CORRECTIONS */
+        @media screen and (max-width: 768px) {
+            #breadcrumb {
+                background-color: #ffffff !important;
+                padding: 5px 0 !important;
+            }
+            #breadcrumb .limiter p, #breadcrumb .limiter a:not(.pso-breadcrumb-logout-btn) {
+                display: none !important;
+            }
+            #breadcrumb .limiter {
+                display: flex !important;
+                justify-content: space-between !important;
+                align-items: center !important;
+                padding: 10px 0px !important;
+                background: #ffffff !important;
+                width: calc(100% - 24px) !important;
+                margin: 0 auto !important;
+                max-width: 100% !important;
+            }
+            #breadcrumb .limiter::before {
+                content: "< Designer Tools";
+                display: inline-block !important;
+                font-size: 1.7rem;
+                color: #666666;
+                cursor: pointer;
+                font-weight: bold;
+            }
+            .pso-breadcrumb-logout-btn {
+                display: inline-flex !important;
+                font-size: 13px !important;
+            }
+
+            .tm-hub-layout-wrapper {
+                margin: 20px auto !important;
+                padding: 0 10px !important;
+            }
+            .tm-hub-main-box {
+                padding: 20px 15px !important;
+            }
+        }
     </style>
 </head>
-<body>
+<body class="theme default" id="pageStart">
+
+    <!-- 🛡️ ADMIN RESTRICTION OVERLAY -->
+    <div class="admin-restriction-overlay" id="adminGatekeeperScreen">
+        <div class="admin-badge-icon">🛡️</div>
+        <h2 class="admin-warning-title">Exklusives ADMIN-Feature</h2>
+        <p class="admin-warning-desc">
+            Der Zugriff auf den Card Tracking Maker steht exklusiv unseren <strong>ADMIN-Mitgliedern</strong> zur Verfügung. 
+            Bitte wenden Sie sich an den Systemadministrator oder kehren Sie zur Startseite zurück.
+        </p>
+        <button class="admin-redirect-btn" onclick="window.location.href='/home'">Zur Startseite</button>
+    </div>
 
     <!-- 💻 සර්වර් එකෙන් ඔටෝමැටිකලි ලෝඩ් වන හෙඩර් එක -->
     {{HEADER}}
+
+    <!-- 🚀 BREADCRUMB BAR (LEFT: HOME & DESIGNER TOOLS LINKS / RIGHT: LOGOUT) -->
+    <div id="breadcrumb" role="navigation" aria-label="Breadcrumbs"> 
+        <div class="limiter"> 
+            <p>Du befindest dich hier: <a href="/home">Home</a> <span class="icon-chevron-right"></span> <a href="/designertools">Designer Tools</a> <span class="icon-chevron-right"></span> Card Tracking Maker </p> 
+            
+            <a href="/logout" class="pso-breadcrumb-logout-btn" title="Abmelden">
+                <img src="/views/personelloweb/MeinKonto_files/logout.svg" alt="Logout">
+            </a>
+        </div> 
+    </div>
 
     <!-- 🛠️ UNIQUE IDENTIFIED LAYOUT CONTEXT -->
     <div class="tm-hub-layout-wrapper">
         
         <!-- 🎯 TOP NAVIGATION ROW (BACK TO DASHBOARD ON TOP RIGHT) -->
-        <div style="max-width: 650px; margin: 0 auto 20px auto; display: flex; justify-content: flex-end;">
+        <div class="tm-hub-back-navigation-container">
             <a href="/designertools" class="tm-hub-back-route-btn" style="margin: 0 !important;">⬅ Back to Dashboard</a>
         </div>
         
@@ -221,7 +427,66 @@
     <!-- 💻 සර්වර් එකෙන් ඔටෝමැටිකලි ලෝඩ් වන ෆුටර් එක -->
     {{FOOTER}}
 
+    <!-- ================================================================= -->
+    <!-- 🚀 AUTHENTICATION, ROLE VALIDATION & TRACKING MAKER ENGINE -->
+    <!-- ================================================================= -->
     <script>
+        // 🔐 IMMEDIATE FRONTEND AUTH CHECK
+        (function enforceAuth() {
+            function getCookie(name) {
+                const value = `; ${document.cookie}`;
+                const parts = value.split(`; ${name}=`);
+                if (parts.length === 2) return parts.pop().split(';').shift();
+                return null;
+            }
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const queryToken = urlParams.get('token');
+            const cookieUserId = getCookie('main_user_id');
+
+            if (!cookieUserId && !queryToken) {
+                window.location.href = "{{AUTH_SERVER}}/mypersonello/login";
+            }
+        })();
+
+        // 👤 HELPER TO READ LOGGED-IN USER DATA
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+            return null;
+        }
+
+        const CURRENT_USER_ID = getCookie('main_user_id');
+        const CURRENT_USER_ROLE = getCookie('user_role'); // "Admin" or "User"
+        const IS_ADMIN = document.body.getAttribute('data-user-admin') === 'true' || CURRENT_USER_ROLE === 'Admin';
+
+        // 🛡️ STRICT ADMIN ACCESS CHECK FOR TRACKING MAKER
+        function checkUserAdminStatus() {
+            return IS_ADMIN || CURRENT_USER_ROLE === 'Admin';
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const isAdminUser = checkUserAdminStatus();
+            if (!isAdminUser) {
+                const overlay = document.getElementById('adminGatekeeperScreen');
+                if (overlay) {
+                    overlay.style.display = 'flex'; 
+                    window.scrollTo(0, 0);
+                    document.body.style.overflow = 'hidden'; 
+                }
+            }
+
+            const breadcrumbMobile = document.getElementById('breadcrumb');
+            if (breadcrumbMobile) {
+                breadcrumbMobile.addEventListener('click', function(e) {
+                    if (window.innerWidth <= 768 && e.offsetX < 150) { 
+                        window.location.href = "/designertools";
+                    }
+                });
+            }
+        });
+
         function autoGenerateApiUrl(nameValue) {
             const urlInputField = document.getElementById('crud_api_url_editable');
             urlInputField.value = nameValue.trim().toLowerCase().replace(/[^a-z0-9]+/g, '_');
@@ -235,7 +500,6 @@
             const container = document.getElementById('crudLayersContainer');
             const div = document.createElement('div');
             div.className = 'tm-hub-dynamic-row';
-            /* Isolated inputs using inline custom structural parameters to bypass framework overrides */
             div.innerHTML = `
                 <input type="text" placeholder="Image name" class="l-key" required style="flex:1; height:38px; margin:0; border: 1px solid #cccccc; border-radius: 4px; padding: 0 10px; box-sizing: border-box; background:#ffffff; color:#333333; font-size:14px; outline:none;">
                 <input type="file" class="l-video" style="flex:2; height:38px; margin:0; background: #ffffff; border: 1px solid #cccccc; border-radius: 4px; padding: 6px 10px; box-sizing: border-box; color:#333333; font-size:13px;" required>
