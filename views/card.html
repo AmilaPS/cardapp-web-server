@@ -256,7 +256,7 @@
         <div class="limiter"> 
             <p>Du befindest dich hier: <a href="https://de.personello.com/">Home</a> <span class="icon-chevron-right"></span> <a href="{{AUTH_SERVER}}/mypersonello">Konto</a> <span class="icon-chevron-right"></span> Generieren </p> 
             
-            <a href="{{AUTH_SERVER}}/api/auth/logout" class="pso-breadcrumb-logout-btn" title="Abmelden">
+            <a href="/logout" class="pso-breadcrumb-logout-btn" title="Abmelden">
                 <img src="/views/personelloweb/MeinKonto_files/logout.svg" alt="Logout">
             </a>
         </div> 
@@ -368,6 +368,38 @@
     {{FOOTER}}
 
     <script>
+        // 🔐 IMMEDIATE FRONTEND AUTH CHECK (Token & Cookie Validation)
+        (function enforceAuth() {
+            function getCookie(name) {
+                const value = `; ${document.cookie}`;
+                const parts = value.split(`; ${name}=`);
+                if (parts.length === 2) return parts.pop().split(';').shift();
+                return null;
+            }
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const queryToken = urlParams.get('token');
+            const cookieUserId = getCookie('main_user_id');
+
+            // Cookie එකක් නැත්නම් සහ SSO Token එකක් නැත්නම් Redirect කරයි
+            if (!cookieUserId && !queryToken) {
+                window.location.href = "{{AUTH_SERVER}}/mypersonello/login";
+            }
+        })();
+
+        // 👤 HELPER TO READ LOGGED-IN USER DATA
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+            return null;
+        }
+
+        const CURRENT_USER_ID = getCookie('main_user_id');
+        const CURRENT_USER_ROLE = getCookie('user_role'); // "Admin" or "User"
+        const IS_ADMIN = document.body.getAttribute('data-user-admin') === 'true';
+
+        // ✅ නිවැරදි කළ Dynamic Logic එක:
         window.ENV_PYTHON_PORT = "{{PYTHON_PORT}}";
 
         const CURRENT_HOST = window.location.hostname;
@@ -446,13 +478,6 @@
                     });
                 }
             } catch (e) { console.warn("Could not load global share stats"); }
-        }
-
-        function getCookie(name) {
-            const value = `; ${document.cookie}`;
-            const parts = value.split(`; ${name}=`);
-            if (parts.length === 2) return parts.pop().split(';').shift();
-            return null;
         }
 
         function getCardWebIdFromUrl() {
@@ -550,7 +575,6 @@
                 }
             } catch(e) {}
             
-            // Filter out empty spaces, dashes, and invalid characters
             return slotsField.split(',')
                 .map(s => s.trim())
                 .filter(s => s !== "" && s !== "-" && s !== "_" && s !== "null" && s !== "undefined");
@@ -633,14 +657,12 @@
                 `;
             });
 
-            // 🎯 IMAGE PANEL HIDE / SHOW CHECK
             if (parsedImages.length === 0 && imagePanelBox) {
                 imagePanelBox.style.display = 'none';
             } else if (imagePanelBox) {
                 imagePanelBox.style.display = 'block';
             }
 
-            // 🎯 TEXT PANEL HIDE / SHOW CHECK (EXACT 0 LENGTH CHECK)
             if (parsedTexts.length === 0 && textPanelBox) {
                 textPanelBox.style.display = 'none';
             } else if (textPanelBox) {
@@ -945,11 +967,7 @@
 
             const pageLink = HOME_PAGE_LINK;
             
-            const currentUserId = (function getCookie(name) {
-                const value = `; ${document.cookie}`;
-                const parts = value.split(`; ${name}=`);
-                if (parts.length === 2) return parts.pop().split(';').shift();
-            })('main_user_id') || 1;
+            const currentUserId = CURRENT_USER_ID || getCookie('main_user_id') || 1;
 
             let pdfFileName = generatedPdfFileName || `user_${currentUserId}_card_${cardName}.pdf`;
             let videoFileName = (generationMode === 'all') ? (generatedVideoFileName || `user_${currentUserId}_card_${cardName}.mp4`) : '';
@@ -1215,7 +1233,7 @@
 
             const parsedImages = parseSlotsData(cardMetadata.image_slots);
             const parsedTexts = parseSlotsData(cardMetadata.text_slots);
-            const currentUserId = getCookie('main_user_id') || 1;
+            const currentUserId = CURRENT_USER_ID || getCookie('main_user_id') || 1;
             const cardNameSlug = cardMetadata ? (cardMetadata.card_web_id || cardMetadata.id) : 'card';
 
             try {
@@ -1226,7 +1244,7 @@
                 let videoBlobObj = null;
 
                 // ==========================================
-                // PIPELINE 1: VIDEO GENERATION (EXACT MATCH TO TEST PIPELINE)
+                // PIPELINE 1: VIDEO GENERATION
                 // ==========================================
                 if (mode === 'all') {
                     let videoFormData = new FormData();
@@ -1279,7 +1297,6 @@
                                 }
                             }
 
-                            // 🚀 TARGET ROUTE FIX: Exact Match to Express Dynamic Route (e.g. /api/christmas)
                             let targetVideoEndpoint = `${window.location.origin}${card.api_link}`;
                             console.log("🎬 Requesting Video Generation to:", targetVideoEndpoint);
 
@@ -1306,7 +1323,7 @@
                 }
 
                 // ==========================================
-                // 🚀 PREVIEW IMAGE GENERATION FALLBACK (FOR PDF_ONLY OR MISSING PREVIEW BLOB)
+                // PREVIEW IMAGE GENERATION FALLBACK
                 // ==========================================
                 if (!actualPreviewBlob && cardMetadata && cardMetadata.preview_canvas_id) {
                     try {
