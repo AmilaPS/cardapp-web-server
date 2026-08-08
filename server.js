@@ -5,14 +5,14 @@ const fs = require('fs');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const axios = require('axios');
-const os = require('os'); // 👈 IP එක Auto-Detect කිරීමට os module එක
+const os = require('os');
 const { spawn } = require('child_process');
 const cron = require('node-cron');
 
 const app = express();
 
 app.use(cors());
-app.use(cookieParser()); // 🍪 කුකීස් කියවීම සඳහා Middleware එක
+app.use(cookieParser());
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
@@ -29,7 +29,7 @@ function getLocalIP() {
     return 'localhost';
 }
 
-const NETWORK_IP = getLocalIP(); // 🎯 Computer එකේ වත්මන් Wi-Fi IP එක Auto ගනී
+const NETWORK_IP = getLocalIP();
 
 const jsFolder = path.join(__dirname, 'js');
 const rootTemplatesDir = path.join(__dirname, 'video_templates');
@@ -62,6 +62,28 @@ const AUTH_SERVER = process.env.AUTH_SERVER || `http://${NETWORK_IP}:${ULF_PORT}
 const PAGE_LINK = process.env.PAGE_LINK || `http://${NETWORK_IP}:${PORT}/home`;
 const SHARE_LINK = process.env.SHARE_LINK || `http://${NETWORK_IP}:${ULF_PORT}/views/ulf_storage/Cards/`;
 const pythonTarget = process.env.PYTHON_SERVER_URL || `http://${NETWORK_IP}:3001`;
+
+// =================================================================
+// 🔐 AUTH CHECK MIDDLEWARE (Personello Logged-in check එක)
+// =================================================================
+const checkAuth = (req, res, next) => {
+    // 💡 Query Param එකකින් user_id එක ආවොත් (Login එකෙන් redirect වෙද්දී) direct Cookie එක Lock කරයි
+    if (req.query.user_id) {
+        res.cookie('main_user_id', req.query.user_id, { maxAge: 24 * 60 * 60 * 1000 });
+        console.log(`[CardApp Server] 🍪 Cookie locked via Query Param for User ID: ${req.query.user_id}`);
+        return next();
+    }
+
+    const userId = req.cookies ? req.cookies.main_user_id : null;
+
+    if (!userId) {
+        console.log("⚠️ User not logged in! Redirecting to Personello Auth Server...");
+        return res.redirect(`${AUTH_SERVER}/login`);
+    }
+
+    next();
+};
+
 // =================================================================
 // 🎯 LAYOUT COMPILER ENGINE WITH GLOBAL PLACEHOLDER & COOKIE INJECTION
 // =================================================================
@@ -83,10 +105,6 @@ const renderWithLayout = (pageName, req, res) => {
             htmlContent = htmlContent.replaceAll('{{SHARE_LINK}}', SHARE_LINK);
             htmlContent = htmlContent.replaceAll('{{PYTHON_PORT}}', pythonTarget);
 
-            // 💡 මොබයිල් එකෙන් එනකොට HTML පිටුවල ඇති JavaScript වලට සැබෑ IP එක inject කිරීම
-            //htmlContent = htmlContent.replace('const CURRENT_HOST = window.location.hostname;', `const CURRENT_HOST = "${NETWORK_IP}";`);
-
-            // 🚀 NEW COOKIE LOGIC: කුකියෙන් Pro User කෙනෙක්ද කියා බලා HTML එකට Data Attribute එකක් Inject කිරීම
             const isProUser = (req.cookies && req.cookies.user_role === 'pro') ? 'true' : 'false';
             htmlContent = htmlContent.replace('<body', `<body data-user-pro="${isProUser}"`);
 
@@ -99,39 +117,25 @@ const renderWithLayout = (pageName, req, res) => {
     res.status(404).send(`${pageName}.html not found in views.`);
 };
 
-// 🎯 PRETTIER UI ROUTES FOR DESIGNER TOOLS & CARDMAKER SUITE
-app.get('/', (req, res) => renderWithLayout('home', req, res));
+// 🎯 PRETTIER UI ROUTES (Auth Secured)
+app.get('/', checkAuth, (req, res) => renderWithLayout('home', req, res));
+app.get('/home', checkAuth, (req, res) => renderWithLayout('home', req, res));
+app.get('/cards', checkAuth, (req, res) => renderWithLayout('home', req, res));
+app.get('/cards/card', checkAuth, (req, res) => renderWithLayout('card', req, res));
+app.get('/cards/multi', checkAuth, (req, res) => renderWithLayout('multi_generate', req, res));
+
+// 🛠️ DESIGNER TOOLS ROUTES
 app.get('/designertools', (req, res) => renderWithLayout('designertools', req, res));
 app.get('/designertools/tracking', (req, res) => renderWithLayout('videotrackingmaker', req, res));
 app.get('/designertools/editor', (req, res) => renderWithLayout('videocardseditor', req, res));
 app.get('/designertools/test', (req, res) => renderWithLayout('videotest', req, res));
-
-// 🎯 NEW PRODUCTION SUITE & CARDMAKER PAGES
 app.get('/designertools/builder', (req, res) => renderWithLayout('template_builder', req, res));
 
-// 💡 UPDATE: /home එකට එද්දී auth server එකෙන් එවන query param එකෙන් කුකිය Lock කිරීම සහ Role එක Detect කිරීම
-app.get('/home', (req, res) => {
-    if (req.query.user_id) {
-        res.cookie('main_user_id', req.query.user_id, { maxAge: 24 * 60 * 60 * 1000 });  
-        console.log(`[CardApp Server] 🍪 Cookie locked for User ID: ${req.query.user_id}`);
-    }
-    
-    const currentRole = (req.cookies && req.cookies.user_role) ? req.cookies.user_role : 'regular';
-    console.log(`[CardApp Server] User arrived on /home. Detected Role: ${currentRole}`);
-
-    renderWithLayout('home', req, res);
-});
-
-app.get('/cards', (req, res) => renderWithLayout('home', req, res));
-app.get('/cards/card', (req, res) => renderWithLayout('card', req, res));
-app.get('/cards/multi', (req, res) => renderWithLayout('multi_generate', req, res));
-
 // =================================================================
-// 📊 GLOBAL SOCIAL SHARE CLICK TRACKER ENGINE (WITH JSON FILE SAVING)
+// 📊 GLOBAL SOCIAL SHARE CLICK TRACKER ENGINE
 // =================================================================
 const clicksFilePath = path.join(__dirname, 'share_clicks.json');
 
-// 1. Fetch Total Share Clicks
 app.get('/api/analytics/share-stats', (req, res) => {
     if (!fs.existsSync(clicksFilePath)) return res.json({ success: true, stats: {} });
     try {
@@ -142,7 +146,6 @@ app.get('/api/analytics/share-stats', (req, res) => {
     }
 });
 
-// 2. Track & Increment Click Count and Write to share_clicks.json
 app.post('/api/analytics/track-share', (req, res) => {
     const { platform } = req.body;
     if (!platform) return res.status(400).json({ success: false, error: "Platform required" });
@@ -156,7 +159,6 @@ app.post('/api/analytics/track-share', (req, res) => {
         }
     }
 
-    // Global Key එක (උදා: global_whatsapp, global_facebook)
     const key = `global_${platform}`;
     data[key] = (data[key] || 0) + 1;
 
@@ -171,7 +173,7 @@ app.post('/api/analytics/track-share', (req, res) => {
 });
 
 // =================================================================
-// 🎯 DYNAMIC MULTI-LAYOUT COMPILER ENGINE (AUTOMATED MIDDLEWARE)
+// 🎯 DYNAMIC MULTI-LAYOUT COMPILER ENGINE
 // =================================================================
 app.get('/:page.html', (req, res, next) => {
     const pageName = req.params.page;
@@ -252,7 +254,6 @@ function cleanFilesInDirectory(targetDir, maxAgeMs) {
             fs.stat(filePath, (err, stats) => {
                 if (err) return;  
 
-                // ෆයිල් එකක් පමණක් නම් සහ විනාඩි 30 ට වඩා පරණ නම් මකා දැමීම
                 if (stats.isFile() && (now - stats.mtimeMs > maxAgeMs)) {  
                     fs.unlink(filePath, (err) => {
                         if (err) console.error(`[Cleanup Engine] Failed to delete: ${file}`, err);  
@@ -265,10 +266,8 @@ function cleanFilesInDirectory(targetDir, maxAgeMs) {
 }
 
 cron.schedule('*/10 * * * *', () => {
-    // විනාඩි 30 (මිලි තත්පර වලින්)
     const THIRTY_MINUTES = 30 * 60 * 1000;  
 
-    // 🎯 1. Public Folder එකේ ඇති Outputs සහ Uploads ෆෝල්ඩර්ස්
     let directoriesToClean = [
         path.join(__dirname, 'public', 'outputs'),
         path.join(__dirname, 'public', 'uploads')
