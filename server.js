@@ -76,9 +76,15 @@ const checkAuth = async (req, res, next) => {
                 userId = verifyRes.data.user_id;
                 const userRole = verifyRes.data.user_role || 'User';
 
-                // 🍪 Cookies Locking (Admin / User)
-                res.cookie('main_user_id', userId, { maxAge: 4 * 60 * 60 * 1000 });
-                res.cookie('user_role', userRole, { maxAge: 4 * 60 * 60 * 1000 });
+                // 🍪 Explicit Cookie Options (Clear කිරීමේදී පටලැවිලි නොවීම සඳහා Root Path නියම කර ඇත)
+                const cookieOptions = {
+                    maxAge: 4 * 60 * 60 * 1000,
+                    path: '/',
+                    sameSite: 'lax'
+                };
+
+                res.cookie('main_user_id', userId, cookieOptions);
+                res.cookie('user_role', userRole, cookieOptions);
 
                 console.log(`✅ [CardApp Server] SSO Verified for User ID: ${userId} | Role: ${userRole}`);
                 return res.redirect('/home');
@@ -129,10 +135,10 @@ const renderWithLayout = (pageName, req, res) => {
     res.status(404).send(`${pageName}.html not found in views.`);
 };
 
-// 🚪 LOGOUT ENGINE (Local Cookies Clear කර Auth Server එකට Redirect කිරීම)
+// 🚪 LOGOUT ENGINE (Explicit Root Path භාවිතයෙන් Local Cookies Clear කර Auth Server එකට Redirect කිරීම)
 app.get('/logout', (req, res) => {
-    res.clearCookie('main_user_id');
-    res.clearCookie('user_role');
+    res.clearCookie('main_user_id', { path: '/' });
+    res.clearCookie('user_role', { path: '/' });
     console.log("🚪 [CardApp Server] Local user cookies cleared successfully.");
     return res.redirect(`${AUTH_SERVER}/api/auth/logout`);
 });
