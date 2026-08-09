@@ -42,6 +42,10 @@ let canvasesFilteredList = [];
 let fontsCurrentPage = 1;
 let fontsFilteredList = [];
 
+let globalSlotsList = [];
+let slotsCurrentPage = 1;
+let slotsFilteredList = [];
+
 const defaultGridImage = new Image();
 defaultGridImage.src = "/public/grid.jpg"; 
 defaultGridImage.onload = function() {
@@ -57,7 +61,10 @@ function switchTab(tabId) {
     if(tabId === 'card_maker_tab') loadCardsList();
     if(tabId === 'image_maker_tab') loadCanvasesList();
     if(tabId === 'fonts_tab') loadFontsList();
-    if(tabId === 'hints_tab') loadGlobalHints();
+    if(tabId === 'hints_tab') {
+        loadSlotsList();   // 👈 Slots ලැයිස්තුව Load කරන Function එක එකතු කළා
+        loadGlobalHints();
+    }
 }
 
 function autoGenerateFolderName(val) {
@@ -117,6 +124,8 @@ function addAssetRow(name = "", useIm = false, canvasId = "", savedFileName = ""
 
     const div = document.createElement('div');
     div.className = 'asset-row-box';
+    // 🎯 පරණ file name එක element එකේ attribute එකක් ලෙස තබා ගැනීම:
+    div.setAttribute('data-saved-file', savedFileName || 'none');
     div.style.cssText = "background: #f9f9f9; padding: 8px 12px; margin-bottom: 8px; border: 1px solid #ddd; border-radius: 5px;";
     
     div.innerHTML = `
@@ -392,6 +401,8 @@ async function submitCardToBackend() {
             const imEl = row.querySelector('.asset_use_im');
             const canvasEl = row.querySelector('.asset_canvas_id');
             const fileEl = row.querySelector('.asset_file');
+            // 🎯 පරණ saved file name එක ලබා ගැනීම:
+            const savedFileName = row.getAttribute('data-saved-file') || "none";
 
             if (nameEl) {
                 const aName = nameEl.value;
@@ -402,7 +413,14 @@ async function submitCardToBackend() {
                     clientFilename = fileEl.files[0].name; 
                     formData.append("req_image_files", fileEl.files[0]); 
                 }
-                assetsMetadata.push({ requirement_name: aName, use_image_maker: useIm, canvas_id: canvasId, client_filename: clientFilename });
+                // 🎯 saved_file_name එක backend එකට යැවීම:
+                assetsMetadata.push({ 
+                    requirement_name: aName, 
+                    use_image_maker: useIm, 
+                    canvas_id: canvasId, 
+                    client_filename: clientFilename,
+                    saved_file_name: savedFileName 
+                });
             }
         });
         formData.append("assets_json", JSON.stringify(assetsMetadata));
@@ -1200,6 +1218,207 @@ async function generatePrintPDF() {
     } catch (err) {
         console.error("PDF Pipeline Error:", err);
         alert(`❌ PDF එන්ජිමේ දෝෂයක්: ${err.message}`);
+    }
+}
+
+// =================================================================
+// 📸 SLOTS MANAGEMENT FUNCTIONS ENGINE (\web_images)
+// =================================================================
+
+async function loadSlotsList() {
+    try {
+        const res = await fetch('/api/slots');
+        const data = await res.json();
+        if (data.success) {
+            globalSlotsList = data.slots;
+            handleSlotSearch(false);
+        }
+    } catch (err) {
+        console.error("Error loading slots:", err);
+    }
+}
+
+function handleSlotSearch(resetPage = true) {
+    const searchElement = document.getElementById('search_slots');
+    const query = searchElement ? searchElement.value.toLowerCase().trim() : "";
+    if (resetPage) slotsCurrentPage = 1;
+    
+    slotsFilteredList = globalSlotsList.filter(s => 
+        `image_${s.slot}`.toLowerCase().includes(query) || 
+        s.slot.includes(query)
+    );
+    renderSlotsTable();
+}
+
+function renderSlotsTable() {
+    const container = document.getElementById('slotsListContainer');
+    if (!container) return;
+    container.innerHTML = '';
+    const totalItems = slotsFilteredList.length;
+
+    const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE) || 1;
+    if (slotsCurrentPage > totalPages) slotsCurrentPage = totalPages;
+
+    const startIdx = (slotsCurrentPage - 1) * ITEMS_PER_PAGE;
+    const endIdx = Math.min(startIdx + ITEMS_PER_PAGE, totalItems);
+    const pageItems = slotsFilteredList.slice(startIdx, endIdx);
+
+    if (pageItems.length === 0) {
+        container.innerHTML = '<div class="item-row"><div class="item-info">ගැලපෙන කිසිදු ස්ලොට් එකක් සොයාගත නොහැක.</div></div>';
+    } else {
+        pageItems.forEach(s => {
+            container.innerHTML += `
+                <div class="item-row">
+                    <div class="item-info" style="display:flex; gap:25px; align-items:center;">
+                        <strong style="width:110px; font-size:15px; color:#2f3640;">image_${s.slot}</strong>
+                        <span style="font-size:13px; color:#555;">Thumb: <b>${s.thumb}</b></span>
+                        <span style="font-size:13px; color:#555;">Crop: <b>${s.crop}</b></span>
+                        <span style="font-size:13px; color:#555;">Cropb: <b>${s.cropb}</b></span>
+                    </div>
+                    <div>
+                        <button class="btn-green" style="padding: 6px 18px; background:#2ed573;" onclick="editImageSlot('${s.slot}')">Edit</button>
+                        <button class="btn-danger" style="padding: 6px 14px;" onclick="deleteSlot('${s.slot}')">Delete</button>
+                    </div>
+                </div>`;
+        });
+    }
+
+    renderPagination(totalItems, slotsCurrentPage, 'slots', (newPage) => {
+        slotsCurrentPage = newPage;
+        renderSlotsTable();
+    });
+}
+
+// 🎯 AUTO CALCULATE AVAILABLE SLOTS (+1 & MISSING/DELETED SLOTS)
+function populateSlotDropdown(selectedSlot = null) {
+    const select = document.getElementById('slot_number_input');
+    if (!select) return;
+    select.innerHTML = '';
+
+    const existingNums = globalSlotsList.map(s => parseInt(s.slot, 10)).filter(n => !isNaN(n));
+    const maxNum = existingNums.length > 0 ? Math.max(...existingNums) : 0;
+    
+    let availableNums = [];
+    
+    // 1. අඩුවී ඇති / Delete වූ Numbers සෙවීම (Gaps)
+    for (let i = 1; i < maxNum; i++) {
+        if (!existingNums.includes(i)) {
+            availableNums.push(i);
+        }
+    }
+    
+    // 2. ඊළඟ (+1) අලුත් Number එක එකතු කිරීම
+    const nextNum = maxNum + 1;
+    availableNums.push(nextNum);
+
+    // 3. Dropdown එක පිරවීම
+    availableNums.forEach(num => {
+        const numStr = num < 10 ? `0${num}` : `${num}`;
+        const opt = document.createElement('option');
+        opt.value = numStr;
+        opt.textContent = `Slot ${numStr}` + (num === nextNum ? ' (Next +1)' : ' (Deleted / Free)');
+        if (selectedSlot && selectedSlot === numStr) opt.selected = true;
+        else if (!selectedSlot && num === nextNum) opt.selected = true; // Default selects Next +1
+        select.appendChild(opt);
+    });
+}
+
+// 🎯 OPEN EDITOR FOR NEW SLOT
+function openNewSlotEditor() {
+    document.getElementById('slotEditorTitle').innerText = "Add New Image Slot";
+    
+    // Dropdown එක Auto Calculate වී පිරවේ
+    populateSlotDropdown();
+    
+    const slotInput = document.getElementById('slot_number_input');
+    slotInput.disabled = false;
+
+    document.getElementById('slot_thumb_file').value = '';
+    document.getElementById('slot_crop_file').value = '';
+    document.getElementById('slot_cropb_file').value = '';
+
+    const editor = document.getElementById('slotEditorSection');
+    if (editor) {
+        editor.style.display = 'block';
+        editor.scrollIntoView({ behavior: 'smooth' });
+    }
+}
+
+// 🎯 OPEN EDITOR FOR EDITING EXISTING SLOT
+function editImageSlot(slotNo) {
+    document.getElementById('slotEditorTitle').innerText = `Edit Image Slot: image_${slotNo}`;
+    
+    const select = document.getElementById('slot_number_input');
+    select.innerHTML = `<option value="${slotNo}">Slot ${slotNo}</option>`;
+    select.value = slotNo;
+    select.disabled = true; // Edit කරද්දී වෙනස් කිරීමට නොහැකි ලෙස Lock වේ
+
+    document.getElementById('slot_thumb_file').value = '';
+    document.getElementById('slot_crop_file').value = '';
+    document.getElementById('slot_cropb_file').value = '';
+
+    const editor = document.getElementById('slotEditorSection');
+    if (editor) {
+        editor.style.display = 'block';
+        editor.scrollIntoView({ behavior: 'smooth' });
+    }
+}
+
+async function submitSlotImages() {
+    let slotNo = document.getElementById('slot_number_input').value.trim();
+    if (!slotNo) return alert("❌ කරුණාකර Slot Number එකක් ඇතුළත් කරන්න (උදා: 07).");
+
+    if (slotNo.length === 1) slotNo = `0${slotNo}`;
+
+    const thumbFile = document.getElementById('slot_thumb_file').files[0];
+    const cropFile = document.getElementById('slot_crop_file').files[0];
+    const cropbFile = document.getElementById('slot_cropb_file').files[0];
+
+    if (!thumbFile && !cropFile && !cropbFile) {
+        return alert("❌ කරුණාකර අවම වශයෙන් එක රූපයක්වත් තෝරන්න.");
+    }
+
+    const formData = new FormData();
+    // 🎯 slot_no එක අනිවාර්යයෙන්ම Files වලට ඉහළින්ම Append විය යුතුය!
+    formData.append("slot_no", slotNo);
+    
+    if (thumbFile) formData.append("thumb_file", thumbFile);
+    if (cropFile) formData.append("crop_file", cropFile);
+    if (cropbFile) formData.append("cropb_file", cropbFile);
+
+    try {
+        const res = await fetch('/api/slots/upload', { method: 'POST', body: formData });
+        const result = await res.json();
+
+        if (result.success) {
+            alert(`✅ Slot ${slotNo} පින්තූර සාර්ථකව CardApp හි \\web_images වෙත යාවත්කාලීන විය!`);
+            document.getElementById('slotEditorSection').style.display = 'none';
+            loadSlotsList();
+        } else {
+            alert("❌ දෝෂයක් සිදු විය: " + (result.error || "Upload failed"));
+        }
+    } catch (err) {
+        console.error("Slot upload error:", err);
+        alert("❌ සර්වර් සම්බන්ධතා දෝෂයක්!");
+    }
+}
+
+// 🎯 DELETE ENTIRE SLOT FUNCTION
+async function deleteSlot(slotNo) {
+    if (confirm(`Are you sure you want to delete all files for image_${slotNo}?`)) {
+        try {
+            const res = await fetch(`/api/slots/${slotNo}`, { method: 'DELETE' });
+            const result = await res.json();
+            if (result.success) {
+                alert(`✅ image_${slotNo} සාර්ථකව මකා දමන ලදී!`);
+                loadSlotsList();
+            } else {
+                alert("❌ මකාදැමීමට නොහැකි වුණා.");
+            }
+        } catch (err) {
+            console.error("Delete slot error:", err);
+            alert("❌ සර්වර් සම්බන්ධතා දෝෂයක්!");
+        }
     }
 }
 
