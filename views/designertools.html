@@ -356,7 +356,7 @@
     <!-- 🚀 AUTHENTICATION & ROLE VALIDATION ENGINE -->
     <!-- ================================================================= -->
     <script>
-        // 🔐 IMMEDIATE FRONTEND AUTH CHECK
+        // 🔐 IMMEDIATE FRONTEND AUTH CHECK & TOKEN CLEANUP ENGINE
         (function enforceAuth() {
             function getCookie(name) {
                 const value = `; ${document.cookie}`;
@@ -369,6 +369,12 @@
             const queryToken = urlParams.get('token');
             const cookieUserId = getCookie('main_user_id');
 
+            // 1. URL එකේ token එකක් තිබේ නම්, Cookie එක හැදුණු සැනින් URL එක Clean කරයි
+            if (queryToken && cookieUserId) {
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
+
+            // 2. Cookie එකක් හෝ URL Token එකක් නොමැති නම් සෘජුවම Login එකට Redirect කරයි
             if (!cookieUserId && !queryToken) {
                 window.location.href = "{{AUTH_SERVER}}/mypersonello/login";
             }

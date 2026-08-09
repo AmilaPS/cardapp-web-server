@@ -152,17 +152,86 @@
             100% { transform: scale(1); }
         }
 
-        /* LAYOUT SUITE FLEX CONTROL */
-        .suite-wrapper { display: flex; flex: 1; height: calc(100vh - 120px); overflow: hidden; }
+        /* 🎯 1200px CENTERED CONTAINER WRAPPER WITH 1000px MIN-HEIGHT */
+        .suite-wrapper { 
+            width: 100%;
+            max-width: 1200px;
+            margin: 25px auto 40px auto;
+            padding: 0 20px;
+            display: flex; 
+            flex-direction: column;
+            box-sizing: border-box;
+            min-height: 1000px !important; /* 👈 USER CUSTOMIZED MIN-HEIGHT */
+            flex: 1;
+        }
 
-        .sidebar-tabs { width: 260px; background: #2f3640; color: white; display: flex; flex-direction: column; padding: 20px 0; }
-        .sidebar-tabs h2 { padding: 0 20px; font-size: 18px; margin-bottom: 25px; color: #f5f6fa; border-bottom: 1px solid #487eb0; padding-bottom: 10px; }
-        .tab-btn { background: none; border: none; color: #a4b0be; padding: 12px 20px; text-align: left; font-size: 15px; font-weight: bold; cursor: pointer; transition: 0.2s; border-left: 4px solid transparent; }
+        /* 🚀 TOP HORIZONTAL CONTROL TABS ENGINE */
+        .sidebar-tabs { 
+            width: 100%; 
+            background: #2f3640; 
+            color: white; 
+            display: flex; 
+            flex-direction: row; 
+            align-items: center;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            margin-bottom: 25px;
+        }
+
+        .sidebar-tabs h2 { 
+            padding: 15px 25px; 
+            font-size: 16px; 
+            margin: 0; 
+            color: #f5f6fa; 
+            border-right: 1px solid #487eb0; 
+            background: #1e232a;
+            white-space: nowrap;
+        }
+
+        .tabs-header-container {
+            display: flex;
+            flex-direction: row;
+            flex: 1;
+            overflow-x: auto;
+        }
+
+        .tab-btn { 
+            background: none; 
+            border: none; 
+            color: #a4b0be; 
+            padding: 15px 24px; 
+            text-align: center; 
+            font-size: 14px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            transition: 0.2s; 
+            border-bottom: 4px solid transparent; 
+            white-space: nowrap;
+        }
+
         .tab-btn:hover { background: #353b48; color: white; }
-        .tab-btn.active { background: #718093; color: white; border-left-color: #00a8ff; }
-        .content-area { flex: 1; padding: 25px; overflow-y: auto; height: 100%; }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
+        .tab-btn.active { background: #353b48; color: white; border-bottom-color: #00a8ff; }
+
+        /* 🚀 FLEXBOX ADJUSTMENT TO PUSH PAGINATION TO BOTTOM */
+        .content-area { 
+            width: 100%; 
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+        
+        .tab-content { 
+            display: none; 
+            width: 100%;
+        }
+        
+        .tab-content.active { 
+            display: flex; 
+            flex-direction: column;
+            flex: 1;
+        }
+
         .header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 2px solid #dcdde1; padding-bottom: 10px; }
         .grid-list { display: flex; flex-direction: column; gap: 10px; margin-top: 15px; }
         .item-row { background: white; padding: 15px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border: 1px solid #dfe4ea; }
@@ -171,7 +240,7 @@
         .btn-blue { background: #0984e3; color: white; border: none; padding: 8px 16px; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 13px; }
         .btn-green { background: #2ed573; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 14px; }
         .btn-danger { background: #ff7675; color: white; border: none; padding: 8px 14px; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 13px; margin-left: 5px; }
-        .editor-container { background: white; border: 2px solid #2ed573; border-radius: 12px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-top: 20px; }
+        .editor-container { background: white; border: 2px solid #2ed573; border-radius: 12px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-top: 10px; margin-bottom: 25px; }
         .form-group { display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px; width: 100%; }
         label { font-size: 12px; font-weight: bold; color: #57606f; }
         input[type="text"], input[type="number"], select { padding: 6px 10px; border: 1px solid #ced4da; border-radius: 5px; font-size: 13px; width: 100%; }
@@ -189,7 +258,18 @@
         input:checked + .slider:before { transform: translateX(22px); }
         .asset-row-box { background: #f8f9fa; border: 1px dashed #ced4da; padding: 12px; margin-bottom: 10px; border-radius: 6px; }
 
-        .pagination-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; background: white; padding: 12px 20px; border-radius: 8px; border: 1px solid #dfe4ea; }
+        /* 🚀 MARGIN-TOP AUTO TO PUSH FOOTER BAR TO VERY BOTTOM */
+        .pagination-footer { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-top: auto !important; /* 👈 PUSHES BAR TO BOTTOM OF CONTAINER */
+            background: white; 
+            padding: 12px 20px; 
+            border-radius: 8px; 
+            border: 1px solid #dfe4ea; 
+        }
+        
         .page-num-btn { background: #f1f2f6; color: #2f3640; border: 1px solid #dcdde1; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 13px; transition: 0.2s; }
         .page-num-btn:hover { background: #dfe4ea; }
         .page-num-btn.active { background: #0984e3; color: white; border-color: #0984e3; }
@@ -228,12 +308,21 @@
                 font-size: 13px !important;
             }
             .suite-wrapper {
-                flex-direction: column !important;
-                height: auto !important;
-                overflow: visible !important;
+                min-height: auto !important;
             }
             .sidebar-tabs {
+                flex-direction: column !important;
+            }
+            .sidebar-tabs h2 {
+                border-right: none !important;
+                border-bottom: 1px solid #487eb0 !important;
                 width: 100% !important;
+            }
+            .tabs-header-container {
+                width: 100% !important;
+            }
+            .tab-btn {
+                flex: 1 !important;
             }
         }
     </style>
@@ -265,14 +354,17 @@
         </div> 
     </div>
 
-    <!-- 🛠️ SUITE WRAPPER FOR SIDEBAR AND CONTENT -->
+    <!-- 🛠️ 1200px CENTERED WRAPPER FOR TOP TABS & CONTENT AREA -->
     <div class="suite-wrapper">
+        <!-- 🚀 TOP HORIZONTAL CONTROL TABS BAR -->
         <div class="sidebar-tabs">
             <h2>Control Studio</h2>
-            <button class="tab-btn active" onclick="switchTab('card_maker_tab')">Card Maker</button>
-            <button class="tab-btn" onclick="switchTab('image_maker_tab')">Image Maker</button>
-            <button class="tab-btn" onclick="switchTab('fonts_tab')">Fonts Manager</button>
-            <button class="tab-btn" onclick="switchTab('hints_tab')">Text Slot Hints</button>
+            <div class="tabs-header-container">
+                <button class="tab-btn active" onclick="switchTab('card_maker_tab')">Card Maker</button>
+                <button class="tab-btn" onclick="switchTab('image_maker_tab')">Image Maker</button>
+                <button class="tab-btn" onclick="switchTab('fonts_tab')">Fonts Manager</button>
+                <button class="tab-btn" onclick="switchTab('hints_tab')">Text Slot Hints</button>
+            </div>
         </div>
 
         <div class="content-area">
@@ -283,18 +375,8 @@
                     <h1 style="margin:0; font-size:22px; color:#2f3640;">Existing Cards Node Registry</h1>
                     <button class="btn-green" onclick="openNewCardEditor()">+ Add Card</button>
                 </div>
-                
-                <div style="margin-bottom: 15px;">
-                    <input type="text" id="search_cards" class="search-bar-input" placeholder="🔍 සෙවීමට කාඩ්පතේ නම හෝ ID එක ටයිප් කරන්න..." oninput="handleCardSearch()">
-                </div>
 
-                <div id="cardsListContainer" class="grid-list"></div>
-                
-                <div id="cards_pagination" class="pagination-footer">
-                    <div id="cards_page_info" style="font-size:13px; color:#718093; font-weight:bold;">Showing 0-0 of 0</div>
-                    <div id="cards_page_numbers" style="display:flex; gap:5px;"></div>
-                </div>
-                
+                <!-- 🚀 Card Editor Section -->
                 <div id="cardEditorSection" class="editor-container" style="display: none;">
                     <h3 id="panelTitle" style="margin-top:0; color:#2ed573; font-size:16px;">Tuning Card Assets</h3>
                     <div class="row">
@@ -403,6 +485,17 @@
                         <button class="btn-blue" style="background:#718093; padding:12px;" type="button" onclick="document.getElementById('cardEditorSection').style.display='none'">Cancel</button>
                     </div>
                 </div>
+                
+                <div style="margin-bottom: 15px;">
+                    <input type="text" id="search_cards" class="search-bar-input" placeholder="🔍 සෙවීමට කාඩ්පතේ නම හෝ ID එක ටයිප් කරන්න..." oninput="handleCardSearch()">
+                </div>
+
+                <div id="cardsListContainer" class="grid-list"></div>
+                
+                <div id="cards_pagination" class="pagination-footer">
+                    <div id="cards_page_info" style="font-size:13px; color:#718093; font-weight:bold;">Showing 0-0 of 0</div>
+                    <div id="cards_page_numbers" style="display:flex; gap:5px;"></div>
+                </div>
             </div>
 
             <!-- TAB 2: IMAGE MAKER -->
@@ -411,18 +504,8 @@
                     <h1 style="margin:0; font-size:22px; color:#0984e3;">Canvases Template Registry</h1>
                     <button class="btn-green" style="background:#0984e3;" onclick="openNewCanvasEditor()">+ Add New Canvas</button>
                 </div>
-                
-                <div style="margin-bottom: 15px;">
-                    <input type="text" id="search_canvases" class="search-bar-input" placeholder="🔍 සෙවීමට කැන්වස් එකේ නම හෝ ID එක ටයිප් කරන්න..." oninput="handleCanvasSearch()">
-                </div>
 
-                <div id="canvasListContainer" class="grid-list"></div>
-                
-                <div id="canvases_pagination" class="pagination-footer">
-                    <div id="canvases_page_info" style="font-size:13px; color:#718093; font-weight:bold;">Showing 0-0 of 0</div>
-                    <div id="canvases_page_numbers" style="display:flex; gap:5px;"></div>
-                </div>
-                
+                <!-- 🚀 Canvas Editor Section -->
                 <div id="canvasEditorSection" class="editor-container" style="display: none; border-color: #0984e3;">
                     <h3 id="editorTitle" style="margin-top:0; color:#0984e3; font-size:16px;">Canvas workspace</h3>
                     <div class="row" style="margin-bottom: 12px;">
@@ -487,6 +570,17 @@
                         <button class="btn-blue" style="background:#718093; padding:12px;" onclick="document.getElementById('canvasEditorSection').style.display='none'">Cancel</button>
                     </div>
                 </div>
+                
+                <div style="margin-bottom: 15px;">
+                    <input type="text" id="search_canvases" class="search-bar-input" placeholder="🔍 සෙවීමට කැන්වස් එකේ නම හෝ ID එක ටයිප් කරන්න..." oninput="handleCanvasSearch()">
+                </div>
+
+                <div id="canvasListContainer" class="grid-list"></div>
+                
+                <div id="canvases_pagination" class="pagination-footer">
+                    <div id="canvases_page_info" style="font-size:13px; color:#718093; font-weight:bold;">Showing 0-0 of 0</div>
+                    <div id="canvases_page_numbers" style="display:flex; gap:5px;"></div>
+                </div>
             </div>
 
             <!-- TAB 3: FONTS MANAGER -->
@@ -538,7 +632,7 @@
     <!-- 🚀 AUTHENTICATION & ROLE VALIDATION ENGINE -->
     <!-- ================================================================= -->
     <script>
-        // 🔐 IMMEDIATE FRONTEND AUTH CHECK
+        // 🔐 IMMEDIATE FRONTEND AUTH CHECK & TOKEN CLEANUP ENGINE
         (function enforceAuth() {
             function getCookie(name) {
                 const value = `; ${document.cookie}`;
@@ -551,6 +645,12 @@
             const queryToken = urlParams.get('token');
             const cookieUserId = getCookie('main_user_id');
 
+            // 1. URL එකේ token එකක් තිබේ නම්, Cookie එක හැදුණු සැනින් URL එක Clean කරයි
+            if (queryToken && cookieUserId) {
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
+
+            // 2. Cookie එකක් හෝ URL Token එකක් නොමැති නම් සෘජුවම Login එකට Redirect කරයි
             if (!cookieUserId && !queryToken) {
                 window.location.href = "{{AUTH_SERVER}}/mypersonello/login";
             }
