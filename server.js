@@ -6,6 +6,7 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const axios = require('axios');
 const os = require('os');
+const multer = require('multer');
 const { spawn } = require('child_process');
 const cron = require('node-cron');
 
@@ -165,6 +166,118 @@ app.get('/cardapp_clear_cookie', (req, res) => {
     return res.redirect(`${AUTH_SERVER}/mypersonello/login`);
 });
 
+// =================================================================
+// 📸 IMAGE SLOTS MANAGEMENT API (CARDAPP ROOT \web_images FOLDER)
+// =================================================================
+const webImagesDir = path.join(__dirname, 'web_images');
+if (!fs.existsSync(webImagesDir)) fs.mkdirSync(webImagesDir, { recursive: true });
+
+const slotStorage = multer.diskStorage({
+    destination: (req, file, cb) => { cb(null, webImagesDir); },
+    filename: (req, file, cb) => {
+        // 🎯 req.body.slot_no නැත්නම් පමණක් '01' ගනියි
+        const slotNo = req.body.slot_no || '01';
+        const field = file.fieldname;
+        
+        // 🎯 Upload කරන Original Extension එක (.svg, .png, .jpg) ඒ ආකාරයෙන්ම තබා ගනී
+        const ext = path.extname(file.originalname).toLowerCase() || '.png';
+        
+        let prefix = 'thumb_';
+        if (field === 'crop_file') prefix = 'crop';
+        else if (field === 'cropb_file') prefix = 'cropb';
+
+        // 🎯 වෙනත් Extension එකකින් පැරණි ගොනුවක් තිබුනොත් (e.g. thumb_07.png තිබියදී thumb_07.svg Upload කලොත්) පැරණි එක Delete කරයි
+        const targetPattern = new RegExp(`^${prefix}${slotNo}\\.(png|jpg|jpeg|svg)$`, 'i');
+        if (fs.existsSync(webImagesDir)) {
+            fs.readdirSync(webImagesDir).forEach(f => {
+                if (targetPattern.test(f)) {
+                    try { fs.unlinkSync(path.join(webImagesDir, f)); } catch(e) {}
+                }
+            });
+        }
+
+        cb(null, `${prefix}${slotNo}${ext}`);
+    }
+});
+const uploadSlot = multer({ storage: slotStorage });
+
+// 1. GET ALL EXISTING SLOTS FROM \web_images
+app.get('/api/slots', (req, res) => {
+    try {
+        if (!fs.existsSync(webImagesDir)) return res.json({ success: true, slots: [] });
+        
+        const files = fs.readdirSync(webImagesDir);
+        const slotMap = new Map();
+
+        files.forEach(file => {
+            // 🎯 RegEx එක Underscore සහිත හෝ නැති ක්‍රම දෙකටම ගැලපෙන සේ සැකසුවා
+            // Match 1: thumb_01 OR crop01 / cropb01 OR crop_01 / cropb_01
+            const match = file.match(/^(thumb_?|cropb_?|crop_?)(\d+)\.(png|jpg|jpeg|svg)$/i);
+            if (match) {
+                let prefix = match[1].toLowerCase().replace('_', ''); // 'thumb', 'crop', 'cropb'
+                const num = match[2]; // e.g. "01", "02", "07"
+                
+                if (!slotMap.has(num)) {
+                    slotMap.set(num, { slot: num, thumb: 'none', crop: 'none', cropb: 'none' });
+                }
+                const slotData = slotMap.get(num);
+                if (prefix === 'thumb') slotData.thumb = file;
+                if (prefix === 'crop') slotData.crop = file;
+                if (prefix === 'cropb') slotData.cropb = file;
+            }
+        });
+
+        const sortedSlots = Array.from(slotMap.values()).sort((a, b) => parseInt(a.slot) - parseInt(b.slot));
+        res.json({ success: true, slots: sortedSlots });
+    } catch (err) {
+        console.error("Error reading web_images slots:", err);
+        res.status(500).json({ success: false, error: err.message });
+    }
+});
+
+// 2. UPLOAD & REPLACE SLOT IMAGES
+app.post('/api/slots/upload', uploadSlot.fields([
+    { name: 'thumb_file', maxCount: 1 },
+    { name: 'crop_file', maxCount: 1 },
+    { name: 'cropb_file', maxCount: 1 }
+]), (req, res) => {
+    try {
+        const slotNo = req.body.slot_no;
+        if (!slotNo) return res.status(400).json({ success: false, error: "Slot number required" });
+        
+        console.log(`📸 [CardApp] Updated Slot Images in \\web_images for Slot: ${slotNo}`);
+        res.json({ success: true, message: `Slot ${slotNo} images updated successfully.` });
+    } catch (err) {
+        console.error("Slot upload error:", err);
+        res.status(500).json({ success: false, error: err.message });
+    }
+});
+
+// 3. DELETE ENTIRE SLOT (thumb_##, crop##, cropb##)
+app.delete('/api/slots/:slot_no', (req, res) => {
+    try {
+        const slotNo = req.params.slot_no;
+        if (!fs.existsSync(webImagesDir)) return res.json({ success: true });
+
+        const files = fs.readdirSync(webImagesDir);
+        files.forEach(file => {
+            const match = file.match(/^(thumb_?|cropb_?|crop_?)(\d+)\.(png|jpg|jpeg|svg)$/i);
+            if (match && match[2] === slotNo) {
+                const filePath = path.join(webImagesDir, file);
+                if (fs.existsSync(filePath)) {
+                    fs.unlinkSync(filePath);
+                    console.log(`🗑️ Deleted Slot File: ${file}`);
+                }
+            }
+        });
+
+        res.json({ success: true, message: `Slot ${slotNo} files deleted.` });
+    } catch (err) {
+        console.error("Slot delete error:", err);
+        res.status(500).json({ success: false, error: err.message });
+    }
+});
+
 // 🎯 PRETTIER UI ROUTES (Auth Secured)
 app.get('/', checkAuth, (req, res) => renderWithLayout('home', req, res));
 app.get('/home', checkAuth, (req, res) => renderWithLayout('home', req, res));
@@ -270,6 +383,43 @@ function processNextQueueItem() {
     });
 }
 
+// =================================================================
+// 🚀 DYNAMIC HOT-RELOAD ROUTER DISPATCHER (NO PM2 / NO REBOOT NEEDED)
+// =================================================================
+app.use('/api', (req, res, next) => {
+    // Request URL එකෙන් Card Theme Name එක වෙන්කර ගැනීම (e.g., /api/valentine_card_1 -> valentine_card_1)
+    const subPath = req.path.split('/')[1]; 
+    if (!subPath) return next();
+
+    const jsFilePath = path.join(jsFolder, `${subPath}.js`);
+
+    // js/ ෆෝල්ඩරයේ මෙයට අදාළ Custom Dynamic JS File එකක් නැත්නම් වෙනත් Routes (e.g. /api/themes, /api/slots) සඳහා pass කරයි
+    if (!fs.existsSync(jsFilePath)) {
+        return next();
+    }
+
+    try {
+        const resolvedPath = path.resolve(jsFilePath);
+        const normalizedPath = resolvedPath.replace(/\\/g, '/').toLowerCase();
+
+        // 1. Node.js Require Cache එක Case-Insensitive ලෙස Memory එකෙන් Instant Purge කිරීම
+        Object.keys(require.cache).forEach(key => {
+            if (key.replace(/\\/g, '/').toLowerCase() === normalizedPath) {
+                delete require.cache[key];
+            }
+        });
+
+        // 2. Disk එකේ ඇති අලුත්ම JS Router Module එක Fresh Require කිරීම
+        const dynamicRouter = require(resolvedPath);
+
+        // 3. Request එක සෘජුවම අලුත් Router එකට භාරදීම
+        return dynamicRouter(req, res, next);
+    } catch (err) {
+        console.error(`❌ Dynamic route hot-reload execution error for ${subPath}:`, err);
+        return res.status(500).json({ success: false, error: "Dynamic route execution error: " + err.message });
+    }
+});
+
 const trackingMakerRouter = require('./js/videotrackingmaker');
 const cardsEditorRouter = require('./js/videocardseditor');
 app.use('/', trackingMakerRouter);
@@ -277,11 +427,17 @@ app.use('/', cardsEditorRouter);
 
 app.locals.registerDynamicRoute = function(jsFilePath) {
     try {
-        const dynamicModule = require(jsFilePath);
-        app.use('/api', dynamicModule); 
-        console.log(`🔗 Injected dynamic custom card route under /api: ${path.basename(jsFilePath)}`);
+        const resolvedPath = path.resolve(jsFilePath);
+        const normalizedPath = resolvedPath.replace(/\\/g, '/').toLowerCase();
+        
+        Object.keys(require.cache).forEach(key => {
+            if (key.replace(/\\/g, '/').toLowerCase() === normalizedPath) {
+                delete require.cache[key];
+            }
+        });
+        console.log(`♻️ [Cache Purged] Dynamic card route ready: ${path.basename(jsFilePath)}`);
     } catch (e) {
-        console.error(`❌ Route loading exception for file ${jsFilePath}:`, e);
+        console.error(`❌ Route cache purge exception for file ${jsFilePath}:`, e);
     }
 };
 
