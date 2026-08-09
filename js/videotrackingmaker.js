@@ -1,5 +1,5 @@
 const express = require('express');
-const router = express.Router(); // Fixed require assignment line mapping
+const router = express.Router();
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
@@ -26,6 +26,10 @@ router.post('/api/themes/save', upload.any(), async (req, res) => {
         const rawName = req.body.theme_name;
         const cleanName = rawName.trim().toLowerCase().replace(/[^a-z0-9]+/g, '_');
         const customApiUrl = req.body.api_url.trim();
+
+        // 🎯 Route URL Clean Up (/api/ කොටස ඉවත් කර නිවැරදි sub-path එක සැකසීම)
+        let routeSubPath = customApiUrl.replace(/^\/api/, '');
+        if (!routeSubPath.startsWith('/')) routeSubPath = '/' + routeSubPath;
         
         const baseBgKey = req.body.bg_key.trim();
         const bgKey = baseBgKey.endsWith('_img') ? baseBgKey : `${baseBgKey}_img`;
@@ -53,13 +57,33 @@ router.post('/api/themes/save', upload.any(), async (req, res) => {
             };
         });
 
-        // 1. Generate Absolute Native Deadlock-Free Python Script File
+        // 🎯 1. Python Cache (__pycache__) එක Auto-Purge කිරීම
+        const pycacheDir = path.join(trackersFolder, '__pycache__');
+        if (fs.existsSync(pycacheDir)) {
+            try { fs.rmSync(pycacheDir, { recursive: true, force: true }); } catch(e) {}
+        }
+
+        // 2. Generate Absolute Native Deadlock-Free Python Script File
         fs.writeFileSync(path.join(trackersFolder, pyFilename), generateDynamicPythonString(bgKey, finalLayers), 'utf8');
 
-        // 2. Generate Distinct Order-Aware Strict Image-Sorting JSRouter
-        fs.writeFileSync(fullJsPath, generateJSRouterString(cleanName, customApiUrl, bgKey, finalLayers, pyFilename), 'utf8');
+        // 3. Generate Distinct Order-Aware Strict Image-Sorting JSRouter
+        fs.writeFileSync(fullJsPath, generateJSRouterString(cleanName, routeSubPath, bgKey, finalLayers, pyFilename), 'utf8');
         
-        req.app.locals.registerDynamicRoute(fullJsPath);
+        // 4. Safe Case-Insensitive Cache Clear & Register Dynamic Route
+        try {
+            const resolvedJsPath = path.resolve(fullJsPath).replace(/\\/g, '/');
+            Object.keys(require.cache).forEach(key => {
+                if (key.replace(/\\/g, '/').toLowerCase() === resolvedJsPath.toLowerCase()) {
+                    delete require.cache[key];
+                }
+            });
+
+            if (req.app && req.app.locals && typeof req.app.locals.registerDynamicRoute === 'function') {
+                req.app.locals.registerDynamicRoute(fullJsPath);
+            }
+        } catch (cacheErr) {
+            console.warn(`⚠️ Route registration warning:`, cacheErr.message);
+        }
         
         res.json({ success: true, message: "Distinct JS සහ Tracker PY ෆයිල් සාර්ථකව සාදන ලදී!" });
     } catch (err) { res.status(500).json({ error: err.message }); }
@@ -194,7 +218,7 @@ ${imgsDictionaryItems}    }
 // ========================================================================
 // ⚡ DISTINCT JS API ROUTER COMPILER - EMBEDS STABLE FOR...OF SORTING LOOPS
 // ========================================================================
-function generateJSRouterString(cleanName, customApiUrl, bgKey, layers, pyFilename) {
+function generateJSRouterString(cleanName, routeSubPath, bgKey, layers, pyFilename) {
     return `const express = require('express');
 const router = express.Router();
 const multer = require('multer');
@@ -215,7 +239,7 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
-router.post('${customApiUrl.replace('/api', '')}', upload.any(), async (req, res) => {
+router.post('${routeSubPath}', upload.any(), async (req, res) => {
     try {
         if (!req.files || req.files.length === 0) return res.status(400).json({ error: "No files uploaded." });
 
@@ -255,7 +279,8 @@ router.post('${customApiUrl.replace('/api', '')}', upload.any(), async (req, res
         args.push('"' + templateDir + '"');
         args.push('"' + outputPath + '"');
         
-        const cmd = 'python ' + args.join(' ');
+        // 🎯 Python -B Flag එක මඟින් Bytecode (.pyc) Cache කිරීම වළක්වයි
+        const cmd = 'python -B ' + args.join(' ');
         console.log('🎬 Execution Command Node Pipeline:', cmd);
         
         if (req.app && req.app.locals && typeof req.app.locals.addToQueue === 'function') {
@@ -265,6 +290,7 @@ router.post('${customApiUrl.replace('/api', '')}', upload.any(), async (req, res
         }
     } catch (err) { res.status(500).json({ error: err.message }); }
 });
+module.error = router;
 module.exports = router;`;
 }
 

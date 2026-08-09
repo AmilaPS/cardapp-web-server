@@ -44,6 +44,10 @@ router.post('/api/themes/update', upload.any(), async (req, res) => {
         const customApiUrl = req.body.api_url.trim();
         const parsedLayers = JSON.parse(req.body.layers_metadata);
         
+        // 🎯 Route URL Clean Up (/api/ කොටස ඉවත් කර නිවැරදි sub-path එක සැකසීම)
+        let routeSubPath = customApiUrl.replace(/^\/api/, '');
+        if (!routeSubPath.startsWith('/')) routeSubPath = '/' + routeSubPath;
+
         const baseBgKey = req.body.bg_key.trim();
         const bgKey = baseBgKey.endsWith('_img') ? baseBgKey : `${baseBgKey}_img`;
         
@@ -59,8 +63,16 @@ router.post('/api/themes/update', upload.any(), async (req, res) => {
             return { field_key: finalKey, tracking_video_name: foundFile ? foundFile.filename : layer.existing_video };
         });
 
+        // 🎯 1. Python Cache (__pycache__) එක Auto-Purge කිරීම
+        const pycacheDir = path.join(trackersFolder, '__pycache__');
+        if (fs.existsSync(pycacheDir)) {
+            try { fs.rmSync(pycacheDir, { recursive: true, force: true }); } catch(e) {}
+        }
+
+        // 2. Python Tracker Script එක Disk එකට Save කිරීම
         fs.writeFileSync(path.join(trackersFolder, pyFilename), generateDynamicPythonString(bgKey, finalLayers), 'utf8');
 
+        // 3. Dynamic JS Module එක සකස් කිරීම
         const jsTemplateCode = `const express = require('express');
 const router = express.Router();
 const multer = require('multer');
@@ -81,7 +93,7 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
-router.post('${customApiUrl.replace('/api', '')}', upload.any(), async (req, res) => {
+router.post('${routeSubPath}', upload.any(), async (req, res) => {
     try {
         if (!req.files || req.files.length === 0) return res.status(400).json({ error: "No files uploaded." });
 
@@ -119,7 +131,8 @@ router.post('${customApiUrl.replace('/api', '')}', upload.any(), async (req, res
         args.push('"' + templateDir + '"');
         args.push('"' + outputPath + '"');
         
-        const cmd = 'python ' + args.join(' ');
+        // 🎯 Python -B Flag එක මඟින් Bytecode (.pyc) Cache කිරීම වළක්වයි
+        const cmd = 'python -B ' + args.join(' ');
         console.log('🎬 Execution Command Node Pipeline:', cmd);
         
         if (req.app && req.app.locals && typeof req.app.locals.addToQueue === 'function') {
@@ -131,13 +144,18 @@ router.post('${customApiUrl.replace('/api', '')}', upload.any(), async (req, res
 });
 module.exports = router;`;
 
+        // 4. JS File එක Disk එකට Write කිරීම
         fs.writeFileSync(fullJsPath, jsTemplateCode, 'utf8');
 
+        // 5. RAM Cache Purge කිරීම
         try {
-            if (require.cache[require.resolve(fullJsPath)]) {
-                delete require.cache[require.resolve(fullJsPath)];
-                console.log(`♻️ Purged require cache mapping for: ${jsFilename}`);
-            }
+            const resolvedJsPath = path.resolve(fullJsPath).replace(/\\/g, '/');
+            Object.keys(require.cache).forEach(key => {
+                if (key.replace(/\\/g, '/').toLowerCase() === resolvedJsPath.toLowerCase()) {
+                    delete require.cache[key];
+                }
+            });
+
             if (req.app && req.app.locals && typeof req.app.locals.registerDynamicRoute === 'function') {
                 req.app.locals.registerDynamicRoute(fullJsPath);
             }
