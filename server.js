@@ -69,6 +69,7 @@ const pythonTarget = process.env.PYTHON_SERVER_URL || `http://${NETWORK_IP}:3001
 const checkAuth = async (req, res, next) => {
     let userId = req.cookies ? req.cookies.main_user_id : null;
 
+    // 1. SSO Token එකක් පැමිණ ඇති විට (Cookies නොමැති නම්)
     if (!userId && req.query.token) {
         try {
             const verifyRes = await axios.get(`${AUTH_SERVER}/api/auth/verify-token?token=${req.query.token}`);
@@ -76,7 +77,6 @@ const checkAuth = async (req, res, next) => {
                 userId = verifyRes.data.user_id;
                 const userRole = verifyRes.data.user_role || 'User';
 
-                // 🍪 Explicit Cookie Options (Clear කිරීමේදී පටලැවිලි නොවීම සඳහා Root Path නියම කර ඇත)
                 const cookieOptions = {
                     maxAge: 4 * 60 * 60 * 1000,
                     path: '/',
@@ -86,7 +86,8 @@ const checkAuth = async (req, res, next) => {
                 res.cookie('main_user_id', userId, cookieOptions);
                 res.cookie('user_role', userRole, cookieOptions);
 
-                console.log(`✅ [CardApp Server] SSO Verified for User ID: ${userId} | Role: ${userRole}`);
+                // 🚀 මෙතැනදී Log එක සටහන් කර සෘජුවම Redirect කරයි
+                console.log(`✅ [CardApp Server] SSO Verified & Logged In: User ID: ${userId} | Role: ${userRole}`);
                 return res.redirect('/home');
             }
         } catch (err) {
@@ -94,11 +95,14 @@ const checkAuth = async (req, res, next) => {
         }
     }
 
+    // 2. Cookie එකක් නොමැති නම් සෘජුවම Login පිටුවට Redirect කරයි
     if (!userId || userId === 'null' || userId === 'undefined') {
         console.log("⚠️ User not logged in! Redirecting to Auth Server...");
         return res.redirect(`${AUTH_SERVER}/mypersonello/login`);
     }
 
+    // 3. Cookie එක හරහා සාර්ථකව Page එකට පිවිසෙන සෑම අවස්ථාවකම Log එක පෙන්වීමට:
+    console.log(`👤 [CardApp Server] Active Session: User ID: ${userId}`);
     next();
 };
 
@@ -135,12 +139,30 @@ const renderWithLayout = (pageName, req, res) => {
     res.status(404).send(`${pageName}.html not found in views.`);
 };
 
-// 🚪 LOGOUT ENGINE (Explicit Root Path භාවිතයෙන් Local Cookies Clear කර Auth Server එකට Redirect කිරීම)
+// 🚪 LOGOUT ENGINE (Local Cookies Clear කර Auth Server එකට Redirect කිරීම)
 app.get('/logout', (req, res) => {
     res.clearCookie('main_user_id', { path: '/' });
     res.clearCookie('user_role', { path: '/' });
     console.log("🚪 [CardApp Server] Local user cookies cleared successfully.");
-    return res.redirect(`${AUTH_SERVER}/api/auth/logout`);
+    return res.redirect(`${AUTH_SERVER}/logout`);
+});
+
+// 🚪 CARDAPP COOKIE CLEARING BRIDGE ROUTE
+app.get('/cardapp_clear_cookie', (req, res) => {
+    // Express Cookies සාර්ථකව Delete කිරීම
+    res.clearCookie('main_user_id', { path: '/' });
+    res.clearCookie('user_role', { path: '/' });
+    
+    // Cookie Header එක මඟින් සාර්ථකව Clear වූ බව තහවුරු කිරීම
+    res.setHeader('Set-Cookie', [
+        'main_user_id=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly',
+        'user_role=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly'
+    ]);
+
+    console.log("🚪 [CardApp Server] Local user cookies cleared successfully via Redirect Bridge.");
+    
+    // Auth Server එකේ Direct Login Page එකට යවයි
+    return res.redirect(`${AUTH_SERVER}/mypersonello/login`);
 });
 
 // 🎯 PRETTIER UI ROUTES (Auth Secured)
