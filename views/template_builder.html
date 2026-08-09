@@ -363,7 +363,7 @@
                 <button class="tab-btn active" onclick="switchTab('card_maker_tab')">Card Maker</button>
                 <button class="tab-btn" onclick="switchTab('image_maker_tab')">Image Maker</button>
                 <button class="tab-btn" onclick="switchTab('fonts_tab')">Fonts Manager</button>
-                <button class="tab-btn" onclick="switchTab('hints_tab')">Text Slot Hints</button>
+                <button class="tab-btn" onclick="switchTab('hints_tab')">Slots Manager</button>
             </div>
         </div>
 
@@ -606,16 +606,61 @@
                 </div>
             </div>
 
-            <!-- TAB 4: TEXT SLOT HINTS -->
+            <!-- TAB 4: SLOTS (IMAGE SLOTS & TEXT SLOT HINTS) -->
             <div id="hints_tab" class="tab-content">
                 <div class="header-row">
-                    <h1 style="margin:0; font-size:22px; color:#2f3640;">Text Slot Hints</h1>
+                    <h1 style="margin:0; font-size:22px; color:#2f3640;">Image Slots</h1>
+                    <!-- 🎯 ADD NEW SLOT BUTTON -->
+                    <button class="btn-green" type="button" onclick="openNewSlotEditor()">+ Add New Slot</button>
                 </div>
-                <div class="editor-container" style="display:block;">
+
+                <!-- 🚀 EDIT / ADD IMAGE SLOT SECTION -->
+                <div id="slotEditorSection" class="editor-container" style="display: none;">
+                    <h3 id="slotEditorTitle" style="margin-top:0; color:#2ed573; font-size:16px;">Add New Image Slot</h3>
+                    <div class="form-group" style="max-width: 250px;">
+                        <label>Slot Number (e.g. 07, 08)</label>
+                        <select id="slot_number_input" style="font-weight:bold; color:#2f3640; padding: 6px 10px; border-radius: 5px; border: 1px solid #ced4da;"></select>
+                    </div>
+                    <div class="row" style="margin-bottom: 15px;">
+                        <div class="form-group">
+                            <label>Thumb:</label>
+                            <input type="file" id="slot_thumb_file" accept="image/*">
+                        </div>
+                        <div class="form-group">
+                            <label>Crop:</label>
+                            <input type="file" id="slot_crop_file" accept="image/*">
+                        </div>
+                        <div class="form-group">
+                            <label>Cropb:</label>
+                            <input type="file" id="slot_cropb_file" accept="image/*">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <button class="btn-green" style="padding:12px; flex:1;" type="button" onclick="submitSlotImages()">Submit & Save Structure</button>
+                        <button class="btn-blue" style="background:#718093; padding:12px;" type="button" onclick="document.getElementById('slotEditorSection').style.display='none'">Cancel</button>
+                    </div>
+                </div>
+
+                <!-- SEARCH BAR -->
+                <div style="margin-bottom: 15px;">
+                    <input type="text" id="search_slots" class="search-bar-input" placeholder="🔍 සෙවීමට නම ටයිප් කරන්න..." oninput="handleSlotSearch()">
+                </div>
+
+                <!-- SLOTS LIST CONTAINER -->
+                <div id="slotsListContainer" class="grid-list"></div>
+
+                <!-- SLOTS PAGINATION FOOTER -->
+                <div id="slots_pagination" class="pagination-footer">
+                    <div id="slots_page_info" style="font-size:13px; color:#718093; font-weight:bold;">Showing 0-0 of 0</div>
+                    <div id="slots_page_numbers" style="display:flex; gap:5px;"></div>
+                </div>
+
+                <!-- TEXT SLOT HINTS SECTION (BELOW) -->
+                <div class="editor-container" style="display:block; margin-top:25px;">
                     <div class="form-group">
-                        <label>Text Slot Hints</label>
-                        <div style="display:flex; gap:10px;">
-                            <input type="text" id="global_text_hints" placeholder="Name 01, Name 02, X+X">
+                        <label style="font-size:13px; font-weight:bold; color:#2f3640;">Text Slot Hints</label>
+                        <div style="display:flex; gap:10px; margin-top:5px;">
+                            <input type="text" id="global_text_hints" placeholder="Name_01, Name_02, X+X">
                             <button class="btn-green" type="button" onclick="saveGlobalHints()">Submit</button>
                         </div>
                     </div>
